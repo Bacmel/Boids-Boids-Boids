@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 from src import PALETTE, DEFAULT_NUM_NEIGHBORS, DEFAULT_VIEW_DIST, BOID_TURN_SPEED, BOID_VEL
 
+
 def get_args():
     """
     Standard function to specify the default value of the hyper-parameters of experimental setups
@@ -30,7 +31,13 @@ def get_args():
                         dest="preview_only",
                         action="store_true",
                         help="dont save the video, just show the preview")
-    
+    parser.add_argument("--render",
+                        action='store_true',
+                        help="allow visual rendering during the simulation")
+    parser.add_argument("--verbose",
+                        action='store_true',
+                        help="increase output verbosity")
+
     # weights
     parser.add_argument("-ra", "--attraction",
                         dest="attraction_radius",
@@ -49,20 +56,42 @@ def get_args():
                         help="the radius of the replusion zone of each boid")
 
     # behaviour near edges
-    parser.add_argument("-e", "--edge-behaviour",
-                        dest="edge_behaviour",
+    parser.add_argument("--border",
                         type=str,
-                        choices={"avoid", "wrap", "wall", "none"},  # boids avoids the edges, toric world, wall delimitation, no edges
-                        default="avoid",
-                        help="the behaviour of the boids near edges, either avoid them, just wrap around to the other side, wall with collisions or no edges at all")
+                        # toric world, wall delimitation, no edges
+                        choices={"wrap", "wall", "none"},
+                        default="wall",
+                        help="selection of the border of the univers: toric world, wall with collisions or no edges at all")
 
     # what method to use to decide which boids are close ('nearby')
     parser.add_argument("--count",
-                       dest="num_neighbors",
-                       type=int,
-                       default=DEFAULT_NUM_NEIGHBORS,
-                       help=f"the COUNT closest boids are seen by the current boid (defaults to {DEFAULT_NUM_NEIGHBORS})")
-    
+                        dest="num_neighbors",
+                        type=int,
+                        default=DEFAULT_NUM_NEIGHBORS,
+                        help=f"the COUNT closest boids are seen by the current boid (defaults to {DEFAULT_NUM_NEIGHBORS})")
+    parser.add_argument("--diff-threshold",
+                        dest="diff_threshold",
+                        type=int,
+                        help="threshold to detect an anormal behaviour in a boid surrounding")
+    parser.add_argument("--view-dist",
+                        dest="view_dist",
+                        type=int,
+                        default=0,
+                        help="define the view distance of the boids")
+    # blindspot group
+    blindspot_group = parser.add_argument_group('blindspot','blindspots description group')
+    blindspot_group.add_argument("--blindspot-direction",
+                                "-bsd",
+                                type=int,
+                                nargs='+',
+                                dest="blindspot_direction",
+                                help="list of directions of the bisector of each blindspot angle")
+    blindspot_group.add_argument("--blindspot-opening",
+                                "-bso",
+                                type=int,
+                                nargs='+',
+                                help="list of the openings of each blindspot")
+
     # boids caracteristics
     parser.add_argument("-tr", "--turning-rate",
                         dest="turning_rate",
@@ -80,6 +109,5 @@ def get_args():
                         default="0,1",
                         help="Parameters of the gaussian distribution used in noises of the simulation")
 
-    
     args = parser.parse_args()
     return args
