@@ -2,11 +2,6 @@ from random import choice
 from src import BOID_VEL, BOID_NOSE_LEN, BOID_TURN_SPEED, PALETTE
 import numpy as np
 
-
-def _unit_vector(angle):
-    return np.array([np.cos(angle), np.sin(angle)], dtype="float")
-
-
 class Boid():
     def __init__(self, color, pos, angle=0):
         self.pos = np.array(pos, dtype="float")

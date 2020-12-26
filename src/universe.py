@@ -4,14 +4,6 @@ from src import Population
 from random import choice
 import numpy as np
 
-
-def _angle(x):
-    return np.arctan2(x[1], x[0])
-
-def _norm(x):
-    return x if np.allclose(x, 0) else x / np.linalg.norm(x)
-
-
 class Universe():
     def __init__(self,
                  canvas,

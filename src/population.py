@@ -2,12 +2,6 @@ from src import Boid
 from src import Perception
 import numpy as np
 
-def _angle(x):
-    return np.arctan2(x[1], x[0])
-
-def _norm(x):
-    return x if np.allclose(x, 0) else x / np.linalg.norm(x)
-
 class Population():
     def __init__(self, attr, orie, repu, per):
         self.pop = [] # list<Boid>
