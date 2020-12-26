@@ -8,6 +8,7 @@ class Wall(Border):
 
     Wrapping clips the point in the rectangular area.
     """
+
     def wrap(self, point2d):
         half_len = self.length / 2
         return np.clip(point2d, self.origin - half_len, self.origin + half_len)

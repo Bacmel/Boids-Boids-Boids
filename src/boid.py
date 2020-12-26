@@ -2,7 +2,8 @@ from random import choice
 from src import BOID_VEL, BOID_NOSE_LEN, BOID_TURN_SPEED, PALETTE
 import numpy as np
 
-class Boid():
+
+class Boid:
     def __init__(self, color, pos, angle=0):
         self.pos = np.array(pos, dtype="float")
         self.angle = angle % (2 * np.pi)
@@ -39,4 +40,3 @@ class Boid():
 
     def tick(self, dt):
         self.pos += self.vel * dt
-

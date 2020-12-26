@@ -2,15 +2,16 @@ from src import Boid
 from src import Perception
 import numpy as np
 
-class Population():
-    def __init__(self, attr, orie, repu, per):
-        self.pop = [] # list<Boid>
-        self.roa = attr # int
-        self.roo = orie # int
-        self.ror = repu # int
-        self.perception = per # Perception
 
-    def add_boid(self, color=None, pos=None, angle=None, shape):
+class Population:
+    def __init__(self, attr, orie, repu, per):
+        self.pop = []  # list<Boid>
+        self.roa = attr  # int
+        self.roo = orie  # int
+        self.ror = repu  # int
+        self.perception = per  # Perception
+
+    def add_boid(self, color=None, pos=None, angle=None, shape=None):
         color = color or choice(PALETTE["accents"])
         pos = pos or self.canvas.size * (1 - 2 * np.random.random(shape))
         angle = angle or (2 * np.pi * np.random.random())
@@ -29,7 +30,7 @@ class Population():
     def draw(self, canvas):
         for boid in self.pop:
             boid.draw(canvas)
-    
+
     def reorient(self, boid):
         """
         calculates the new direction of the boid with 3 rules: cohesion,
@@ -48,11 +49,11 @@ class Population():
             for i, other in enumerate(nearby):
                 diff = other.pos - boid.pos
                 dist = other.dist(boid.pos)
-                if dist <= self.ror : # repulsion
+                if dist <= self.ror:  # repulsion
                     des_r -= diff / abs(diff)
-                elif dist <= self.roo : # orientation
+                elif dist <= self.roo:  # orientation
                     des_o += _norm(other.vel)
-                else : # attraction
+                else:  # attraction
                     des_a += diff / abs(diff)
 
         if not np.allclose(des_r, 0):

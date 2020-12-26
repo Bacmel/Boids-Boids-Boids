@@ -8,6 +8,7 @@ class Toric(Border):
 
     The vector method perform its computation wrt. the toric propriety.
     """
+
     def wrap(self, point2d):
         return self._wrap_centered(self.origin, point2d)
 
