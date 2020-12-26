@@ -22,3 +22,4 @@ PALETTE = {  # in bgr (expected by opencv)
 from src.boid import Boid
 from src.canvas import Canvas
 from src.universe import Universe
+from src.arguments import *

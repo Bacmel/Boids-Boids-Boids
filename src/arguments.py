@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 from src import PALETTE, DEFAULT_NUM_NEIGHBORS, DEFAULT_VIEW_DIST, BOID_TURN_SPEED, BOID_VEL
 
 
-def get_args():
+def getArgs():
     """
     Standard function to specify the default value of the hyper-parameters of experimental setups
     :return: the complete list of arguments
@@ -90,6 +90,7 @@ def get_args():
                                 "-bso",
                                 type=int,
                                 nargs='+',
+                                dest="blindspot_opening",
                                 help="list of the openings of each blindspot")
 
     # boids caracteristics
@@ -106,7 +107,7 @@ def get_args():
     parser.add_argument("--error",
                         dest="error_params",
                         type=str,
-                        default="0,1",
+                        default="0:1",
                         help="Parameters of the gaussian distribution used in noises of the simulation")
 
     args = parser.parse_args()
