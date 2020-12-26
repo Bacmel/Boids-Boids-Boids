@@ -27,7 +27,6 @@ class Population():
             boid.tick(dt)
 
     def draw(self, canvas):
-        canvas.fill(PALETTE["background"])
         for boid in self.pop:
             boid.draw(canvas)
     
