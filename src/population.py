@@ -2,7 +2,6 @@ from src import Boid
 from src import Perception
 from src import PALETTE
 from src.utils import _angle, _norm
-import pandas as pd
 from random import choice, random
 import numpy as np
 
@@ -51,7 +50,8 @@ class Population:
     def draw(self, canvas):
         for boid in self.pop:
             boid.draw(canvas)
-
+        bgroup = Boid("pink", self.cgroup, _angle(self.dgroup))
+        bgroup.draw
     def reorient(self, boid):
         """
         calculates the new direction of the boid with 3 rules: cohesion,
@@ -90,5 +90,13 @@ class Population:
         else:
             return _angle(angle)
 
-    def store_data(self, df):
-        return {"cgroup" : self.cgroup, "dgroup" : self.dgroup, "pgroup" : self.pgroup, "mgroup" : self.mgroup}
+    def store_data(self, df, df2):
+        row = {"cgroup" : self.cgroup, "dgroup" : self.dgroup, "pgroup" : self.pgroup, "mgroup" : self.mgroup, "roa" : self.roa, "roo" : self.roo, "ror" : self.ror}
+        df = df.append(row, ignore_index=True)
+        row2 = {}
+        for i in range(len(self.pop)):
+            pos = self.pop[i].pos
+            row2["x"+str(i)] = pos[0]
+            row2["y"+str(i)] = pos[i]
+        df = df.append(row2, ignore_index=True)
+        return [df, df2]
