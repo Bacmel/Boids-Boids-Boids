@@ -37,6 +37,10 @@ def getArgs():
     parser.add_argument("--verbose",
                         action='store_true',
                         help="increase output verbosity")
+    parser.add_argument("--time-step",
+                        dest="time_step",
+                        default=0.1,
+                        help="time step for the update of the simulation")
 
     # weights
     parser.add_argument("-ra", "--attraction",
@@ -59,6 +63,7 @@ def getArgs():
     parser.add_argument("--border",
                         type=str,
                         # toric world, wall delimitation, no edges
+                        required=True,
                         choices={"wrap", "wall", "none"},
                         default="wall",
                         help="selection of the border of the univers: toric world, wall with collisions or no edges at all")
@@ -67,7 +72,7 @@ def getArgs():
     parser.add_argument("--count",
                         dest="num_neighbors",
                         type=int,
-                        default=DEFAULT_NUM_NEIGHBORS,
+                        default=0,
                         help=f"the COUNT closest boids are seen by the current boid (defaults to {DEFAULT_NUM_NEIGHBORS})")
     parser.add_argument("--diff-threshold",
                         dest="diff_threshold",

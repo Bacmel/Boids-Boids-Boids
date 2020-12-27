@@ -1,17 +1,17 @@
-from src import Boid
-from src import Perception
-from src import PALETTE
-from src.utils import _angle, _norm
 from random import choice, random
+
 import numpy as np
+
+from src import Boid, PALETTE
+from src.utils import normalize
 
 
 class Population:
-    def __init__(self, attr, orie, repu, per):
+    def __init__(self, roa, roo, ror, per):
         self.pop = []  # list<Boid>
-        self.roa = attr  # int
-        self.roo = orie  # int
-        self.ror = repu  # int
+        self.roa = roa  # int
+        self.roo = roo  # int
+        self.ror = ror  # int
         self.perception = per  # Perception
 
     @property
@@ -29,7 +29,7 @@ class Population:
     @property
     def mgroup(self):
         cg = self.cgroup
-        return np.abs(np.mean([boid.dist(cg)*boid.vel for boid in self.pop]))
+        return np.abs(np.mean([boid.dist(cg) * boid.vel for boid in self.pop]))
 
     def add_boid(self, color=None, pos=None, angle=None, shape=None):
         color = color or choice(PALETTE["accents"])
@@ -52,6 +52,7 @@ class Population:
             boid.draw(canvas)
         bgroup = Boid("pink", self.cgroup, _angle(self.dgroup))
         bgroup.draw
+
     def reorient(self, boid):
         """
         calculates the new direction of the boid with 3 rules: cohesion,
@@ -73,7 +74,7 @@ class Population:
                 if dist <= self.ror:  # repulsion
                     des_r -= diff / abs(diff)
                 elif dist <= self.roo:  # orientation
-                    des_o += _norm(other.vel)
+                    des_o += normalize(other.vel)
                 else:  # attraction
                     des_a += diff / abs(diff)
 
@@ -88,15 +89,16 @@ class Population:
         if np.allclose(angle, 0):
             return boid.angle
         else:
-            return _angle(angle)
+            return angle(angle)
 
     def store_data(self, df, df2):
-        row = {"cgroup" : self.cgroup, "dgroup" : self.dgroup, "pgroup" : self.pgroup, "mgroup" : self.mgroup, "roa" : self.roa, "roo" : self.roo, "ror" : self.ror}
+        row = {"cgroup": self.cgroup, "dgroup": self.dgroup, "pgroup": self.pgroup, "mgroup": self.mgroup,
+               "roa": self.roa, "roo": self.roo, "ror": self.ror}
         df = df.append(row, ignore_index=True)
         row2 = {}
         for i in range(len(self.pop)):
             pos = self.pop[i].pos
-            row2["x"+str(i)] = pos[0]
-            row2["y"+str(i)] = pos[i]
+            row2["x" + str(i)] = pos[0]
+            row2["y" + str(i)] = pos[i]
         df = df.append(row2, ignore_index=True)
         return [df, df2]

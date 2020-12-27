@@ -1,4 +1,4 @@
-from border import Border
+from .border import Border
 
 
 class Infinite(Border):

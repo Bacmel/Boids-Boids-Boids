@@ -1,6 +1,6 @@
 from numpy.linalg import norm
 
-from perception import Perception
+from .perception import Perception
 
 
 class KNN(Perception):

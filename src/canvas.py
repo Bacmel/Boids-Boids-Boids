@@ -1,13 +1,12 @@
-from cv2 import VideoWriter, VideoWriter_fourcc as FourCC
-from src import SCALE, OUT_DIR
-from time import strftime, localtime
+from time import localtime, strftime
+
 import cv2
+from cv2 import VideoWriter, VideoWriter_fourcc as FourCC
 import numpy as np
 
+from src import OUT_DIR, SCALE
 
-TRANSLATION = np.array(
-    (SCALE, -SCALE)
-)  # y coord is negative as the y axis is in downward direction in images
+TRANSLATION = np.array((SCALE, -SCALE))  # y coord is negative as the y axis is in downward direction in images
 
 
 class Canvas:
@@ -21,9 +20,7 @@ class Canvas:
         # renderer
         self.filename = OUT_DIR + strftime("%Y%m%dT%H%M%S", localtime()) + ".mp4"
         self.title = f"Boids - Preview - {self.filename}"
-        self.video = VideoWriter(
-            self.filename, FourCC(*"mp4v"), int(self.fps), tuple(self.res)
-        )
+        self.video = VideoWriter(self.filename, FourCC(*"mp4v"), int(self.fps), tuple(self.res))
         self.render = render
 
     def __enter__(self):
@@ -57,18 +54,12 @@ class Canvas:
 
         # set to true if window-x or {esc, ctrl-c, q} pressed
         self.closed |= (cv2.getWindowProperty(self.title, 0) < 0) or (
-            cv2.waitKey(int(1000 / self.fps)) in {27, 2, 3, ord("q"), ord("Q")}
-        )
+                cv2.waitKey(int(1000 / self.fps)) in {27, 2, 3, ord("q"), ord("Q")})
 
     def fill(self, color):
         self.current_frame[:, :] = np.array(color, dtype="uint8")
 
     def draw_poly(self, points, color):
-        cv2.fillPoly(
-            self.current_frame,
-            [
-                np.array([self.to_px(p) for p in points])
-            ],  # double list as fillPoly expects a list of polygons
-            color,
-            16,
-        )  # = antialiased
+        cv2.fillPoly(self.current_frame, [np.array([self.to_px(p) for p in points])],
+                     # double list as fillPoly expects a list of polygons
+                     color, 16, )  # = antialiased

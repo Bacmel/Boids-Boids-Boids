@@ -1,6 +1,6 @@
 from numpy.linalg import norm
 
-from perception import Perception
+from .perception import Perception
 
 
 class Range(Perception):
@@ -18,8 +18,4 @@ class Range(Perception):
         self.perception_range = perception_range
 
     def _filter(self, ind, pop):
-        return [
-            pop_ind
-            for pop_ind in pop
-            if norm(self.border.vector(ind.pos, pop_ind.pos)) < self.perception_range
-        ]
+        return [pop_ind for pop_ind in pop if norm(self.border.vector(ind.pos, pop_ind.pos)) < self.perception_range]

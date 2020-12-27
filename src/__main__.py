@@ -3,23 +3,35 @@ from os import remove
 from src import PALETTE, DEFAULT_NUM_NEIGHBORS, DEFAULT_VIEW_DIST
 from src import Universe, Canvas, Boid
 from src import getArgs
+from .borders import Wall, Toric, Infinite
 
 
 if __name__ == "__main__":
     
     args = getArgs()
 
+    # Creation of border
+    border = None
+    if args.border == "wall":
+        border = Wall(args.res.split("x"))
+    elif args.border == "wrap":
+        border = Toric(args.res.split("x"))
+    elif args.border == "none":
+        border = Infinite(args.res.split("x"))
+    
+    # TODO: argument assert function to test border argument
+
+    # Creation of perception: range > blind spot > knn > outlier
+
     # run simulation
     with Canvas(args.res.split("x"), args.fps, args.render) as canvas:
         u = Universe(
             canvas,
-            edge_behaviour=args.edge_behaviour,
-            nearby_method="dist" if args.num_neighbors is None else "count",
-            view_dist=args.dist or DEFAULT_VIEW_DIST,
-            num_neighbors=args.num_neighbors or DEFAULT_NUM_NEIGHBORS,
-            sep=args.sep,
-            align=args.align,
-            cohes=args.cohes,
+            border=args.border,
+            dt=args.time_step,
+            ror=args.repulsion_radius,
+            roo=args.orientation_radius,
+            roa=args.attraction_radius,
         )
 
         if args.highlight:
