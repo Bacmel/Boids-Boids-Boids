@@ -21,7 +21,8 @@ class KNN(Perception):
         dpop = list()
         for ind_pop in pop:
             relative_pos = self.border.vector(ind.pos, ind_pop.pos)
-            dpop.append((norm(relative_pos), ind_pop))
+            if ind_pop is not ind:
+                dpop.append((norm(relative_pos), ind_pop))
         dpop.sort(key=lambda elem: elem[0])
         knn = dpop[: min(self.k, len(dpop))]
         return [ind for d, ind in knn]
