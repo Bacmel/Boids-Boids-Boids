@@ -1,6 +1,6 @@
-from perception import Perception
 from src import Boid
 from src.utils import normalize_angle
+from .perception import Perception
 
 
 def mean_orientation(pop):

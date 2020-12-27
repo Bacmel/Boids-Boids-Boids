@@ -1,7 +1,7 @@
 from math import atan2, pi
 
-from perception import Perception
 from src.utils import normalize_angle
+from .perception import Perception
 
 
 class BlindSpot(Perception):

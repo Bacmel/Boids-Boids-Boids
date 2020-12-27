@@ -1,7 +1,7 @@
 from src import Boid
 from src import Perception
 from src import PALETTE
-from src.utils import _angle, _norm
+from src.utils import angle, normalize
 import pandas as pd
 from random import choice, random
 import numpy as np
@@ -73,7 +73,7 @@ class Population:
                 if dist <= self.ror:  # repulsion
                     des_r -= diff / abs(diff)
                 elif dist <= self.roo:  # orientation
-                    des_o += _norm(other.vel)
+                    des_o += normalize(other.vel)
                 else:  # attraction
                     des_a += diff / abs(diff)
 
@@ -88,7 +88,7 @@ class Population:
         if np.allclose(angle, 0):
             return boid.angle
         else:
-            return _angle(angle)
+            return angle(angle)
 
     def store_data(self, df):
         return {"cgroup" : self.cgroup, "dgroup" : self.dgroup, "pgroup" : self.pgroup, "mgroup" : self.mgroup}

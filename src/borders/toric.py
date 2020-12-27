@@ -1,6 +1,6 @@
 import numpy as np
 
-from border import Border
+from .border import Border
 
 
 class Toric(Border):

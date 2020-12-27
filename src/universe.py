@@ -1,29 +1,54 @@
-from src import PALETTE
-from src import Boid
-from src import Population
-from random import choice
-import numpy as np
+from borders import Border
+from canvas import Canvas
+from perceptions import Perception
+from src import PALETTE, Population
 
 
 class Universe:
-    def __init__(self, canvas, dt=1, ror=1, roo=1, roa=1):
+    def __init__(self, canvas, perception, border, dt=1, ror=1, roo=1, roa=1):
+        """Build a universe.
+
+        Args:
+            canvas (Canvas): The canvas to draw on.
+            perception (Perception): The perception used by the population.
+            border (Border): The border policy.
+            dt (float): The time step (in seconds).
+            ror (float): The radius of repulsion.
+            roo (float): The radius of orientation.
+            roa (float): The radius of alignment.
+        """
         self.dt = dt
-        self.boids = Population(ror, roo, roa)
+        self.boids = Population(ror, roo, roa, perception)
         self.canvas = canvas
+        self.border = border
 
     def populate(self, n):
+        """Populate with new individuals.
+
+        Args:
+            n (int): The number of individuals to add.
+        """
         for _ in range(n):
             self.boids.add_boid()
 
     def draw(self):
+        """Draw on the canvas."""
         self.canvas.fill(PALETTE["background"])
         self.boids.draw(self.canvas)
         self.canvas.update()
 
     def tick(self):
+        """Perform on tick.
+
+        Recursively update the whole simulation.
+        """
         self.boids.tick(self.dt)
 
     def loop(self):
+        """Loop the simulation.
+
+        Draw then update the simulation until the canvas is closed.
+        """
         while self.canvas.is_open():
             self.draw()
             self.tick()
