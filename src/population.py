@@ -7,11 +7,11 @@ from src.utils import normalize
 
 
 class Population:
-    def __init__(self, attr, orie, repu, per):
+    def __init__(self, roa, roo, ror, per):
         self.pop = []  # list<Boid>
-        self.roa = attr  # int
-        self.roo = orie  # int
-        self.ror = repu  # int
+        self.roa = roa  # int
+        self.roo = roo  # int
+        self.ror = ror  # int
         self.perception = per  # Perception
 
     @property

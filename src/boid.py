@@ -11,8 +11,8 @@ class Boid:
         """Constructor of Boid.
 
         Args:
-            color (:obj:`Color`): color for canvas visualisation.
-            pos (:obj:`numpy.array`): Initial position.
+            color (Color): color for canvas visualisation.
+            pos (numpy.ndarray): Initial position.
             angle (float, optional): Initial orientation.
 
         """
@@ -25,7 +25,7 @@ class Boid:
         """Direction proprety of the Boid.
         
         Returns:
-            :obj:numpy.array: unity vector of the boid's direction.
+            numpy.ndarray: unity vector of the boid's direction.
 
         """
         return unit_vector(self.angle)
@@ -35,7 +35,7 @@ class Boid:
         """Velocity proprety of the Boid.
         
         Returns:
-            :obj:numpy.array: velocity vector of the boid.
+            numpy.ndarray: velocity vector of the boid.
 
         """
         return BOID_VEL * self.dir
@@ -44,10 +44,10 @@ class Boid:
         """Distance from pos to Boid.
 
         Args:
-            pos (:obj:`numpy.array`): Reference position.
+            pos (numpy.array): Reference position.
         
         Returns:
-            :obj:numpy.array: distance between them.
+            numpy.array: distance between them.
 
         """
         return np.linalg.norm(self.pos - pos)
@@ -82,7 +82,7 @@ class Boid:
         """Draw function.
 
         Args:
-            canvas (:obj:Canvas): Graphical object.
+            canvas (Canvas): Graphical object.
 
         """
         tip = self.pos + BOID_NOSE_LEN * self.dir
