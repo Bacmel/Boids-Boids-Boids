@@ -1,5 +1,9 @@
 from src import Boid
 from src import Perception
+from src import PALETTE
+from src.utils import _angle, _norm
+import pandas as pd
+from random import choice, random
 import numpy as np
 
 
@@ -11,10 +15,27 @@ class Population:
         self.ror = repu  # int
         self.perception = per  # Perception
 
+    @property
+    def cgroup(self):
+        return np.mean([boid.pos for boid in self.pop])
+
+    @property
+    def dgroup(self):
+        return np.mean([boid.vel for boid in self.pop])
+
+    @property
+    def pgroup(self):
+        return np.abs(self.dgroup)
+
+    @property
+    def mgroup(self):
+        cg = self.cgroup
+        return np.abs(np.mean([boid.dist(cg)*boid.vel for boid in self.pop]))
+
     def add_boid(self, color=None, pos=None, angle=None, shape=None):
         color = color or choice(PALETTE["accents"])
-        pos = pos or self.canvas.size * (1 - 2 * np.random.random(shape))
-        angle = angle or (2 * np.pi * np.random.random())
+        pos = pos or shape * (1 - 2 * random.random(shape))
+        angle = angle or (2 * np.pi * random.random())
         self.pop.append(Boid(color, pos, angle))
 
     def tick(self, dt):
@@ -46,7 +67,7 @@ class Population:
 
         # calculate all three forces if there are any boids nearby
         if len(nearby) != 0:
-            for i, other in enumerate(nearby):
+            for _, other in enumerate(nearby):
                 diff = other.pos - boid.pos
                 dist = other.dist(boid.pos)
                 if dist <= self.ror:  # repulsion
@@ -57,14 +78,17 @@ class Population:
                     des_a += diff / abs(diff)
 
         if not np.allclose(des_r, 0):
-            des_dir = numpy.append(des_dir, des_r)
+            des_dir = np.append(des_dir, des_r)
         if not np.allclose(des_o, 0):
-            des_dir = numpy.append(des_dir, des_o)
+            des_dir = np.append(des_dir, des_o)
         if not np.allclose(des_a, 0):
-            des_dir = numpy.append(des_dir, des_a)
+            des_dir = np.append(des_dir, des_a)
         # sum them up and if its not zero return it
         angle = np.mean(des_dir, axis=0)
         if np.allclose(angle, 0):
             return boid.angle
         else:
             return _angle(angle)
+
+    def store_data(self, df):
+        return {"cgroup" : self.cgroup, "dgroup" : self.dgroup, "pgroup" : self.pgroup, "mgroup" : self.mgroup}

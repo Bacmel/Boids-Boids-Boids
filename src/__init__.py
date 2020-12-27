@@ -17,8 +17,8 @@ PALETTE = {  # in bgr (expected by opencv)
     "accents": [(0xC2, 0xC7, 0xEF), (0xD6, 0xD7, 0xCD), (0xD4, 0xE5, 0xFF)],
 }
 
-
 from src.boid import Boid
 from src.canvas import Canvas
 from src.universe import Universe
 from src.population import Population
+from src.perceptions import Perception
