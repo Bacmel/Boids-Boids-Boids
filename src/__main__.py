@@ -46,6 +46,7 @@ if __name__ == "__main__":
     
     except ArgumentTypeError as err:
         print(err)
+        return
 
     # run simulation
     with Canvas(args.res.split("x"), args.fps, args.render) as canvas:
