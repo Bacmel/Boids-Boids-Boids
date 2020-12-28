@@ -30,6 +30,9 @@ class BlindSpot(Perception):
             relative_dir = self.border.vector(ind.pos, ind_pop.pos)
             diff_orientation = relative_dir - orientation
             angle = atan2(diff_orientation[1], diff_orientation[0])
-            if ind_pop is not ind and abs(normalize_angle(angle - self.bisector)) > self.opening:
+            if (
+                ind_pop is not ind
+                and abs(normalize_angle(angle - self.bisector)) > self.opening
+            ):
                 filtered_pop.append(ind_pop)  # The individual is not in the blind spot
         return filtered_pop

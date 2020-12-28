@@ -7,7 +7,7 @@ from src.utils import normalize, angle
 
 
 class Population:
-    def __init__(self, roa, roo, ror, per):
+    def __init__(self, roa, roo, ror, per, std):
         """Population Constructor.
         
         Args:
@@ -15,6 +15,7 @@ class Population:
             roo (int): Rayon of orientation.
             ror (int): Rayon of repulsion.
             per (Perception): Perception object of the population.
+            std (float): standard deviation for gaussian noise
 
         """
         self.pop = []  # list<Boid>
@@ -22,6 +23,7 @@ class Population:
         self.roo = roo  # int
         self.ror = ror  # int
         self.perception = per  # Perception
+        self.std = std  # float
 
     @property
     def cgroup(self):
@@ -41,7 +43,7 @@ class Population:
             numpy.ndarray: Group direction vector.
 
         """
-        return np.mean([boid.vel for boid in self.pop])
+        return np.mean([boid.dir for boid in self.pop])
 
     @property
     def pgroup(self):
@@ -51,10 +53,10 @@ class Population:
             float: Group polarization value.
 
         """
-        return np.abs(self.dgroup)
+        return np.linalg.norm(self.dgroup)
 
     @property
-    def mgroup(self): # WARNING : DON'T USE Boid.dist
+    def mgroup(self):
         """Group Momentum.
         
         Returns:
@@ -62,7 +64,12 @@ class Population:
 
         """
         cg = self.cgroup
-        return np.abs(np.mean([boid.dist(cg) * boid.vel for boid in self.pop]))
+        m = np.array([[]])
+        for boid in self.pop:
+            r_ic = normalize(self.perception.border.vector(cg, boid.pos))
+            m_ic = np.cross(r_ic, boid.dir)
+            m = np.append(m, [m_ic], axis=0)
+        return np.linalg.norm(np.mean(m))
 
     def add_boid(self, color=None, pos=None, angle=None, shape=None):
         """Add Boid on population.
@@ -82,17 +89,18 @@ class Population:
     def tick(self, dt):
         """Update function.
 
-        Update the position of each boid.
+        Compute new direction and update the position of each boid.
 
         Args:
             dt (float): simulation time step.
 
         """
-        # calculate new directions
+        # compute new directions
         angles = []
         for boid in self.pop:
             angles.append(self.reorient(boid))
 
+        # update positions
         for boid, angle in zip(self.pop, angles):
             boid.turn_to(angle, dt)
             boid.tick(dt)
@@ -127,36 +135,47 @@ class Population:
         # get nearby boids
         nearby = self.perception.detect(boid, self.pop)
 
-        des_a = np.array((0, 0), dtype="float")  # attraction
-        des_o = np.array((0, 0), dtype="float")  # orientation
-        des_r = np.array((0, 0), dtype="float")  # orientation
-        des_dir = np.array([], dtype="float")  # direction
-
+        des_a = np.array((0, 0), dtype="float")  # desired attraction
+        des_o = np.array((0, 0), dtype="float")  # desired orientation
+        des_r = np.array((0, 0), dtype="float")  # desired repulsion
+        des_dir = np.array([], dtype="float")  # desired direction
+        nb_a = 0  # number of boid in attraction zone
+        nb_o = 0  # number of boid in orientation zone
+        nb_r = 0  # number of boid in repulsion zone
         # calculate all three forces if there are any boids nearby
         if len(nearby) != 0:
-            for _, other in enumerate(nearby):
-                diff = other.pos - boid.pos
-                dist = other.dist(boid.pos) # WARNING : DON'T USE Boid.dist
+            for other in nearby:
+                diff = self.perception.border.vector(other.pos, boid.pos)
+                dist = np.linalg.norm(diff)
                 if dist <= self.ror:  # repulsion
-                    des_r -= diff / abs(diff)
+                    des_r -= diff / dist
+                    nb_r += 1
                 elif dist <= self.roo:  # orientation
-                    des_o += normalize(other.vel)
-                else:  # attraction
-                    des_a += diff / abs(diff)
+                    des_o += other.dir
+                    nb_o += 1
+                elif dist <= self.roa:  # attraction
+                    des_a += diff / dist
+                    nb_a += 1
 
-        if not np.allclose(des_r, 0):
-            des_dir = np.append(des_dir, des_r)
-        else: 
-            if not np.allclose(des_o, 0):
-                des_dir = np.append(des_dir, des_o)
-            if not np.allclose(des_a, 0):
-                des_dir = np.append(des_dir, des_a)
-        # sum them up and if its not zero return it
-        orien = np.mean(des_dir, axis=0)
-        if np.allclose(orien, 0):
-            return boid.angle
+        if nb_r > 0:
+            des_dir = des_r
+        elif nb_o > 0:
+            if nb_a == 0:
+                des_dir = des_o
+            else:
+                des_dir = np.mean([des_o, des_a], axis=0)
+        elif nb_a > 0:
+            des_dir = des_a
         else:
-            return angle(orien)
+            des_dir = boid.dir
+
+        # sum them up and if its not zero return it
+        if np.allclose(des_dir - boid.dir, 0):
+            new_angle = boid.angle
+        else:
+            new_angle = angle(des_dir)
+        new_angle += random.gauss(0, self.std)
+        return new_angle
 
     def store_data(self, df, df2):
         """store data.
@@ -169,9 +188,17 @@ class Population:
 
         Returns:
             [pandas.Dataframe, pandas.Dataframe]: New data.
+
         """
-        row = {"cgroup": self.cgroup, "dgroup": self.dgroup, "pgroup": self.pgroup, "mgroup": self.mgroup,
-               "roa": self.roa, "roo": self.roo, "ror": self.ror}
+        row = {
+            "cgroup": self.cgroup,
+            "dgroup": self.dgroup,
+            "pgroup": self.pgroup,
+            "mgroup": self.mgroup,
+            "roa": self.roa,
+            "roo": self.roo,
+            "ror": self.ror,
+        }
         df = df.append(row, ignore_index=True)
         row2 = {}
         for i in range(len(self.pop)):

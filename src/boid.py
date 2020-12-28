@@ -17,7 +17,7 @@ class Boid:
 
         """
         self.pos = np.array(pos, dtype="float")
-        self.angle = angle % (2 * np.pi)
+        self.angle = normalize_angle(angle)
         self.color = color
 
     @property
@@ -28,7 +28,7 @@ class Boid:
             numpy.ndarray: unity vector of the boid's direction.
 
         """
-        return unit_vector(self.angle)
+        return unit_vector(normalize_angle(self.angle))
 
     @property
     def vel(self):
@@ -39,18 +39,6 @@ class Boid:
 
         """
         return BOID_VEL * self.dir
-
-    def dist(self, pos):
-        """Distance from the given position.
-
-        Args:
-            pos (numpy.array): Reference position.
-        
-        Returns:
-            numpy.array: distance between them.
-
-        """
-        return np.linalg.norm(self.pos - pos)
 
     def turn_by(self, dangle, dt):
         """Movement by reference speed.
@@ -74,9 +62,9 @@ class Boid:
             dt (float): The simulation time step (in seconds).
 
         """
-        a = (angle - self.angle) % (2 * np.pi)
-        b = -(-a % (2 * np.pi))
-        self.turn_by(min(a, b, key=lambda x: np.abs(x)), dt)
+
+        a = normalize_angle(angle - self.angle)
+        self.turn_by(a, dt)
 
     def draw(self, canvas):
         """Draw on the canvas.

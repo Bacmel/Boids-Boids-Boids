@@ -44,11 +44,13 @@ class Universe:
         """
         self.boids.tick(self.dt)
 
-    def loop(self):
+    def loop(self, fonction=None):
         """Loop the simulation.
 
         Draw then update the simulation until the canvas is closed.
         """
         while self.canvas.is_open():
+            if fonction:
+                fonction(self)
             self.draw()
             self.tick()
