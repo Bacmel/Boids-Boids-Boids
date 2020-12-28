@@ -1,11 +1,51 @@
-from argparse import ArgumentParser
+from argparse import ArgumentParser, ArgumentTypeError
 from src import PALETTE, DEFAULT_NUM_NEIGHBORS, DEFAULT_VIEW_DIST, BOID_TURN_SPEED, BOID_VEL
 
+def blindspotCond(directions, openings):
+    """
+    Verify if the directions argument and openings argument make sense.
+
+    Args:
+        directions (list<int>): list of int representing the direction of a blind spot.
+        openings (list<int>): list of int representing the opening of a blind spot.
+
+    Raise an argparse.ArugmentTypeError when the condition is not respected.
+    """
+    if directions == None and openings == None:
+        print("***WARNING: in arguments: no blindspot specified")
+    elif not(directions and openings):
+        #print("***ERROR: wrong arguments: miss either blindspot direction or blingspot opening")
+        #return False
+        raise ArgumentTypeError("***ERROR: wrong arguments: miss either blindspot direction or blingspot opening")
+    elif len(directions) != len(openings):
+        #print("***ERROR: wrong arguments: length of blindspot direction different than length of blindspot opening")
+        #return False
+        raise ArgumentTypeError("***ERROR: wrong arguments: length of blindspot direction different than length of blindspot opening")
+
+# vitesse x pas de temps < rayon de répulsion
+def globalCond(velocity, time_step, repulsion_radius):
+    """
+    Global condition on the simulation.
+
+    Args:
+        velocity (int): The velocity of the particuls
+        time_step (float): The time increment of each step in the simulation time
+        repulsion_radius (int): The radius where particuls repulse each others.
+    
+    Raise an argparse.ArgumentTypeError when velocity * time_step > repulsion_radius
+    """
+    if not(velocity * time_step < repulsion_radius):
+        #print("***ERROR: global condition of the simulation: velocity * time_step > repulsion_radius when it should not.")
+        #return False
+        raise ArgumentTypeError("***ERROR: global condition of the simulation: velocity * time_step > repulsion_radius when it should not.")
+    #return True
 
 def getArgs():
     """
     Standard function to specify the default value of the hyper-parameters of experimental setups
-    :return: the complete list of arguments
+    
+    Return:
+        parsed args: the complete list of arguments
     """
     # setup args
     parser = ArgumentParser()
@@ -31,16 +71,17 @@ def getArgs():
                         dest="preview_only",
                         action="store_true",
                         help="dont save the video, just show the preview")
+    parser.add_argument("--time-step",
+                        dest="time_step",
+                        type=float,
+                        default=0.1,
+                        help="time step for the update of the simulation")
     parser.add_argument("--render",
                         action='store_true',
                         help="allow visual rendering during the simulation")
     parser.add_argument("--verbose",
                         action='store_true',
                         help="increase output verbosity")
-    parser.add_argument("--time-step",
-                        dest="time_step",
-                        default=0.1,
-                        help="time step for the update of the simulation")
 
     # weights
     parser.add_argument("-ra", "--attraction",
@@ -64,7 +105,7 @@ def getArgs():
                         type=str,
                         # toric world, wall delimitation, no edges
                         required=True,
-                        choices={"wrap", "wall", "none"},
+                        choices=["wrap", "wall", "none"],
                         default="wall",
                         help="selection of the border of the univers: toric world, wall with collisions or no edges at all")
 
@@ -72,7 +113,7 @@ def getArgs():
     parser.add_argument("--count",
                         dest="num_neighbors",
                         type=int,
-                        default=0,
+                        #default=0,
                         help=f"the COUNT closest boids are seen by the current boid (defaults to {DEFAULT_NUM_NEIGHBORS})")
     parser.add_argument("--diff-threshold",
                         dest="diff_threshold",
@@ -81,7 +122,7 @@ def getArgs():
     parser.add_argument("--view-dist",
                         dest="view_dist",
                         type=int,
-                        default=0,
+                        #default=0,
                         help="define the view distance of the boids")
     # blindspot group
     blindspot_group = parser.add_argument_group('blindspot','blindspots description group')
