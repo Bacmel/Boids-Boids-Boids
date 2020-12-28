@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from random import choice
-from src import BOID_VEL, BOID_NOSE_LEN, BOID_TURN_SPEED, PALETTE
-from src.utils import unit_vector
 import numpy as np
+
+from src import BOID_NOSE_LEN, BOID_TURN_SPEED, BOID_VEL
+from src.utils import normalize_angle, unit_vector
 
 
 class Boid:
@@ -22,7 +22,7 @@ class Boid:
 
     @property
     def dir(self):
-        """Direction proprety of the Boid.
+        """Direction property of the Boid.
         
         Returns:
             numpy.ndarray: unity vector of the boid's direction.
@@ -32,7 +32,7 @@ class Boid:
 
     @property
     def vel(self):
-        """Velocity proprety of the Boid.
+        """Velocity property of the Boid.
         
         Returns:
             numpy.ndarray: velocity vector of the boid.
@@ -41,7 +41,7 @@ class Boid:
         return BOID_VEL * self.dir
 
     def dist(self, pos):
-        """Distance from pos to Boid.
+        """Distance from the given position.
 
         Args:
             pos (numpy.array): Reference position.
@@ -56,22 +56,22 @@ class Boid:
         """Movement by reference speed.
 
         Args:
-            dangle (float): Reference speed.
-            dt (float): simulation time step.
+            dangle (float): Reference speed (in radians).
+            dt (float): simulation time step (in seconds).
 
         """
-        # dont turn too fast
+        # Don't turn too fast
         self.angle += np.clip(dangle, -dt * BOID_TURN_SPEED, dt * BOID_TURN_SPEED)
 
-        # keep angle in range [0, 2pi)
-        self.angle %= 2 * np.pi
+        # Keep angle in range [0, 2pi)
+        self.angle = normalize_angle(self.angle)
 
     def turn_to(self, angle, dt):
-        """Movement by reference position.
+        """Turn to the desired angle.
 
         Args:
-            angle (float): Reference position.
-            dt (float): simulation time step.
+            angle (float): The desired orientation (in radians).
+            dt (float): The simulation time step (in seconds).
 
         """
         a = (angle - self.angle) % (2 * np.pi)
@@ -79,7 +79,9 @@ class Boid:
         self.turn_by(min(a, b, key=lambda x: np.abs(x)), dt)
 
     def draw(self, canvas):
-        """Draw function.
+        """Draw on the canvas.
+
+        Draw this particle as an arrow.
 
         Args:
             canvas (Canvas): Graphical object.
@@ -92,6 +94,8 @@ class Boid:
 
     def tick(self, dt):
         """Update function.
+
+        Update the position wrt. the velocity.
 
         Args:
             dt (float): simulation time step.

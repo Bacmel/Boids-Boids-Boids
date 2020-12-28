@@ -18,4 +18,5 @@ class Range(Perception):
         self.perception_range = perception_range
 
     def _filter(self, ind, pop):
-        return [pop_ind for pop_ind in pop if norm(self.border.vector(ind.pos, pop_ind.pos)) < self.perception_range]
+        return [pop_ind for pop_ind in pop if
+                pop_ind is not ind and norm(self.border.vector(ind.pos, pop_ind.pos)) < self.perception_range]
