@@ -4,7 +4,7 @@ import numpy as np
 
 
 class Border(ABC):
-    def __init__(self, length, origin=np.zeros(2, 1)):
+    def __init__(self, length, origin=np.zeros((2, 1))):
         """Build a new border.
 
         Args:

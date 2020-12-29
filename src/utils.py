@@ -47,7 +47,7 @@ def unit_vector(orientation):
     Returns:
         The unit vector from its orientation.
     """
-    return np.array([np.cos(orientation), np.sin(orientation)], dtype="float")
+    return np.array([[np.cos(orientation)], [np.sin(orientation)]], dtype="float")
 
 
 def angle(x):

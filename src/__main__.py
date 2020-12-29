@@ -4,7 +4,8 @@ from src import PALETTE, DEFAULT_NUM_NEIGHBORS, DEFAULT_VIEW_DIST
 from src import Universe, Canvas, Boid
 from .borders import Wall, Toric, Infinite
 from .perceptions import Range, KNN, Outlier, BlindSpot
-from . import arguments as argu 
+from src import arguments as argu 
+import numpy as np 
 
 if __name__ == "__main__":
     
@@ -15,13 +16,13 @@ if __name__ == "__main__":
 
         # Creation of border
         border = None
+        length = np.array([[int(s)] for s in args.res.split("x")])
         if args.border == "wall":
-            border = Wall(args.res.split("x"))
+            border = Wall(length)
         elif args.border == "wrap":
-            border = Toric(args.res.split("x"))
+            border = Toric(length)
         elif args.border == "none":
-            border = Infinite(args.res.split("x"))
-
+            border = Infinite(length)
 
         # Creation of perception: range > blindspot > knn > outlier
         perception = None
@@ -35,8 +36,8 @@ if __name__ == "__main__":
         argu.blindspotCond(directions, openings)
         
         if not (directions == None and openings == None):
-            for i in range(directions):
-                perception = BlindSpot(directions[i], openings[i], border, perception)
+            for direction, opening in zip(directions, openings):
+                perception = BlindSpot(direction, opening, border, perception)
 
         if args.num_neighbors is not None:
             perception = KNN(args.num_neighbors, border, perception)
@@ -46,10 +47,10 @@ if __name__ == "__main__":
     
     except ArgumentTypeError as err:
         print(err)
-        return
+        exit(err)
 
     # run simulation
-    with Canvas(args.res.split("x"), args.fps, args.render) as canvas:
+    with Canvas(args.res.split("x"), border, args.time_step, args.render) as canvas:
         u = Universe(
             canvas,
             perception=perception,
@@ -58,6 +59,7 @@ if __name__ == "__main__":
             ror=args.repulsion_radius,
             roo=args.orientation_radius,
             roa=args.attraction_radius,
+            std=args.error_params,
         )
 
         if args.highlight:

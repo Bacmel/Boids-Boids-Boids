@@ -37,7 +37,7 @@ def globalCond(velocity, time_step, repulsion_radius):
     if not(velocity * time_step < repulsion_radius):
         #print("***ERROR: global condition of the simulation: velocity * time_step > repulsion_radius when it should not.")
         #return False
-        raise ArgumentTypeError("***ERROR: global condition of the simulation: velocity * time_step > repulsion_radius when it should not.")
+        raise ArgumentTypeError(f"***ERROR: global condition of the simulation: velocity({velocity}) * time_step({time_step}) > repulsion_radius({repulsion_radius}) when it should not.")
     #return True
 
 def getArgs():

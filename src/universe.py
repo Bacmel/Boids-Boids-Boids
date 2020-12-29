@@ -1,11 +1,9 @@
-from borders import Border
-from canvas import Canvas
-from perceptions import Perception
-from src import PALETTE, Population
-
+from .borders import Border
+from .perceptions import Perception
+from src import PALETTE, Population, Canvas
 
 class Universe:
-    def __init__(self, canvas, perception, border, dt=1, ror=1, roo=1, roa=1):
+    def __init__(self, canvas, perception, border, dt=1, ror=1, roo=1, roa=1, std=0):
         """Build a universe.
 
         Args:
@@ -18,7 +16,7 @@ class Universe:
             roa (float): The radius of alignment.
         """
         self.dt = dt
-        self.boids = Population(ror, roo, roa, perception)
+        self.boids = Population(ror, roo, roa, perception, std)
         self.canvas = canvas
         self.border = border
 
@@ -29,7 +27,7 @@ class Universe:
             n (int): The number of individuals to add.
         """
         for _ in range(n):
-            self.boids.add_boid()
+            self.boids.add_boid(border=self.border)
 
     def draw(self):
         """Draw on the canvas."""
@@ -49,7 +47,7 @@ class Universe:
 
         Draw then update the simulation until the canvas is closed.
         """
-        while self.canvas.is_open():
+        for i in range(100):
             if fonction:
                 fonction(self)
             self.draw()

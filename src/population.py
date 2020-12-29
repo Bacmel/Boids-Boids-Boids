@@ -71,7 +71,7 @@ class Population:
             m = np.append(m, [m_ic], axis=0)
         return np.linalg.norm(np.mean(m))
 
-    def add_boid(self, color=None, pos=None, angle=None, shape=None):
+    def add_boid(self, color=None, pos=None, angle=None, border=None):
         """Add Boid on population.
 
         Args:
@@ -82,7 +82,9 @@ class Population:
 
         """
         color = color or choice(PALETTE["accents"])
-        pos = pos or shape * (1 - 2 * np.random.random(shape))
+        if pos == None:
+            shape = border.length
+            pos = border.origin + shape * (1 - 2 * np.random.random(shape.shape))
         angle = angle or (2 * np.pi * random())
         self.pop.append(Boid(color, pos, angle))
 
