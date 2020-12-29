@@ -12,7 +12,7 @@ TRANSLATION = np.array(
 
 
 class Canvas:
-    def __init__(self, res, fps):
+    def __init__(self, res, fps, render):
         # output related
         self.res = np.array(res, dtype="int")
         self.fps = float(fps)
@@ -25,6 +25,7 @@ class Canvas:
         self.video = VideoWriter(
             self.filename, FourCC(*"mp4v"), int(self.fps), tuple(self.res)
         )
+        self.render = render
 
     def __enter__(self):
         return self
@@ -51,7 +52,8 @@ class Canvas:
 
     def update(self):
         self.video.write(self.current_frame)
-        cv2.imshow(self.title, self.current_frame)
+        if self.render:
+            cv2.imshow(self.title, self.current_frame)
         self.current_frame = self.new_frame()
 
         # set to true if window-x or {esc, ctrl-c, q} pressed
