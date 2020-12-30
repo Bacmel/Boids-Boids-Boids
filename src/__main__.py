@@ -47,7 +47,7 @@ if __name__ == "__main__":
         if args.diff_threshold is not None:
             perception = Outlier(args.diff_threshold, border, perception)
 
-        gaussCond(args.error_params)
+        argu.gaussCond(args.error_params)
         mu, std = args.error_params.split(":")
 
     except ArgumentTypeError as err:
