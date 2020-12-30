@@ -30,18 +30,21 @@ if __name__ == "__main__":
         # Creation of perception: range > blindspot > knn > outlier
         perception = None
 
-        if args.view_dist is not None:
-            perception = Range(args.view_dist, border, perception)
-
         directions = args.blindspot_direction
         openings = args.blindspot_opening
         # Conditions on blindspots arguments
         argu.blindspotCond(directions, openings)
 
+        argu.perceptionCond(args.view_dist, directions,
+                            openings, args.num_neighbors, args.diff_threshold)
+
+        if args.view_dist is not None:
+            perception = Range(args.view_dist, border, perception)
+
         if not (directions == None and openings == None):
-            for direction, opening in zip(directions, openings):
+            for i in range(directions):
                 perception = BlindSpot(
-                    direction / 180 * pi, opening / 180 * pi, border,
+                    directions[i] / 180 * pi, openings[i] / 180 * pi, border,
                     perception)
 
         if args.num_neighbors is not None:
@@ -50,9 +53,14 @@ if __name__ == "__main__":
         if args.diff_threshold is not None:
             perception = Outlier(args.diff_threshold, border, perception)
 
+        argu.gaussCond(args.error_params)
+        mu, std = args.error_params.split(":")
+        mu = float(mu)
+        std = float(std)
+
     except ArgumentTypeError as err:
-        print(err)
         exit(err)
+
     # run simulation
     with Canvas(args.res.split("x"), border, args.time_step, args.render) as canvas:
         u = Universe(
@@ -63,7 +71,7 @@ if __name__ == "__main__":
             ror=args.repulsion_radius,
             roo=args.orientation_radius,
             roa=args.attraction_radius,
-            std=float(args.error_params.split(':')[1]),
+            std=std,
         )
 
         if args.highlight:
