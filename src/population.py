@@ -33,7 +33,7 @@ class Population:
             numpy.ndarray: Group center position.
 
         """
-        return np.mean([boid.pos for boid in self.pop])
+        return np.mean([boid.pos for boid in self.pop], axis=0)
 
     @property
     def dgroup(self):
@@ -43,7 +43,7 @@ class Population:
             numpy.ndarray: Group direction vector.
 
         """
-        return np.mean([boid.dir for boid in self.pop])
+        return np.mean([boid.dir for boid in self.pop], axis=0)
 
     @property
     def pgroup(self):
@@ -106,6 +106,7 @@ class Population:
         for boid, angle in zip(self.pop, angles):
             boid.turn_to(angle, dt)
             boid.tick(dt)
+            boid.pos = self.perception.border.wrap(boid.pos)
 
     def draw(self, canvas):
         """Draw on the canvas.
