@@ -84,17 +84,17 @@ def getArgs():
                         help="increase output verbosity")
 
     # weights
-    parser.add_argument("-ra", "--attraction",
+    parser.add_argument("-roa", "--attraction",
                         dest="attraction_radius",
                         type=int,
                         default=1,
                         help="the radius of the attraction zone of each boid")
-    parser.add_argument("-ro", "--orientation",
+    parser.add_argument("-roo", "--orientation",
                         dest="orientation_radius",
                         type=int,
                         default=1,
                         help="the radius of the orientation zone of each boid")
-    parser.add_argument("-rr", "--repulsion",
+    parser.add_argument("-ror", "--repulsion",
                         dest="repulsion_radius",
                         type=int,
                         default=1,
@@ -123,6 +123,7 @@ def getArgs():
                         type=int,
                         #default=0,
                         help="define the view distance of the boids")
+
     # blindspot group
     blindspot_group = parser.add_argument_group('blindspot','blindspots description group')
     blindspot_group.add_argument("--blindspot-direction",
