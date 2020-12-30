@@ -14,12 +14,8 @@ def blindspotCond(directions, openings):
     if directions == None and openings == None:
         print("***WARNING: in arguments: no blindspot specified")
     elif not(directions and openings):
-        #print("***ERROR: wrong arguments: miss either blindspot direction or blingspot opening")
-        #return False
         raise ArgumentTypeError("***ERROR: wrong arguments: miss either blindspot direction or blingspot opening")
     elif len(directions) != len(openings):
-        #print("***ERROR: wrong arguments: length of blindspot direction different than length of blindspot opening")
-        #return False
         raise ArgumentTypeError("***ERROR: wrong arguments: length of blindspot direction different than length of blindspot opening")
 
 # vitesse x pas de temps < rayon de répulsion
@@ -35,10 +31,7 @@ def globalCond(velocity, time_step, repulsion_radius):
     Raise an argparse.ArgumentTypeError when velocity * time_step > repulsion_radius
     """
     if not(velocity * time_step < repulsion_radius):
-        #print("***ERROR: global condition of the simulation: velocity * time_step > repulsion_radius when it should not.")
-        #return False
         raise ArgumentTypeError("***ERROR: global condition of the simulation: velocity * time_step > repulsion_radius when it should not.")
-    #return True
 
 def getArgs():
     """
@@ -112,7 +105,6 @@ def getArgs():
     parser.add_argument("--count",
                         dest="num_neighbors",
                         type=int,
-                        #default=0,
                         help=f"the COUNT closest boids are seen by the current boid (defaults to {DEFAULT_NUM_NEIGHBORS})")
     parser.add_argument("--diff-threshold",
                         dest="diff_threshold",
@@ -121,7 +113,6 @@ def getArgs():
     parser.add_argument("--view-dist",
                         dest="view_dist",
                         type=int,
-                        #default=0,
                         help="define the view distance of the boids")
 
     # blindspot group
