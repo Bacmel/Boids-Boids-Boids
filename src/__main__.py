@@ -17,7 +17,7 @@ if __name__ == "__main__":
         # Creation of border
         border = None
         length = np.array([[int(s)] for s in args.res.split("x")])
-        border_size = np.array([10, 10]).reshape(-1, 1)
+        border_size = np.array([100, 100]).reshape(-1, 1)
         if args.border == "wall":
             border = Wall(border_size)
         elif args.border == "wrap":
@@ -68,7 +68,3 @@ if __name__ == "__main__":
 
         u.populate(args.n)
         u.loop()
-
-    # delete file if wanted
-    if args.preview_only or input("Save video? (Y/n) ").lower() == "n":
-        remove(canvas.filename)

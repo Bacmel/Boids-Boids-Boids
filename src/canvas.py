@@ -3,8 +3,10 @@ from time import localtime, strftime
 import cv2
 from cv2 import VideoWriter, VideoWriter_fourcc as FourCC
 import numpy as np
+import os
 
 from src import OUT_DIR, BOID_NOSE_LEN
+
 
 class Canvas:
     def __init__(self, res, border, dt, render):
@@ -23,14 +25,18 @@ class Canvas:
         self.origin = border.origin
         self.shape = border.length
         self.render = render
-        self.ratio = np.min(np.multiply(self.res, 1/(self.shape+2*BOID_NOSE_LEN)))
+        self.ratio = np.min(np.multiply(
+            self.res, 1/(self.shape+2*BOID_NOSE_LEN)))
 
         # A verifier
         self.current_frame = self.new_frame()
 
         # renderer
-        if self.render :
-            self.filename = OUT_DIR + strftime("%Y%m%dT%H%M%S", localtime()) + ".mp4"
+        if self.render:
+            if not os.path.exists(OUT_DIR):
+                os.mkdir(OUT_DIR)
+            self.filename = OUT_DIR + strftime("%Y%m%dT%H%M%S",
+                                               localtime()) + ".mp4"
             self.video = VideoWriter(
                 self.filename, FourCC(*"mp4v"), int(self.fps), tuple(self.res)
             )
@@ -77,7 +83,7 @@ class Canvas:
         """
         x = self.ratio*(pos[0]+self.shape[0]/2 + BOID_NOSE_LEN)
         y = self.ratio*(-pos[1]+self.shape[1]/2 + BOID_NOSE_LEN)
-        return np.array([[x],[y]],dtype=int)
+        return np.array([[x], [y]], dtype=int)
 
     def from_px(self, px):
         """Transition to simulation unit.
@@ -91,7 +97,7 @@ class Canvas:
         """
         x = (px[0]/self.ratio)-self.shape[0]/2
         y = (-px[1]/self.ratio)-self.shape[1]/2
-        return np.array([[x],[y]],dtype=float)
+        return np.array([[x], [y]], dtype=float)
 
     def new_frame(self):
         """Generation a New Frame.
@@ -130,8 +136,9 @@ class Canvas:
             color (Color): color of the polygone.
 
         """
-        print("Liste des points : "+str(points))
-        px = [np.array([self.to_px(p).reshape(1,2) for p in points], dtype=np.int32)]
+        # print("Liste des points : "+str(points))
+        px = [np.array([self.to_px(p).reshape(1, 2)
+                        for p in points], dtype=np.int32)]
         # print("Liste des pixels : "+str(px))
         cv2.fillPoly(
             self.current_frame,

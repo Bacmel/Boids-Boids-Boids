@@ -119,7 +119,7 @@ class Population:
         """
         for boid in self.pop:
             boid.draw(canvas)
-        bgroup = Boid(0xFFC0CB, self.cgroup, angle(self.dgroup))
+        bgroup = Boid(0xff5471, self.cgroup, angle(self.dgroup))
         bgroup.draw(canvas)
 
     def reorient(self, boid):
