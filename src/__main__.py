@@ -55,8 +55,8 @@ if __name__ == "__main__":
 
         argu.gaussCond(args.error_params)
         mu, std = args.error_params.split(":")
-        mu = float(mu)
-        std = float(std)
+        mu = float(mu) / 180 * pi
+        std = float(std) / 180 * pi
 
     except ArgumentTypeError as err:
         exit(err)

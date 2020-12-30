@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import numpy.random as np_rand
 
 from src import Boid, PALETTE
 from src.utils import normalize, angle
@@ -33,7 +34,7 @@ class Population:
 
         """
         mean = np.mean([boid.pos for boid in self.pop], axis=0)
-        #print(mean)
+        # print(mean)
         return mean
 
     @property
@@ -99,6 +100,7 @@ class Population:
             dt (float): simulation time step.
 
         """
+        print('tick --------------------------------')
         # compute new directions
         angles = []
         for boid in self.pop:
@@ -150,7 +152,9 @@ class Population:
         # calculate all three forces if there are any boids nearby
         if len(nearby) != 0:
             for other in nearby:
-                diff = self.perception.border.vector(other.pos, boid.pos)
+                diff = self.perception.border.vector(boid.pos, other.pos)
+                if np.allclose(diff, np.zeros((2, 1))):
+                    diff = np_rand.normal(0, 1, (2, 1))
                 dist = np.linalg.norm(diff)
                 if dist <= self.ror:  # repulsion
                     # print(f'diff: {diff}')
@@ -166,17 +170,22 @@ class Population:
                 elif dist <= self.roa:  # attraction
                     des_a += diff / dist
                     nb_a += 1
-
+        print(f'nb_r: {nb_r}, nb_o: {nb_o}, nb_a: {nb_a}')
         if nb_r > 0:
+            print('repulsion')
             des_dir = des_r
         elif nb_o > 0:
             if nb_a == 0:
+                print('orientation')
                 des_dir = des_o
             else:
+                print('orientation+attraction')
                 des_dir = np.mean([des_o, des_a], axis=0)
         elif nb_a > 0:
+            print('attraction')
             des_dir = des_a
         else:
+            print('no decision')
             des_dir = boid.dir
 
         # sum them up and if its not zero return it

@@ -53,7 +53,7 @@ def perceptionCond(view_dist, bs_direction, bs_opening, knn, outlier):
 
     Raise an argparse.ArgumentTypeError when no perceptions will be created due to lack of arguments.
     """
-    if (view_dist and bs_direction and bs_opening and knn and outlier) is None:
+    if (view_dist or bs_direction or bs_opening or knn or outlier) is None:
         raise ArgumentTypeError(
             "***ERROR: not enough arguments: use either argument --view-dist, -bsd & -bso, --count, --diff-threshold.")
 
@@ -67,7 +67,7 @@ def gaussCond(params):
 
     Raise an argparse.ArgumentTypeError when the argument is not correctly defined.
     """
-    if ":" not in params or len(params.split(":") != 2):
+    if ":" not in params or len(params.split(":")) != 2:
         raise ArgumentTypeError(
             "***ERROR: wrong argument: --error must follow 'mu:std' format.")
 
