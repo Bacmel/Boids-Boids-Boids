@@ -21,12 +21,12 @@ class Canvas:
         """
         # output related
         self.res = np.array(res, dtype="int")
-        self.fps = float(1/dt)
+        self.fps = float(1 / dt)
         self.origin = border.origin
         self.shape = border.length
         self.render = render
-        self.ratio = np.min(np.multiply(
-            self.res, 1/(self.shape+2*BOID_NOSE_LEN)))
+        self.ratios = np.multiply(self.res, 1 / (self.shape + 2 * BOID_NOSE_LEN))[0]
+        self.ratio = np.min(self.ratios)
 
         # A verifier
         self.current_frame = self.new_frame()
@@ -35,8 +35,7 @@ class Canvas:
         if self.render:
             if not os.path.exists(OUT_DIR):
                 os.mkdir(OUT_DIR)
-            self.filename = OUT_DIR + strftime("%Y%m%dT%H%M%S",
-                                               localtime()) + ".mp4"
+            self.filename = OUT_DIR + strftime("%Y%m%dT%H%M%S", localtime()) + ".mp4"
             self.video = VideoWriter(
                 self.filename, FourCC(*"mp4v"), int(self.fps), tuple(self.res)
             )
@@ -81,8 +80,14 @@ class Canvas:
             numpy.ndarray: position in the image space.
 
         """
-        x = self.ratio*(pos[0]+self.shape[0]/2 + BOID_NOSE_LEN)
-        y = self.ratio*(-pos[1]+self.shape[1]/2 + BOID_NOSE_LEN)
+        x = (
+            self.ratio * (pos[0] + self.shape[0] / 2 + BOID_NOSE_LEN)
+            + (self.ratios[0] - self.ratio) * self.shape[0] / 2
+        )
+        y = (
+            self.ratio * (-pos[1] + self.shape[1] / 2 + BOID_NOSE_LEN)
+            + (self.ratios[1] - self.ratio) * self.shape[1] / 2
+        )
         return np.array([[x], [y]], dtype=int)
 
     def from_px(self, px):
@@ -95,8 +100,8 @@ class Canvas:
             numpy.ndarray: position in the simulation.
 
         """
-        x = (px[0]/self.ratio)-self.shape[0]/2
-        y = (-px[1]/self.ratio)-self.shape[1]/2
+        x = (px[0] / self.ratio) - self.shape[0] / 2
+        y = (-px[1] / self.ratio) - self.shape[1] / 2
         return np.array([[x], [y]], dtype=float)
 
     def new_frame(self):
@@ -137,8 +142,7 @@ class Canvas:
 
         """
         # print("Liste des points : "+str(points))
-        px = [np.array([self.to_px(p).reshape(1, 2)
-                        for p in points], dtype=np.int32)]
+        px = [np.array([self.to_px(p).reshape(1, 2) for p in points], dtype=np.int32)]
         # print("Liste des pixels : "+str(px))
         cv2.fillPoly(
             self.current_frame,
