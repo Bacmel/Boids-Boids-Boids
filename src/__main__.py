@@ -4,10 +4,10 @@ from src import PALETTE, DEFAULT_NUM_NEIGHBORS, DEFAULT_VIEW_DIST
 from src import Universe, Canvas, Boid
 from .borders import Wall, Toric, Infinite
 from .perceptions import Range, KNN, Outlier, BlindSpot
-from . import arguments as argu 
+from . import arguments as argu
 
 if __name__ == "__main__":
-    
+
     args = argu.getArgs()
 
     try:
@@ -22,7 +22,6 @@ if __name__ == "__main__":
         elif args.border == "none":
             border = Infinite(args.res.split("x"))
 
-
         # Creation of perception: range > blindspot > knn > outlier
         perception = None
 
@@ -31,18 +30,20 @@ if __name__ == "__main__":
         # Conditions on blindspots arguments
         argu.blindspotCond(directions, openings)
 
-        argu.perceptionCond(args.view_dist, directions, openings, args.num_neighbors, args.diff_threshold)
+        argu.perceptionCond(args.view_dist, directions,
+                            openings, args.num_neighbors, args.diff_threshold)
 
         if args.view_dist is not None:
             perception = Range(args.view_dist, border, perception)
-            
+
         if not (directions == None and openings == None):
             for i in range(directions):
-                perception = BlindSpot(directions[i], openings[i], border, perception)
+                perception = BlindSpot(
+                    directions[i], openings[i], border, perception)
 
         if args.num_neighbors is not None:
             perception = KNN(args.num_neighbors, border, perception)
-        
+
         if args.diff_threshold is not None:
             perception = Outlier(args.diff_threshold, border, perception)
 

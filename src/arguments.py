@@ -1,6 +1,7 @@
 from argparse import ArgumentParser, ArgumentTypeError
 from src import PALETTE, DEFAULT_NUM_NEIGHBORS, DEFAULT_VIEW_DIST, BOID_TURN_SPEED, BOID_VEL
 
+
 def blindspotCond(directions, openings):
     """
     Verify if the directions argument and openings argument make sense.
@@ -14,11 +15,15 @@ def blindspotCond(directions, openings):
     if directions == None and openings == None:
         print("***WARNING: in arguments: no blindspot specified")
     elif not(directions and openings):
-        raise ArgumentTypeError("***ERROR: wrong arguments: miss either blindspot direction or blingspot opening")
+        raise ArgumentTypeError(
+            "***ERROR: wrong arguments: miss either blindspot direction or blingspot opening")
     elif len(directions) != len(openings):
-        raise ArgumentTypeError("***ERROR: wrong arguments: length of blindspot direction different than length of blindspot opening")
+        raise ArgumentTypeError(
+            "***ERROR: wrong arguments: length of blindspot direction different than length of blindspot opening")
 
 # vitesse x pas de temps < rayon de répulsion
+
+
 def globalCond(velocity, time_step, repulsion_radius):
     """
     Global condition on the simulation.
@@ -27,11 +32,13 @@ def globalCond(velocity, time_step, repulsion_radius):
         velocity (int): The velocity of the particuls
         time_step (float): The time increment of each step in the simulation time
         repulsion_radius (int): The radius where particuls repulse each others.
-    
+
     Raise an argparse.ArgumentTypeError when velocity * time_step > repulsion_radius
     """
     if not(velocity * time_step < repulsion_radius):
-        raise ArgumentTypeError("***ERROR: global condition of the simulation: velocity * time_step > repulsion_radius when it should not.")
+        raise ArgumentTypeError(
+            "***ERROR: global condition of the simulation: velocity * time_step > repulsion_radius when it should not.")
+
 
 def perceptionCond(view_dist, bs_direction, bs_opening, knn, outlier):
     """
@@ -47,7 +54,9 @@ def perceptionCond(view_dist, bs_direction, bs_opening, knn, outlier):
     Raise an argparse.ArgumentTypeError when no perceptions will be created due to lack of arguments.
     """
     if (view_dist and bs_direction and bs_opening and knn and outlier) is None:
-        raise ArgumentTypeError("***ERROR: not enough arguments: use either argument --view-dist, -bsd & -bso, --count, --diff-threshold.")
+        raise ArgumentTypeError(
+            "***ERROR: not enough arguments: use either argument --view-dist, -bsd & -bso, --count, --diff-threshold.")
+
 
 def gaussCond(params):
     """
@@ -55,16 +64,18 @@ def gaussCond(params):
 
     Args:
         params (str): define the mean and standard deviation.
-    
+
     Raise an argparse.ArgumentTypeError when the argument is not correctly defined.
     """
-    if ":" not in params or len(params.split(":")!=2):
-        raise ArgumentTypeError("***ERROR: wrong argument: --error must follow 'mu:std' format.")
+    if ":" not in params or len(params.split(":") != 2):
+        raise ArgumentTypeError(
+            "***ERROR: wrong argument: --error must follow 'mu:std' format.")
+
 
 def getArgs():
     """
     Standard function to specify the default value of the hyper-parameters of experimental setups
-    
+
     Return:
         parsed args: the complete list of arguments
     """
@@ -144,19 +155,20 @@ def getArgs():
                         help="define the view distance of the boids")
 
     # blindspot group
-    blindspot_group = parser.add_argument_group('blindspot','blindspots description group')
+    blindspot_group = parser.add_argument_group(
+        'blindspot', 'blindspots description group')
     blindspot_group.add_argument("--blindspot-direction",
-                                "-bsd",
-                                type=int,
-                                nargs='+',
-                                dest="blindspot_direction",
-                                help="list of directions of the bisector of each blindspot angle")
+                                 "-bsd",
+                                 type=int,
+                                 nargs='+',
+                                 dest="blindspot_direction",
+                                 help="list of directions of the bisector of each blindspot angle")
     blindspot_group.add_argument("--blindspot-opening",
-                                "-bso",
-                                type=int,
-                                nargs='+',
-                                dest="blindspot_opening",
-                                help="list of the openings of each blindspot")
+                                 "-bso",
+                                 type=int,
+                                 nargs='+',
+                                 dest="blindspot_opening",
+                                 help="list of the openings of each blindspot")
 
     # boids caracteristics
     parser.add_argument("-tr", "--turning-rate",
