@@ -49,7 +49,7 @@ class Universe:
         Draw then update the simulation until the canvas is closed.
         """
         for i in range(100):
-            print(f'Simulation step {i}/100', end='\r')
+            # print(f'Simulation step {i}/100', end='\r')
             if fonction:
                 fonction(self)
             self.draw()

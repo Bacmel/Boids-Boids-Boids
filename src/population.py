@@ -32,7 +32,9 @@ class Population:
             numpy.ndarray: Group center position.
 
         """
-        return np.mean([boid.pos for boid in self.pop], axis=0)
+        mean = np.mean([boid.pos for boid in self.pop], axis=0)
+        #print(mean)
+        return mean
 
     @property
     def dgroup(self):
@@ -119,7 +121,7 @@ class Population:
         """
         for boid in self.pop:
             boid.draw(canvas)
-        bgroup = Boid(0xff5471, self.cgroup, angle(self.dgroup))
+        bgroup = Boid(0xfffff, self.cgroup, angle(self.dgroup))
         bgroup.draw(canvas)
 
     def reorient(self, boid):
