@@ -4,11 +4,11 @@ from src import PALETTE, DEFAULT_NUM_NEIGHBORS, DEFAULT_VIEW_DIST
 from src import Universe, Canvas, Boid
 from .borders import Wall, Toric, Infinite
 from .perceptions import Range, KNN, Outlier, BlindSpot
-from src import arguments as argu 
-import numpy as np 
+from src import arguments as argu
+import numpy as np
 
 if __name__ == "__main__":
-    
+
     args = argu.getArgs()
 
     try:
@@ -17,38 +17,38 @@ if __name__ == "__main__":
         # Creation of border
         border = None
         length = np.array([[int(s)] for s in args.res.split("x")])
+        border_size = np.array([10, 10]).reshape(-1, 1)
         if args.border == "wall":
-            border = Wall(length)
+            border = Wall(border_size)
         elif args.border == "wrap":
-            border = Toric(length)
+            border = Toric(border_size)
         elif args.border == "none":
-            border = Infinite(length)
+            border = Infinite(border_size)
 
         # Creation of perception: range > blindspot > knn > outlier
         perception = None
 
         if args.view_dist is not None:
             perception = Range(args.view_dist, border, perception)
-        
+
         directions = args.blindspot_direction
         openings = args.blindspot_opening
         # Conditions on blindspots arguments
         argu.blindspotCond(directions, openings)
-        
+
         if not (directions == None and openings == None):
             for direction, opening in zip(directions, openings):
                 perception = BlindSpot(direction, opening, border, perception)
 
         if args.num_neighbors is not None:
             perception = KNN(args.num_neighbors, border, perception)
-        
+
         if args.diff_threshold is not None:
             perception = Outlier(args.diff_threshold, border, perception)
-    
+
     except ArgumentTypeError as err:
         print(err)
         exit(err)
-
     # run simulation
     with Canvas(args.res.split("x"), border, args.time_step, args.render) as canvas:
         u = Universe(
@@ -59,7 +59,7 @@ if __name__ == "__main__":
             ror=args.repulsion_radius,
             roo=args.orientation_radius,
             roa=args.attraction_radius,
-            std=args.error_params,
+            std=float(args.error_params.split(':')[1]),
         )
 
         if args.highlight:

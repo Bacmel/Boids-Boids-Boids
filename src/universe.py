@@ -2,6 +2,7 @@ from .borders import Border
 from .perceptions import Perception
 from src import PALETTE, Population, Canvas
 
+
 class Universe:
     def __init__(self, canvas, perception, border, dt=1, ror=1, roo=1, roa=1, std=0):
         """Build a universe.
@@ -48,6 +49,7 @@ class Universe:
         Draw then update the simulation until the canvas is closed.
         """
         for i in range(100):
+            print(f'Simulation step {i}/100')
             if fonction:
                 fonction(self)
             self.draw()

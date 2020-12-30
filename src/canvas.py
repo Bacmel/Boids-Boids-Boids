@@ -59,9 +59,9 @@ class Canvas:
         self.current_frame[:, :] = np.array(color, dtype="uint8")
 
     def draw_poly(self, points, color):
-        print("Liste des points : "+str(points))
+        # print("Liste des points : "+str(points))
         px = [np.array([self.to_px(p).reshape(1,2) for p in points], dtype=np.int32)]
-        print("Liste des pixels : "+str(px))
+        # print("Liste des pixels : "+str(px))
         cv2.fillPoly(
             self.current_frame,
             px,

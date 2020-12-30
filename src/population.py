@@ -1,5 +1,4 @@
-from random import choice, random
-
+import random
 import numpy as np
 
 from src import Boid, PALETTE
@@ -9,7 +8,7 @@ from src.utils import normalize, angle
 class Population:
     def __init__(self, roa, roo, ror, per, std):
         """Population Constructor.
-        
+
         Args:
             roa (int): Rayon of attraction.
             roo (int): Rayon of orientation.
@@ -28,7 +27,7 @@ class Population:
     @property
     def cgroup(self):
         """Group Center.
-        
+
         Returns:
             numpy.ndarray: Group center position.
 
@@ -38,7 +37,7 @@ class Population:
     @property
     def dgroup(self):
         """Group Direction.
-        
+
         Returns:
             numpy.ndarray: Group direction vector.
 
@@ -48,7 +47,7 @@ class Population:
     @property
     def pgroup(self):
         """Group Polarization.
-        
+
         Returns:
             float: Group polarization value.
 
@@ -58,7 +57,7 @@ class Population:
     @property
     def mgroup(self):
         """Group Momentum.
-        
+
         Returns:
             float: Group momentum value.
 
@@ -81,11 +80,12 @@ class Population:
             shape (numpy.ndarray, optional): Size of the world (if pose == None).
 
         """
-        color = color or choice(PALETTE["accents"])
+        color = color or random.choice(PALETTE["accents"])
         if pos == None:
             shape = border.length
-            pos = border.origin + shape * (1 - 2 * np.random.random(shape.shape))
-        angle = angle or (2 * np.pi * random())
+            pos = border.origin + shape * (
+                1 - 2 * np.random.random(shape.shape))
+        angle = angle or (2 * np.pi * random.random())
         self.pop.append(Boid(color, pos, angle))
 
     def tick(self, dt):
@@ -119,7 +119,7 @@ class Population:
         """
         for boid in self.pop:
             boid.draw(canvas)
-        bgroup = Boid("FFC0CB", self.cgroup, angle(self.dgroup))
+        bgroup = Boid(0xFFC0CB, self.cgroup, angle(self.dgroup))
         bgroup.draw(canvas)
 
     def reorient(self, boid):
@@ -138,10 +138,10 @@ class Population:
         # get nearby boids
         nearby = self.perception.detect(boid, self.pop)
 
-        des_a = np.array((0, 0), dtype="float")  # desired attraction
-        des_o = np.array((0, 0), dtype="float")  # desired orientation
-        des_r = np.array((0, 0), dtype="float")  # desired repulsion
-        des_dir = np.array([], dtype="float")  # desired direction
+        des_a = np.zeros((2, 1), dtype="float")  # desired attraction
+        des_o = np.zeros((2, 1), dtype="float")  # desired orientation
+        des_r = np.zeros((2, 1), dtype="float")  # desired repulsion
+        des_dir = np.zeros((2, 1), dtype="float")  # desired direction
         nb_a = 0  # number of boid in attraction zone
         nb_o = 0  # number of boid in orientation zone
         nb_r = 0  # number of boid in repulsion zone
@@ -151,7 +151,12 @@ class Population:
                 diff = self.perception.border.vector(other.pos, boid.pos)
                 dist = np.linalg.norm(diff)
                 if dist <= self.ror:  # repulsion
+                    # print(f'diff: {diff}')
+                    # print(f'dist: {dist}')
+                    # print(f'diff/dist: {diff/dist}')
+                    # print(f'des_r (before): {des_r}')
                     des_r -= diff / dist
+                    # print(f'des_r: {des_r}')
                     nb_r += 1
                 elif dist <= self.roo:  # orientation
                     des_o += other.dir
@@ -177,7 +182,8 @@ class Population:
             new_angle = boid.angle
         else:
             new_angle = angle(des_dir)
-        new_angle += random.gauss(0, self.std)
+        # print(f"std: {self.std}")
+        new_angle += random.gauss(0.0, self.std)
         return new_angle
 
     def store_data(self, df, df2):

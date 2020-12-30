@@ -23,7 +23,7 @@ class Boid:
     @property
     def dir(self):
         """Direction property of the Boid.
-        
+
         Returns:
             numpy.ndarray: unity vector of the boid's direction.
 
@@ -33,7 +33,7 @@ class Boid:
     @property
     def vel(self):
         """Velocity property of the Boid.
-        
+
         Returns:
             numpy.ndarray: velocity vector of the boid.
 
@@ -49,7 +49,8 @@ class Boid:
 
         """
         # Don't turn too fast
-        self.angle += np.clip(dangle, -dt * BOID_TURN_SPEED, dt * BOID_TURN_SPEED)
+        self.angle += np.clip(dangle, -dt * BOID_TURN_SPEED,
+                              dt * BOID_TURN_SPEED)
 
         # Keep angle in range [0, 2pi)
         self.angle = normalize_angle(self.angle)
@@ -76,8 +77,13 @@ class Boid:
 
         """
         tip = self.pos + BOID_NOSE_LEN * self.dir
-        left = self.pos + BOID_NOSE_LEN / 2 * unit_vector(self.angle + 2 * np.pi / 3)
-        right = self.pos + BOID_NOSE_LEN / 2 * unit_vector(self.angle - 2 * np.pi / 3)
+        left = self.pos + BOID_NOSE_LEN / 2 * \
+            unit_vector(self.angle + 2 * np.pi / 3)
+        right = self.pos + BOID_NOSE_LEN / 2 * \
+            unit_vector(self.angle - 2 * np.pi / 3)
+        # print(
+        #     "tip: " + str(tip) + " left: " + str(left) + " right: " + str(right) +
+        #     " pos: " + str(self.pos)+ " dir: "+str(self.dir))
         canvas.draw_poly([tip, left, self.pos, right], self.color)
 
     def tick(self, dt):
