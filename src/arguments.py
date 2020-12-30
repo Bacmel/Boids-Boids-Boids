@@ -104,7 +104,6 @@ def getArgs():
     parser.add_argument("--border",
                         type=str,
                         # toric world, wall delimitation, no edges
-                        required=True,
                         choices=["wrap", "wall", "none"],
                         default="wall",
                         help="selection of the border of the univers: toric world, wall with collisions or no edges at all")
