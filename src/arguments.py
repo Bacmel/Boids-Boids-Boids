@@ -33,6 +33,34 @@ def globalCond(velocity, time_step, repulsion_radius):
     if not(velocity * time_step < repulsion_radius):
         raise ArgumentTypeError("***ERROR: global condition of the simulation: velocity * time_step > repulsion_radius when it should not.")
 
+def perceptionCond(view_dist, bs_direction, bs_opening, knn, outlier):
+    """
+    Conditions on the creation of perception.
+
+    Args:
+        view_dist (int): The view distance of each particule
+        bs_direction (list<int>): List of angular position value representing the bisector of a blindspot.
+        bs_opening (list<int>): List of angle value representing the opening of a blind spot.
+        knn (int): the number of neighbors a particul can take into acount.
+        outlier (int): The threshold to detect an anormal behaviour in a boid surrounding.
+
+    Raise an argparse.ArgumentTypeError when no perceptions will be created due to lack of arguments.
+    """
+    if (view_dist and bs_direction and bs_opening and knn and outlier) is None:
+        raise ArgumentTypeError("***ERROR: not enough arguments: use either argument --view-dist, -bsd & -bso, --count, --diff-threshold.")
+
+def gaussCond(params):
+    """
+    Conditions on the parameters of the gaussian law for errors.
+
+    Args:
+        params (str): define the mean and standard deviation.
+    
+    Raise an argparse.ArgumentTypeError when the argument is not correctly defined.
+    """
+    if ":" not in params or len(params.split(":")!=2):
+        raise ArgumentTypeError("***ERROR: wrong argument: --error must follow 'mu:std' format.")
+
 def getArgs():
     """
     Standard function to specify the default value of the hyper-parameters of experimental setups

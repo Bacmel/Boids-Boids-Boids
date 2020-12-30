@@ -26,14 +26,16 @@ if __name__ == "__main__":
         # Creation of perception: range > blindspot > knn > outlier
         perception = None
 
-        if args.view_dist is not None:
-            perception = Range(args.view_dist, border, perception)
-        
         directions = args.blindspot_direction
         openings = args.blindspot_opening
         # Conditions on blindspots arguments
         argu.blindspotCond(directions, openings)
-        
+
+        argu.perceptionCond(args.view_dist, directions, openings, args.num_neighbors, args.diff_threshold)
+
+        if args.view_dist is not None:
+            perception = Range(args.view_dist, border, perception)
+            
         if not (directions == None and openings == None):
             for i in range(directions):
                 perception = BlindSpot(directions[i], openings[i], border, perception)
@@ -43,10 +45,13 @@ if __name__ == "__main__":
         
         if args.diff_threshold is not None:
             perception = Outlier(args.diff_threshold, border, perception)
-    
+
+        gaussCond(args.error_params)
+        mu, std = args.error_params.split(":")
+
     except ArgumentTypeError as err:
         print(err)
-        return
+        exit(err)
 
     # run simulation
     with Canvas(args.res.split("x"), args.fps, args.render) as canvas:
