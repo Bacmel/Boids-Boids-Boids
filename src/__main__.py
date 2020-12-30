@@ -1,11 +1,12 @@
 from argparse import ArgumentTypeError
 from os import remove
-from src import PALETTE, DEFAULT_NUM_NEIGHBORS, DEFAULT_VIEW_DIST
+from src import PALETTE, DEFAULT_NUM_NEIGHBORS, DEFAULT_VIEW_DIST, BOID_TURN_SPEED, BOID_VEL
 from src import Universe, Canvas, Boid
 from .borders import Wall, Toric, Infinite
 from .perceptions import Range, KNN, Outlier, BlindSpot
 from src import arguments as argu
 import numpy as np
+from math import pi
 
 if __name__ == "__main__":
 
@@ -13,7 +14,8 @@ if __name__ == "__main__":
 
     try:
         argu.globalCond(args.boid_speed, args.time_step, args.repulsion_radius)
-
+        BOID_TURN_SPEED = args.turning_rate / 180 * pi
+        BOID_VEL = args.boid_speed
         # Creation of border
         border = None
         length = np.array([[int(s)] for s in args.res.split("x")])
@@ -38,7 +40,9 @@ if __name__ == "__main__":
 
         if not (directions == None and openings == None):
             for direction, opening in zip(directions, openings):
-                perception = BlindSpot(direction, opening, border, perception)
+                perception = BlindSpot(
+                    direction / 180 * pi, opening / 180 * pi, border,
+                    perception)
 
         if args.num_neighbors is not None:
             perception = KNN(args.num_neighbors, border, perception)
