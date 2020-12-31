@@ -26,6 +26,7 @@ class Population:
         self.perception = per  # Perception
         self.bias = bias  # float
         self.std = std  # float
+        print(f"ror: {self.ror}\troo: {self.roo}\troa: {self.roa}")
 
     @property
     def cgroup(self):
@@ -159,27 +160,34 @@ class Population:
                 # compute a random vector to escape
                 diff = np_rand.normal(0, 1, (2, 1))
             dist = np.linalg.norm(diff)
+            dir2other = diff / dist
             if dist <= self.ror:  # repulsion zone
-                des_r -= diff / dist
+                des_r -= dir2other
                 nb_r += 1
             elif dist <= self.roo:  # orientation zone
                 des_o += other.dir
                 nb_o += 1
             elif dist <= self.roa:  # attraction zone
-                des_a += diff / dist
+                des_a += dir2other
                 nb_a += 1
+        print(f"nbr: {nb_r}\tnbo: {nb_o}\tnba: {nb_a}")
         # choose the rule to apply
         if nb_r > 0:  # repulsion rule only
             des_dir = des_r
+            print("repulsion")
         elif nb_o > 0:
             if nb_a == 0:  # orientation rule only
                 des_dir = des_o
+                print("orientation")
             else:  # orientation and attraction rules
                 des_dir = np.mean([des_o, des_a], axis=0)
+                print("both")
         elif nb_a > 0:  # attraction rule only
             des_dir = des_a
+            print("attraction")
         else:  # no decision
             des_dir = boid.dir
+            print("none")
         # compute the new angle from the desired direction
         new_angle = angle(des_dir)
         new_angle += random.gauss(0.0, self.std)  # apply noise to the decision

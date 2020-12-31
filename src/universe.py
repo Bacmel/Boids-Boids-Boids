@@ -4,7 +4,9 @@ from src import PALETTE, Population, Canvas
 
 
 class Universe:
-    def __init__(self, canvas, perception, border, dt=1, ror=1, roo=1, roa=1, std=0):
+    def __init__(
+            self, canvas, perception, border, dt=1, ror=1, roo=1, roa=1,
+            bais=0, std=0):
         """Build a universe.
 
         Args:
@@ -17,7 +19,7 @@ class Universe:
             roa (float): The radius of alignment.
         """
         self.dt = dt
-        self.boids = Population(ror, roo, roa, perception, std)
+        self.boids = Population(roa, roo, ror, perception, bais, std)
         self.canvas = canvas
         self.border = border
 

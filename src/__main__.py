@@ -71,7 +71,7 @@ if __name__ == "__main__":
             ror=args.repulsion_radius,
             roo=args.orientation_radius,
             roa=args.attraction_radius,
-            std=std,
+            std=std
         )
 
         if args.highlight:
