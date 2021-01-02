@@ -7,7 +7,7 @@ from src.utils import normalize, angle
 
 
 class Population:
-    def __init__(self, roa, roo, ror, per, bias, std):
+    def __init__(self, roa, roo, ror, per, std):
         """Population Constructor.
 
         Args:
@@ -15,7 +15,6 @@ class Population:
             roo (float): The radius of orientation.
             ror (float): The radius of repulsion.
             per (Perception): The perception of the population.
-            bias (float): The biais in the decision process (in radians).
             std (float): The standard deviation in the decision process (in radians).
 
         """
@@ -24,9 +23,7 @@ class Population:
         self.roo = roo  # float
         self.ror = ror  # float
         self.perception = per  # Perception
-        self.bias = bias  # float
         self.std = std  # float
-        print(f"ror: {self.ror}\troo: {self.roo}\troa: {self.roa}")
 
     @property
     def cgroup(self):
@@ -36,8 +33,11 @@ class Population:
             numpy.ndarray: The position of the group center.
 
         """
-        mean = np.mean([boid.pos for boid in self.pop], axis=0)
-        # print(mean)
+        origin = np.zeros((2, 1))
+        mean = np.mean(
+            [self.perception.border.vector(origin, boid.pos)
+             for boid in self.pop],
+            axis=0)
         return mean
 
     @property
@@ -69,14 +69,18 @@ class Population:
 
         """
         cg = self.cgroup
-        m = np.array([[]])
+        m = []
         for boid in self.pop:
             r_ic = normalize(self.perception.border.vector(cg, boid.pos))
-            m_ic = np.cross(r_ic, boid.dir)
-            m = np.append(m, [m_ic], axis=0)
-        return np.linalg.norm(np.mean(m))
+            m_ic = np.cross(r_ic, boid.dir, axis=0)
+            m.append(m_ic)
+        m_array = np.array(m)
+        m_mean = np.mean(m_array)
+        return np.linalg.norm(m_mean)
 
-    def add_boid(self, color=None, pos=None, angle=None, border=None):
+    def add_boid(
+            self, color=None, pos=None, angle=None, border=None, speed=1,
+            turning_rate=0.17453292519943295):
         """Add a boid to this population.
 
         Args:
@@ -93,7 +97,10 @@ class Population:
                 border.origin + shape *
                 (1 - 2 * np.random.random(shape.shape)))
         angle = angle or (2 * np.pi * random.random())
-        self.pop.append(Boid(color, pos, angle))
+        self.pop.append(
+            Boid(
+                color, pos, angle, speed=speed,
+                turning_rate=turning_rate))
 
     def tick(self, dt):
         """Update function.
@@ -170,56 +177,46 @@ class Population:
             elif dist <= self.roa:  # attraction zone
                 des_a += dir2other
                 nb_a += 1
-        print(f"nbr: {nb_r}\tnbo: {nb_o}\tnba: {nb_a}")
         # choose the rule to apply
         if nb_r > 0:  # repulsion rule only
             des_dir = des_r
-            print("repulsion")
         elif nb_o > 0:
             if nb_a == 0:  # orientation rule only
                 des_dir = des_o
-                print("orientation")
             else:  # orientation and attraction rules
                 des_dir = np.mean([des_o, des_a], axis=0)
-                print("both")
         elif nb_a > 0:  # attraction rule only
             des_dir = des_a
-            print("attraction")
         else:  # no decision
             des_dir = boid.dir
-            print("none")
         # compute the new angle from the desired direction
         new_angle = angle(des_dir)
         new_angle += random.gauss(0.0, self.std)  # apply noise to the decision
         return new_angle
 
-    def store_data(self, df, df2):
+    def store_data(self, data_logger):
         """Store data.
 
         Store data at instant t.
 
         Args:
-            df (pandas.Dataframe): group data.
-            df2 (pandas.Dataframe): boid data.
-
-        Returns:
-            list[pandas.Dataframe]: New data.
+            data_logger (DataLogger): Data logger.
 
         """
         row = {
-            "cgroup": self.cgroup,
-            "dgroup": self.dgroup,
+            "cgroup": self.cgroup.reshape(-1),
+            "dgroup": self.dgroup.reshape(-1),
             "pgroup": self.pgroup,
             "mgroup": self.mgroup,
             "roa": self.roa,
             "roo": self.roo,
             "ror": self.ror,
         }
-        df = df.append(row, ignore_index=True)
+        data_logger.quantities = data_logger.quantities.append(
+            row, ignore_index=True)
+
         row2 = {}
         for i in range(len(self.pop)):
             pos = self.pop[i].pos
-            row2["x" + str(i)] = pos[0]
-            row2["y" + str(i)] = pos[i]
-        df = df.append(row2, ignore_index=True)
-        return [df, df2]
+            row2[f"boid{i}"] = pos.reshape(-1)
+        data_logger.poses = data_logger.poses.append(row2, ignore_index=True)

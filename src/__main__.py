@@ -1,21 +1,20 @@
+import numpy as np
 from argparse import ArgumentTypeError
+from math import pi
 from os import remove
-from src import PALETTE, DEFAULT_NUM_NEIGHBORS, DEFAULT_VIEW_DIST, BOID_TURN_SPEED, BOID_VEL
-from src import Universe, Canvas, Boid
+from src import PALETTE, Universe, Canvas, Boid
+from src import arguments as argu
+from src.data_logger import DataLogger
 from .borders import Wall, Toric, Infinite
 from .perceptions import Range, KNN, Outlier, BlindSpot
-from src import arguments as argu
-import numpy as np
-from math import pi
+
 
 if __name__ == "__main__":
-
+    dl = DataLogger()
     args = argu.getArgs()
 
     try:
         argu.globalCond(args.boid_speed, args.time_step, args.repulsion_radius)
-        BOID_TURN_SPEED = args.turning_rate / 180 * pi
-        BOID_VEL = args.boid_speed
         # Creation of border
         border = None
         length = np.array([[int(s)] for s in args.res.split("x")])
@@ -75,8 +74,10 @@ if __name__ == "__main__":
         )
 
         if args.highlight:
-            u.add_boid(color=PALETTE["highlight"], pos=(0, 0))
+            u.boids.add_boid(color=PALETTE["highlight"], pos=(0, 0))
             args.n -= 1
 
-        u.populate(args.n)
-        u.loop()
+        u.populate(args.n, speed=args.boid_speed,
+                   turning_rate=args.turning_rate / 180 * pi)
+        u.loop(args.step_nb, pretick=lambda uni: uni.boids.store_data(dl))
+    dl.flush()

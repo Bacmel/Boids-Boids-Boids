@@ -114,6 +114,11 @@ def getArgs():
     parser.add_argument("--verbose",
                         action='store_true',
                         help="increase output verbosity")
+    parser.add_argument("--step-nb",
+                        dest="step_nb",
+                        type=int,
+                        default=100,
+                        help="Number of steps to play")
 
     # weights
     parser.add_argument("-roa", "--attraction",

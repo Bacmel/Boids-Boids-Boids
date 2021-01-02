@@ -5,7 +5,6 @@ import time
 import numpy as np
 from pandas import DataFrame
 
-
 def save(data_frame, name=None, destination="data"):
     """Save the frame of data.
 

@@ -2,12 +2,14 @@
 
 import numpy as np
 
-from src import BOID_NOSE_LEN, BOID_TURN_SPEED, BOID_VEL
+from src import BOID_NOSE_LEN
 from src.utils import normalize_angle, unit_vector
+from math import pi
 
 
 class Boid:
-    def __init__(self, color, pos, angle=0):
+    def __init__(self, color, pos, angle=0, speed=1.0,
+                 turning_rate=0.17453292519943295):
         """Constructor of Boid.
 
         Args:
@@ -19,6 +21,8 @@ class Boid:
         self.pos = np.array(pos, dtype="float")
         self.angle = normalize_angle(angle)
         self.color = color
+        self.speed = speed
+        self.turning_rate = turning_rate
 
     @property
     def dir(self):
@@ -38,7 +42,7 @@ class Boid:
             numpy.ndarray: velocity vector of the boid.
 
         """
-        return BOID_VEL * self.dir
+        return self.speed * self.dir
 
     def turn_by(self, dangle, dt):
         """Movement by reference speed.
@@ -49,8 +53,8 @@ class Boid:
 
         """
         # Don't turn too fast
-        self.angle += np.clip(dangle, -dt * BOID_TURN_SPEED,
-                              dt * BOID_TURN_SPEED)
+        self.angle += np.clip(dangle, -dt * self.turning_rate,
+                              dt * self.turning_rate)
 
         # Keep angle in range [0, 2pi)
         self.angle = normalize_angle(self.angle)
@@ -77,13 +81,10 @@ class Boid:
 
         """
         tip = self.pos + BOID_NOSE_LEN * self.dir
-        left = self.pos + BOID_NOSE_LEN / 2 * \
-            unit_vector(self.angle + 2 * np.pi / 3)
-        right = self.pos + BOID_NOSE_LEN / 2 * \
-            unit_vector(self.angle - 2 * np.pi / 3)
-        # print(
-        #     "tip: " + str(tip) + " left: " + str(left) + " right: " + str(right) +
-        #     " pos: " + str(self.pos)+ " dir: "+str(self.dir))
+        left = (self.pos + BOID_NOSE_LEN / 2 *
+                unit_vector(self.angle + 2 * np.pi / 3))
+        right = (self.pos + BOID_NOSE_LEN / 2 *
+                 unit_vector(self.angle - 2 * np.pi / 3))
         canvas.draw_poly([tip, left, self.pos, right], self.color)
 
     def tick(self, dt):

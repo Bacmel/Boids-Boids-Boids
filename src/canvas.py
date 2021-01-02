@@ -141,9 +141,7 @@ class Canvas:
             color (Color): color of the polygone.
 
         """
-        # print("Liste des points : "+str(points))
         px = [np.array([self.to_px(p).reshape(1, 2) for p in points], dtype=np.int32)]
-        # print("Liste des pixels : "+str(px))
         cv2.fillPoly(
             self.current_frame,
             px,
