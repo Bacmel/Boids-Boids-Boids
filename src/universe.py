@@ -31,8 +31,7 @@ class Universe:
             n (int): The number of individuals to add.
         """
         for _ in range(n):
-            self.boids.add_boid(border=self.border,
-                                speed=speed, turning_rate=turning_rate)
+            self.boids.add_boid(speed=speed, turning_rate=turning_rate)
 
     def draw(self):
         """Draw on the canvas."""
