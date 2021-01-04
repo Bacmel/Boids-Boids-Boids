@@ -1,4 +1,4 @@
-from .borders import Border
+from .borders import Border, Infinite
 from .perceptions import Perception
 from src import PALETTE, Population, Canvas
 
@@ -36,6 +36,8 @@ class Universe:
     def draw(self):
         """Draw on the canvas."""
         self.canvas.fill(PALETTE["background"])
+        if isinstance(self.border, Infinite):
+            self.canvas.fit(self.boids)
         self.boids.draw(self.canvas)
         self.canvas.update()
 
