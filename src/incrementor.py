@@ -12,7 +12,7 @@ class Incrementor:
     
     def next(self, universe):
         """
-        Preapre the simulation next step.
+        Preapre the simulation's next step.
         """
         self.count += 1
         if self.count == self.step_duration:

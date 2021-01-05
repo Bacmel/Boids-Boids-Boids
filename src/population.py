@@ -220,3 +220,14 @@ class Population:
             pos = self.pop[i].pos
             row2[f"boid{i}"] = pos.reshape(-1)
         data_logger.poses = data_logger.poses.append(row2, ignore_index=True)
+
+    def get_properties(self):
+        properties = []
+        properties.append("cgroup = " + str(self.cgroup.reshape(-1)))
+        properties.append("dgroup = " + str(self.dgroup.reshape(-1)))
+        properties.append("pgroup = {:.5f}".format(self.pgroup))
+        properties.append("mgroup = {:.5f}".format(self.mgroup))
+        properties.append("roa = " + str(self.roa))
+        properties.append("roo = " + str(self.roo))
+        properties.append("ror = " + str(self.ror))
+        return properties

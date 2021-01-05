@@ -149,3 +149,13 @@ class Canvas:
             color,
             16,
         )  # = antialiased
+
+    def show_properties(self, properties):
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        color = (255, 255, 255)
+        fontScale = 0.5
+        thickness = 1
+
+        for i in range(len(properties)):
+            cv2.putText(self.current_frame, properties[i], (50,(i+1)*30), font,  
+                   fontScale, color, thickness, cv2.LINE_AA) 

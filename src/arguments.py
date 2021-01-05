@@ -85,9 +85,9 @@ def getRooVar(roo_var):
     l = roo_var.split(":")
     if len(l) != 3:
         raise ArgumentTypeError("***ERROR: wrong argument: -roo-var or --orientation-radius-variation must be defined as 'inf bound : increment : sup bound'.")
-    if l[2] < l[0]:
+    if float(l[2]) < float(l[0]):
         raise ArgumentTypeError("***ERROR: wrong argument: int -roo-var or --orientation-radius-variation sup_bound must be greater than inf_bound.")
-    return l[0], l[1], l[2]
+    return float(l[0]), float(l[1]), float(l[2])
 
 
 def getArgs():
@@ -141,18 +141,18 @@ def getArgs():
     # Interaction zones
     parser.add_argument("-roa", "--attraction",
                         dest="attraction_radius",
-                        type=int,
+                        type=float,
                         default=1,
                         help="the radius of the attraction zone of each boid")
     parser.add_argument("-ror", "--repulsion",
                         dest="repulsion_radius",
-                        type=int,
+                        type=float,
                         default=1,
                         help="the radius of the replusion zone of each boid")
     ror = parser.add_mutually_exclusive_group()
     ror.add_argument("-roo", "--orientation",
                      dest="orientation_radius",
-                     type=int,
+                     type=float,
                      default=1,
                      help="the radius of the orientation zone of each boid")
     ror.add_argument("-roo-var", "--orientation-radius-variation",
