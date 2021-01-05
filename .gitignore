@@ -1,7 +1,6 @@
 **/*.pyc
 **/__pycache__/
 .idea/
-.code/
-out/
-log/
 .vscode/
+out/
+logs/

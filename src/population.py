@@ -4,6 +4,7 @@ import numpy.random as np_rand
 
 from src import Boid, PALETTE
 from src.utils import normalize, angle
+from math import pi, cos, sin
 
 
 class Population:
@@ -79,8 +80,8 @@ class Population:
         return np.linalg.norm(m_mean)
 
     def add_boid(
-            self, color=None, pos=None, angle=None, border=None, speed=1,
-            turning_rate=0.17453292519943295):
+            self, color=None, pos=None, angle=None, speed=1,
+            turning_rate=0.2):
         """Add a boid to this population.
 
         Args:
@@ -91,16 +92,34 @@ class Population:
 
         """
         color = color or random.choice(PALETTE["accents"])
-        if pos == None:
-            shape = border.length
-            pos = (
-                border.origin + shape *
-                (1 - 2 * np.random.random(shape.shape)))
-        angle = angle or (2 * np.pi * random.random())
-        self.pop.append(
-            Boid(
+        boid = None
+        if pos == None and angle == None:
+            # No specified pose, ensure the new boid sees another one
+            for _ in range(100000):
+                pos = self._random_pos()
+                angle = 2 * pi * (random.random() - 0.5)
+                boid = Boid(
+                    color, pos, angle, speed=speed,
+                    turning_rate=turning_rate)
+                if (len(self.pop) == 0 or len(self.perception.detect(boid, self.pop)) >= 1):
+                    break
+            else:
+                raise RuntimeError("Failed to find a valid configuration after 100 000 tries!")
+        else:
+            # At least one pose element is specified, no warranty
+            pos = pos or self._random_pos()
+            angle = angle or (2 * pi * (random.random() - 0.5))
+            boid = Boid(
                 color, pos, angle, speed=speed,
-                turning_rate=turning_rate))
+                turning_rate=turning_rate)
+        self.pop.append(boid)
+
+    def _random_pos(self):
+        border = self.perception.border
+        r = self.roa * random.random()
+        th = 2 * pi * (random.random() - 0.5)
+        pos = np.array([[r * cos(th)], [r * sin(th)]]) + border.origin
+        return border.wrap(pos)
 
     def tick(self, dt):
         """Update function.
