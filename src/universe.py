@@ -1,4 +1,4 @@
-from .borders import Border
+from .borders import Border, Infinite
 from .perceptions import Perception
 from src import PALETTE, Population, Canvas
 
@@ -31,12 +31,13 @@ class Universe:
             n (int): The number of individuals to add.
         """
         for _ in range(n):
-            self.boids.add_boid(border=self.border,
-                                speed=speed, turning_rate=turning_rate)
+            self.boids.add_boid(speed=speed, turning_rate=turning_rate)
 
     def draw(self):
         """Draw on the canvas."""
         self.canvas.fill(PALETTE["background"])
+        if isinstance(self.border, Infinite):
+            self.canvas.fit(self.boids)
         self.boids.draw(self.canvas)
         self.canvas.update()
 

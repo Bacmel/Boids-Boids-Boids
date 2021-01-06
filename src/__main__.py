@@ -41,7 +41,7 @@ if __name__ == "__main__":
             perception = Range(args.view_dist, border, perception)
 
         if not (directions == None and openings == None):
-            for i in range(directions):
+            for i in range(len(directions)):
                 perception = BlindSpot(
                     directions[i] / 180 * pi, openings[i] / 180 * pi, border,
                     perception)
