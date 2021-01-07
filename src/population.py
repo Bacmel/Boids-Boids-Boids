@@ -9,7 +9,7 @@ from src.utils import angle, normalize
 
 
 class Population:
-    def __init__(self, roa, roo, ror, per, std):
+    def __init__(self, speed=1, turning_rate=0.2, roa, roo, ror, per, std, speed_sd=None, tr_sd=None, ror_sd=None, roo_sd=None, roa_sd=None):
         """Population Constructor.
 
         Args:
@@ -20,12 +20,19 @@ class Population:
             std (float): The standard deviation in the decision process (in radians).
 
         """
-        self.pop = []  # list[Boid]
-        self.roa = roa  # float
-        self.roo = roo  # float
-        self.ror = ror  # float
-        self.perception = per  # Perception
-        self.std = std  # float
+        self.pop = []                       # list[Boid]
+        self.speed = speed                  # float
+        self.turning_rate = turning_rate    # float
+        self.roa = roa                      # float
+        self.roo = roo                      # float
+        self.ror = ror                      # float
+        self.perception = per               # Perception
+        self.std = std                      # float
+        self.speed_sd = speed_sd            # float
+        self.tr_sd = tr_sd                  # float
+        self.roo_sd = roo_sd                # float
+        self.ror_sd = ror_sd                # float
+        self.roa_sd = roa_sd                # float
 
     @property
     def cgroup(self):
@@ -36,7 +43,8 @@ class Population:
 
         """
         origin = np.zeros((2, 1))
-        mean = np.mean([self.perception.border.vector(origin, boid.pos) for boid in self.pop], axis=0)
+        mean = np.mean([self.perception.border.vector(origin, boid.pos)
+                        for boid in self.pop], axis=0)
         return mean
 
     @property
@@ -89,23 +97,44 @@ class Population:
         """
         color = color or random.choice(PALETTE["accents"])
         if pos is None and angle is None:
+            # Generate gaussian distribution for each parameter
+            new_speed = self.speed
+            new_tr = self.turning_rate
+            new_ror = self.ror
+            new_roo = self.roo
+            new_roa = self.roa
+
+            if self.speed_sd is not None:
+                speed += random.gauss(0.0, self.speed_sd)
+            if self.tr_sd is not None:
+                new_tr += random.gauss(0.0, self.tr_sd)
+            if self.ror_sd is not None:
+                new_ror += random.gauss(0.0, self.ror_sd)
+            if self.roo_sd is not None:
+                new_roo += random.gauss(0.0, self.roo_sd)
+            if self.roa_sd is not None:
+                new_roa += random.gauss(0.0, self.roa_sd)
+
             # No specified pose, ensure the new boid sees another one
             for _ in range(100000):
-                pos = self._random_pos()
+                pos = self._random_pos(new_roa)
                 angle = 2 * pi * (random.random() - 0.5)
-                boid = Boid(color, pos, angle, speed=speed, turning_rate=turning_rate)
+                boid = Boid(color, pos, angle, speed=new_speed,
+                            turning_rate=new_tr, ror=new_ror, roo=new_roo, roa=new_roa)
                 if len(self.pop) == 0 or len(self.perception.detect(boid, self.pop)) >= 1:
                     break
             else:
-                raise RuntimeError("Failed to find a valid configuration after 100 000 tries!")
+                raise RuntimeError(
+                    "Failed to find a valid configuration after 100 000 tries!")
         else:
             # At least one pose element is specified, no warranty
-            pos = pos or self._random_pos()
+            pos = pos or self._random_pos(self.roa)
             angle = angle or (2 * pi * (random.random() - 0.5))
-            boid = Boid(color, pos, angle, speed=speed, turning_rate=turning_rate)
+            boid = Boid(color, pos, angle, speed=speed, turning_rate=turning_rate,
+                        ror=self.ror, roo=self.roo, roa=self.roa)
         self.pop.append(boid)
 
-    def _random_pos(self):
+    def _random_pos(self, roa):
         border = self.perception.border
         r = self.roa * random.random()
         th = 2 * pi * (random.random() - 0.5)
@@ -178,13 +207,13 @@ class Population:
                 diff = np_rand.normal(0, 1, (2, 1))
             dist = np.linalg.norm(diff)
             dir2other = diff / dist
-            if dist <= self.ror:  # repulsion zone
+            if dist <= boid.ror:  # repulsion zone
                 des_r -= dir2other
                 nb_r += 1
-            elif dist <= self.roo:  # orientation zone
+            elif dist <= boid.roo:  # orientation zone
                 des_o += other.dir
                 nb_o += 1
-            elif dist <= self.roa:  # attraction zone
+            elif dist <= boid.roa:  # attraction zone
                 des_a += dir2other
                 nb_a += 1
         # choose the rule to apply
@@ -215,19 +244,22 @@ class Population:
 
         """
         quantities = {"cgroup": self.cgroup.reshape(-1), "dgroup": self.dgroup.reshape(-1), "pgroup": self.pgroup,
-                      "mgroup": self.mgroup, "roa": self.roa, "roo": self.roo, "ror": self.ror,
-                      "is_roo_rising": is_roo_rising}
-        data_logger.quantities = data_logger.quantities.append(quantities, ignore_index=True)
+                      "mgroup": self.mgroup, "speed": self.speed, "turning_rate": self.turning_rate, "roa": self.roa, "roo": self.roo, "ror": self.ror,
+                      "speed_sd": self.speed_sd, "turning_rate_sd": self.tr_sd, "ror_sd": self.ror_sd, "roo_sd": self.roo_sd, "roa_sd": self.roa_sd, "is_roo_rising": is_roo_rising}
+        data_logger.quantities = data_logger.quantities.append(
+            quantities, ignore_index=True)
 
     def store_state(self, data_logger):
         for i in range(len(self.pop)):
             ind = self.pop[i]
             ind_state = {"id": i, "pos": ind.pos.reshape(-1), "angle": ind.angle[0], "speed": ind.speed,
-                         "turning_rate": ind.turning_rate}
-            data_logger.state = data_logger.state.append(ind_state, ignore_index=True)
+                         "turning_rate": ind.turning_rate, "ror": ind.ror, "roo": ind.roo, "roa": ind.roa}
+            data_logger.state = data_logger.state.append(
+                ind_state, ignore_index=True)
 
     def get_properties(self):
         properties = ["cgroup = " + str(self.cgroup.reshape(-1)), "dgroup = " + str(self.dgroup.reshape(-1)),
-                      "pgroup = {:.5f}".format(self.pgroup), "mgroup = {:.5f}".format(self.mgroup),
+                      "pgroup = {:.5f}".format(
+                          self.pgroup), "mgroup = {:.5f}".format(self.mgroup),
                       "roa = " + str(self.roa), "roo = " + str(self.roo), "ror = " + str(self.ror)]
         return properties

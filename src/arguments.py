@@ -81,12 +81,15 @@ def rooCond(roo_var, roo_step_duration):
     else:
         return True
 
+
 def getRooVar(roo_var):
     l = roo_var.split(":")
     if len(l) != 3:
-        raise ArgumentTypeError("***ERROR: wrong argument: -roo-var or --orientation-radius-variation must be defined as 'inf bound : increment : sup bound'.")
+        raise ArgumentTypeError(
+            "***ERROR: wrong argument: -roo-var or --orientation-radius-variation must be defined as 'inf bound : increment : sup bound'.")
     if float(l[2]) < float(l[0]):
-        raise ArgumentTypeError("***ERROR: wrong argument: int -roo-var or --orientation-radius-variation sup_bound must be greater than inf_bound.")
+        raise ArgumentTypeError(
+            "***ERROR: wrong argument: int -roo-var or --orientation-radius-variation sup_bound must be greater than inf_bound.")
     return float(l[0]), float(l[1]), float(l[2])
 
 
@@ -185,11 +188,11 @@ def getArgs():
                         help=f"the COUNT closest boids are seen by the current boid (defaults to {DEFAULT_NUM_NEIGHBORS})")
     parser.add_argument("--diff-threshold",
                         dest="diff_threshold",
-                        type=int,
+                        type=float,
                         help="threshold to detect an anormal behaviour in a boid surrounding")
     parser.add_argument("--view-dist",
                         dest="view_dist",
-                        type=int,
+                        type=float,
                         help="define the view distance of the boids")
 
     # blindspot group
@@ -211,19 +214,41 @@ def getArgs():
     # boids caracteristics
     parser.add_argument("-tr", "--turning-rate",
                         dest="turning_rate",
-                        type=int,
+                        type=float,
                         default=BOID_TURN_SPEED,
                         help=f"the turning speed of boids in the simulation (default to {BOID_TURN_SPEED})")
     parser.add_argument("-bv", "--boid-velocity",
                         dest="boid_speed",
-                        type=int,
+                        type=float,
                         default=BOID_VEL,
                         help=f"the velocity of boids in the simulation (default to {BOID_VEL}")
     parser.add_argument("--error",
                         dest="error_params",
                         type=str,
                         default="0:1",
-                        help="Parameters of the gaussian distribution used in noises of the simulation")
+                        help="Parameters of the gaussian distribution used for the noise around the decision making process of the boids")
+
+    # standard deviation for sorting study
+    parser.add_argument('--speed-sd',
+                        dest=speed_sd,
+                        type=float,
+                        help="The standard deviation of the gaussian distribution for the speed parameter.")
+    parser.add_argument('--tr-sd',
+                        dest=tr_sd,
+                        type=float,
+                        help="The standard deviation of the gaussian distribution for the turning rate parameter.")
+    parser.add_argument('--ror-sd',
+                        dest=ror_sd,
+                        type=float,
+                        help="The standard deviation of the gaussian distribution for the radius of repulsion parameter.")
+    parser.add_argument('--roo-sd',
+                        dest=roo_sd,
+                        type=float,
+                        help="The standard deviation of the gaussian distribution for the radius of orientation parameter.")
+    parser.add_argument('--roa-sd',
+                        dest=roa_sd,
+                        type=float,
+                        help="The standard deviation of the gaussian distribution for the radius of attraction parameter.")
 
     args = parser.parse_args()
     return args

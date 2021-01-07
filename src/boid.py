@@ -9,7 +9,7 @@ from math import pi
 
 class Boid:
     def __init__(self, color, pos, angle=0, speed=1.0,
-                 turning_rate=0.17453292519943295):
+                 turning_rate=0.17453292519943295, ror, roo, roa):
         """Constructor of Boid.
 
         Args:
@@ -23,6 +23,9 @@ class Boid:
         self.color = color
         self.speed = speed
         self.turning_rate = turning_rate
+        self.ror = ror
+        self.roo = roo
+        self.roa = roa
 
     @property
     def dir(self):
