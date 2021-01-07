@@ -8,8 +8,8 @@ from math import pi
 
 
 class Boid:
-    def __init__(self, color, pos, angle=0, speed=1.0,
-                 turning_rate=0.17453292519943295, ror, roo, roa):
+    def __init__(self, color, pos, ror, roo, roa, angle=0, speed=1.0,
+                 turning_rate=0.2):
         """Constructor of Boid.
 
         Args:

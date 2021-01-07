@@ -4,7 +4,7 @@ from math import ceil, pi
 
 import numpy as np
 
-from src import Canvas, Incrementor, PALETTE, Universe, Population, arguments as argu
+from src import Canvas, Incrementor, PALETTE, Population, Universe, arguments as argu
 from src.data_logger import DataLogger
 from .borders import Infinite, Toric, Wall
 from .perceptions import BlindSpot, KNN, Outlier, Range
@@ -68,8 +68,8 @@ if __name__ == "__main__":
         # selection of the right number of step
         if incrementor:
             steps = (ceil((
-                                      incrementor.sup_bound - incrementor.inf_bound) / incrementor.increment) * 2 -
-                     1) * args.roo_step_duration
+                                  incrementor.sup_bound - incrementor.inf_bound) / incrementor.increment) * 2 - 1) * \
+                    args.roo_step_duration
         else:
             steps = args.step_nb
 
@@ -78,17 +78,16 @@ if __name__ == "__main__":
 
     # run simulation
     with Canvas(args.res.split("x"), border, args.time_step, args.render) as canvas:
-        pop = Population(speed=args.boid_speed, turning_rate=args.turning_rate / 180 * pi, 
-                        roa=args.attraction_radius, roo=roo, ror=args.repulsion_radius, 
-                        per=perception, std=args.std, speed_sd=args.speed_sd, tr_sd=args.tr_sd,
-                        ror_sd=args.ror_sd, roo_sd=args.roo_sd, roa_sd=args.roa_sd)
-        u = Universe(canvas, perception=perception, border=border, population=pop, dt=args.time_step, verbose=args.verbose)
+        pop = Population(args.attraction_radius, roo, args.repulsion_radius, perception, args.std, args.boid_speed,
+                         args.turning_rate / 180 * pi, args.speed_sd, args.tr_sd, args.ror_sd)
+        u = Universe(canvas, perception=perception, border=border, population=pop, dt=args.time_step,
+                     verbose=args.verbose)
 
         if args.highlight:
             u.boids.add_boid(color=PALETTE["highlight"], pos=(0, 0))
             args.n -= 1
 
-        u.populate(args.n)#, speed=args.boid_speed, turning_rate=args.turning_rate / 180 * pi)
+        u.populate(args.n)  # , speed=args.boid_speed, turning_rate=args.turning_rate / 180 * pi)
 
         # Simulation loop
         for i in range(steps):

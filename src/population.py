@@ -10,8 +10,8 @@ from src.utils import angle, normalize
 
 
 class Population:
-    def __init__(self, speed=1, turning_rate=0.2, roa, roo, ror, per, std,
-                speed_sd=None, tr_sd=None, ror_sd=None, roo_sd=None, roa_sd=None):
+    def __init__(self, roa, roo, ror, per, std, speed=1, turning_rate=0.2, speed_sd=None, tr_sd=None, ror_sd=None,
+                 roo_sd=None, roa_sd=None):
         """Population Constructor.
 
         Args:
@@ -93,8 +93,6 @@ class Population:
             color (Color): color for canvas visualisation.
             pos (numpy.ndarray): Initial position.
             angle (float): The initial orientation.
-            speed (float): The speed (in length unit per seconds).
-            turning_rate (float): The maximal angular speed (in radians per seconds).
         """
         color = color or random.choice(PALETTE["accents"])
         if pos is None and angle is None:
@@ -119,9 +117,8 @@ class Population:
             # No specified pose, ensure the new boid sees another one
             for _ in range(100000):
                 pos = self._random_pos(new_roa)
-                angle = 2 * pi * (random.random() - 0.5)
-                boid = Boid(color, pos, angle, speed=new_speed, turning_rate=new_tr, ror=new_ror, roo=new_roo,
-                            roa=new_roa)
+                ind_angle = 2 * pi * (random.random() - 0.5)
+                boid = Boid(color, pos, new_ror, new_roo, new_roa, ind_angle, new_speed, new_tr)
                 if len(self.pop) == 0 or len(self.perception.detect(boid, self.pop)) >= 1:
                     break
             else:
@@ -129,14 +126,14 @@ class Population:
         else:
             # At least one pose element is specified, no warranty
             pos = pos or self._random_pos(self.roa)
-            angle = angle or (2 * pi * (random.random() - 0.5))
-            boid = Boid(color, pos, angle, speed=self.speed, turning_rate=self.turning_rate,
-                        ror=self.ror, roo=self.roo, roa=self.roa)
+            ind_angle = angle or (2 * pi * (random.random() - 0.5))
+            boid = Boid(color, pos, self.ror, self.roa, self.roo, ind_angle, speed=self.speed,
+                        turning_rate=self.turning_rate)
         self.pop.append(boid)
 
     def _random_pos(self, roa):
         border = self.perception.border
-        r = self.roa * random.random()
+        r = roa * random.random()
         th = 2 * pi * (random.random() - 0.5)
         pos = np.array([[r * cos(th)], [r * sin(th)]]) + border.origin
         return border.wrap(pos)
@@ -172,7 +169,7 @@ class Population:
         """
         for boid in self.pop:
             boid.draw(canvas)
-        bgroup = Boid(0xfffff, self.cgroup, angle(self.dgroup))
+        bgroup = Boid(0xfffff, self.cgroup, 0., 0., 0., angle(self.dgroup))
         bgroup.draw(canvas)
 
     def reorient(self, boid):
@@ -195,7 +192,6 @@ class Population:
         des_r = np.zeros((2, 1), dtype="float")  # desired repulsion
         des_o = np.zeros((2, 1), dtype="float")  # desired orientation
         des_a = np.zeros((2, 1), dtype="float")  # desired attraction
-        des_dir = np.zeros((2, 1), dtype="float")  # desired direction
         nb_r = 0  # number of boid in repulsion zone
         nb_o = 0  # number of boid in orientation zone
         nb_a = 0  # number of boid in attraction zone
