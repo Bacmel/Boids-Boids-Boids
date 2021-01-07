@@ -265,11 +265,11 @@ class Population:
     @property
     def front_order(self):
         cgroup = self.cgroup
-        dgroup = self.dgroup
+        dgroup = self.dgroup.reshape(-1)
         pop_sorted = []
         for i in range(len(self.pop)):
             ind = self.pop[i]
-            relative_pos = ind.pos - cgroup
+            relative_pos = (ind.pos - cgroup).reshape(-1)
             front = np.dot(relative_pos, dgroup)
             pop_sorted.append((front, i))
         pop_sorted.sort(key=lambda elem: elem[0])
