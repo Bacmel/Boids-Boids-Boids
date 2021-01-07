@@ -1,3 +1,4 @@
+#!/usr/bin/python3.8
 from argparse import ArgumentTypeError
 from math import ceil, pi
 
