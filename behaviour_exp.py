@@ -36,7 +36,7 @@ if __name__ == '__main__':
           "--border none " \
           "--turning-rate 50 " \
           "--boid-velocity 5 " \
-          "--error 0:10 " \
+          "-d-sd 10 " \
           "-ror {} " \
           "-roa {} " \
           "-roo {} " \
