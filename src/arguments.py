@@ -101,6 +101,11 @@ def getArgs():
     parser = ArgumentParser()
 
     # basic
+    parser.add_argument("-o", "--output",
+                        dest="output",
+                        type=str,
+                        default=None,
+                        help="the name of the output folder in logs/")
     parser.add_argument("-n",
                         dest="n",
                         type=int,

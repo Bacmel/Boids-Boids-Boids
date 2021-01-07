@@ -9,9 +9,11 @@ from .borders import Infinite, Toric, Wall
 from .perceptions import BlindSpot, KNN, Outlier, Range
 
 if __name__ == "__main__":
-    dl = DataLogger()
     args = argu.getArgs()
 
+    dl = DataLogger()
+    if args.output:
+        dl.destination = f"logs/{args.output}/"
     incrementor = None
     perception = None
     border = None
