@@ -2,6 +2,7 @@ from math import cos, pi, sin
 import random
 
 import numpy as np
+import numpy.linalg as lin
 import numpy.random as np_rand
 
 from src import Boid, PALETTE
@@ -9,7 +10,8 @@ from src.utils import angle, normalize
 
 
 class Population:
-    def __init__(self, speed=1, turning_rate=0.2, roa, roo, ror, per, std, speed_sd=None, tr_sd=None, ror_sd=None, roo_sd=None, roa_sd=None):
+    def __init__(self, speed=1, turning_rate=0.2, roa, roo, ror, per, std, speed_sd=None, tr_sd=None, ror_sd=None,
+                 roo_sd=None, roa_sd=None):
         """Population Constructor.
 
         Args:
@@ -20,19 +22,19 @@ class Population:
             std (float): The standard deviation in the decision process (in radians).
 
         """
-        self.pop = []                       # list[Boid]
-        self.speed = speed                  # float
-        self.turning_rate = turning_rate    # float
-        self.roa = roa                      # float
-        self.roo = roo                      # float
-        self.ror = ror                      # float
-        self.perception = per               # Perception
-        self.std = std                      # float
-        self.speed_sd = speed_sd            # float
-        self.tr_sd = tr_sd                  # float
-        self.roo_sd = roo_sd                # float
-        self.ror_sd = ror_sd                # float
-        self.roa_sd = roa_sd                # float
+        self.pop = []  # list[Boid]
+        self.speed = speed  # float
+        self.turning_rate = turning_rate  # float
+        self.roa = roa  # float
+        self.roo = roo  # float
+        self.ror = ror  # float
+        self.perception = per  # Perception
+        self.std = std  # float
+        self.speed_sd = speed_sd  # float
+        self.tr_sd = tr_sd  # float
+        self.roo_sd = roo_sd  # float
+        self.ror_sd = ror_sd  # float
+        self.roa_sd = roa_sd  # float
 
     @property
     def cgroup(self):
@@ -43,8 +45,7 @@ class Population:
 
         """
         origin = np.zeros((2, 1))
-        mean = np.mean([self.perception.border.vector(origin, boid.pos)
-                        for boid in self.pop], axis=0)
+        mean = np.mean([self.perception.border.vector(origin, boid.pos) for boid in self.pop], axis=0)
         return mean
 
     @property
@@ -119,19 +120,18 @@ class Population:
             for _ in range(100000):
                 pos = self._random_pos(new_roa)
                 angle = 2 * pi * (random.random() - 0.5)
-                boid = Boid(color, pos, angle, speed=new_speed,
-                            turning_rate=new_tr, ror=new_ror, roo=new_roo, roa=new_roa)
+                boid = Boid(color, pos, angle, speed=new_speed, turning_rate=new_tr, ror=new_ror, roo=new_roo,
+                            roa=new_roa)
                 if len(self.pop) == 0 or len(self.perception.detect(boid, self.pop)) >= 1:
                     break
             else:
-                raise RuntimeError(
-                    "Failed to find a valid configuration after 100 000 tries!")
+                raise RuntimeError("Failed to find a valid configuration after 100 000 tries!")
         else:
             # At least one pose element is specified, no warranty
             pos = pos or self._random_pos(self.roa)
             angle = angle or (2 * pi * (random.random() - 0.5))
-            boid = Boid(color, pos, angle, speed=speed, turning_rate=turning_rate,
-                        ror=self.ror, roo=self.roo, roa=self.roa)
+            boid = Boid(color, pos, angle, speed=speed, turning_rate=turning_rate, ror=self.ror, roo=self.roo,
+                        roa=self.roa)
         self.pop.append(boid)
 
     def _random_pos(self, roa):
@@ -244,22 +244,57 @@ class Population:
 
         """
         quantities = {"cgroup": self.cgroup.reshape(-1), "dgroup": self.dgroup.reshape(-1), "pgroup": self.pgroup,
-                      "mgroup": self.mgroup, "speed": self.speed, "turning_rate": self.turning_rate, "roa": self.roa, "roo": self.roo, "ror": self.ror,
-                      "speed_sd": self.speed_sd, "turning_rate_sd": self.tr_sd, "ror_sd": self.ror_sd, "roo_sd": self.roo_sd, "roa_sd": self.roa_sd, "is_roo_rising": is_roo_rising}
-        data_logger.quantities = data_logger.quantities.append(
-            quantities, ignore_index=True)
+                      "mgroup": self.mgroup, "speed": self.speed, "turning_rate": self.turning_rate, "roa": self.roa,
+                      "roo": self.roo, "ror": self.ror, "speed_sd": self.speed_sd, "turning_rate_sd": self.tr_sd,
+                      "ror_sd": self.ror_sd, "roo_sd": self.roo_sd, "roa_sd": self.roa_sd,
+                      "is_roo_rising": is_roo_rising}
+        data_logger.quantities = data_logger.quantities.append(quantities, ignore_index=True)
 
     def store_state(self, data_logger):
+        front_order = self.front_order
+        center_order = self.center_order
         for i in range(len(self.pop)):
             ind = self.pop[i]
             ind_state = {"id": i, "pos": ind.pos.reshape(-1), "angle": ind.angle[0], "speed": ind.speed,
-                         "turning_rate": ind.turning_rate, "ror": ind.ror, "roo": ind.roo, "roa": ind.roa}
-            data_logger.state = data_logger.state.append(
-                ind_state, ignore_index=True)
+                         "turning_rate": ind.turning_rate, "ror": ind.ror, "roo": ind.roo, "roa": ind.roa,
+                         "front_idx": front_order[i], "center_idx": center_order[i]}
+            data_logger.state = data_logger.state.append(ind_state, ignore_index=True)
 
     def get_properties(self):
         properties = ["cgroup = " + str(self.cgroup.reshape(-1)), "dgroup = " + str(self.dgroup.reshape(-1)),
-                      "pgroup = {:.5f}".format(
-                          self.pgroup), "mgroup = {:.5f}".format(self.mgroup),
+                      "pgroup = {:.5f}".format(self.pgroup), "mgroup = {:.5f}".format(self.mgroup),
                       "roa = " + str(self.roa), "roo = " + str(self.roo), "ror = " + str(self.ror)]
         return properties
+
+    @property
+    def front_order(self):
+        cgroup = self.cgroup
+        dgroup = self.dgroup
+        pop_sorted = []
+        for i in range(len(self.pop)):
+            ind = self.pop[i]
+            relative_pos = ind.pos - cgroup
+            front = np.dot(relative_pos, dgroup)
+            pop_sorted.append((front, i))
+        pop_sorted.sort(key=lambda elem: elem[0])
+        order = [-1 for _ in range(len(self.pop))]  # Preallocate the list
+        for i in range(len(pop_sorted)):
+            _, ind_id = pop_sorted[i]
+            order[ind_id] = i
+        return order
+
+    @property
+    def center_order(self):
+        cgroup = self.cgroup
+        pop_sorted = []
+        for i in range(len(self.pop)):
+            ind = self.pop[i]
+            relative_pos = (ind.pos - cgroup).reshape(-1)
+            d_center = np.dot(relative_pos, relative_pos)
+            pop_sorted.append((d_center, i))
+        pop_sorted.sort(key=lambda elem: elem[0])
+        order = [-1 for _ in range(len(self.pop))]  # Preallocate the list
+        for i in range(len(pop_sorted)):
+            _, ind_id = pop_sorted[i]
+            order[ind_id] = i
+        return order
