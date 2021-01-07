@@ -6,7 +6,7 @@ from src import PALETTE, Population, Canvas
 class Universe:
     def __init__(
         self, canvas, perception, border, dt=1, ror=1, roo=1, roa=1,
-            bais=0, std=0):
+            bais=0, std=0, verbose=False):
         """Build a universe.
 
         Args:
@@ -22,6 +22,7 @@ class Universe:
         self.boids = Population(roa, roo, ror, perception, std)
         self.canvas = canvas
         self.border = border
+        self.verbose = verbose
 
     def populate(self, n, speed=1,
                  turning_rate=0.17453292519943295):
@@ -39,6 +40,8 @@ class Universe:
         if isinstance(self.border, Infinite):
             self.canvas.fit(self.boids)
         self.boids.draw(self.canvas)
+        if self.verbose:
+            self.canvas.show_properties(self.boids.get_properties())
         self.canvas.update()
 
     def tick(self):

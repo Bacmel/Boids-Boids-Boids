@@ -222,3 +222,14 @@ class Population:
         final_state = {"pos": [ind.pos for ind in self.pop], "dir": [ind.dir for ind in self.pop],
                        "speed": [ind.speed for ind in self.pop], "turning_rate": [ind.turning_rate for ind in self.pop]}
         data_logger.final_state = data_logger.state.append(final_state, ignore_index=True)
+
+    def get_properties(self):
+        properties = []
+        properties.append("cgroup = " + str(self.cgroup.reshape(-1)))
+        properties.append("dgroup = " + str(self.dgroup.reshape(-1)))
+        properties.append("pgroup = {:.5f}".format(self.pgroup))
+        properties.append("mgroup = {:.5f}".format(self.mgroup))
+        properties.append("roa = " + str(self.roa))
+        properties.append("roo = " + str(self.roo))
+        properties.append("ror = " + str(self.ror))
+        return properties

@@ -72,6 +72,24 @@ def gaussCond(params):
             "***ERROR: wrong argument: --error must follow 'mu:std' format.")
 
 
+def rooCond(roo_var, roo_step_duration):
+    if (roo_var and roo_step_duration) is None:
+        return False
+    elif (roo_var is not None) and (roo_step_duration is None):
+        raise ArgumentTypeError(
+            "***ERROR: not enough arguments: when -roo-var or --orientation-radius-variation is defined, then --roo-step-duration must be defined too.")
+    else:
+        return True
+
+def getRooVar(roo_var):
+    l = roo_var.split(":")
+    if len(l) != 3:
+        raise ArgumentTypeError("***ERROR: wrong argument: -roo-var or --orientation-radius-variation must be defined as 'inf bound : increment : sup bound'.")
+    if float(l[2]) < float(l[0]):
+        raise ArgumentTypeError("***ERROR: wrong argument: int -roo-var or --orientation-radius-variation sup_bound must be greater than inf_bound.")
+    return float(l[0]), float(l[1]), float(l[2])
+
+
 def getArgs():
     """
     Standard function to specify the default value of the hyper-parameters of experimental setups
@@ -120,22 +138,32 @@ def getArgs():
                         default=100,
                         help="Number of steps to play")
 
-    # weights
+    # Interaction zones
     parser.add_argument("-roa", "--attraction",
                         dest="attraction_radius",
-                        type=int,
+                        type=float,
                         default=1,
                         help="the radius of the attraction zone of each boid")
-    parser.add_argument("-roo", "--orientation",
-                        dest="orientation_radius",
-                        type=int,
-                        default=1,
-                        help="the radius of the orientation zone of each boid")
     parser.add_argument("-ror", "--repulsion",
                         dest="repulsion_radius",
-                        type=int,
+                        type=float,
                         default=1,
                         help="the radius of the replusion zone of each boid")
+    ror = parser.add_mutually_exclusive_group()
+    ror.add_argument("-roo", "--orientation",
+                     dest="orientation_radius",
+                     type=float,
+                     default=1,
+                     help="the radius of the orientation zone of each boid")
+    ror.add_argument("-roo-var", "--orientation-radius-variation",
+                     dest="orientation_var",
+                     type=str,
+                     # default="1:1:1",
+                     help="Variation of the orientation radius during the simulation defined as left bound : increment : right bound.")
+    parser.add_argument("--roo-step-duration",
+                        dest="roo_step_duration",
+                        type=int,
+                        help="Number of step for a specfic value of the orientation radius. Needed when '-roo-var' is used.")
 
     # behaviour near edges
     parser.add_argument("--border",

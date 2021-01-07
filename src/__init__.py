@@ -17,3 +17,4 @@ from .boid import Boid
 from .canvas import Canvas
 from .population import Population
 from .universe import Universe
+from .incrementor import Incrementor
