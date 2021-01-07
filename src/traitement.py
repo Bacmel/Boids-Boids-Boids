@@ -26,29 +26,94 @@ for ind, state_log, quantities_log in zip(range(len(state_logs)), state_logs, qu
     quantities = pd.read_csv(quantities_log)
     if analysis == "sorting":
         if ind == 0:
-            if 
-            pgroup = {}
-            mgroup = {}
-        droo = quantities.loc[0]["roo"]-quantities.loc[0]["ror"]
-        droa = quantities.loc[0]["roa"]-quantities.loc[0]["roo"]
-        if (droo, droa) not in pgroup :
-            pgroup[droo, droa] = []
-            mgroup[droo, droa] = []
-        pgroup[droo, droa].append(quantities.loc[0]["pgroup"])
-        mgroup[droo, droa].append(quantities.loc[0]["mgroup"])
+            # Initialisation
+            rho_speed_f = {}
+            rho_speed_c = {}
+            rho_turning_f = {}
+            rho_turning_c = {}
+            rho_roo_f = {}
+            rho_roo_c = {}
+            rho_ror_f = {}
+            rho_ror_c = {}
+        data = state.corr(method='spearman')
+        if quantities.loc[0]["speed_sd"]!=0: #Cas Vitesse
+            sd = quantities.loc[0]["speed_sd"]
+            if sd not in rho_speed_f :
+                rho_speed_f[sd] = []
+                rho_speed_c[sd] = []
+            rho_speed_f[sd].append(data.loc["speed"]["front_idx"])
+            rho_speed_c[sd].append(data.loc["speed"]["center_idx"])
+        if quantities.loc[0]["turning_rate_sd"]!=0: #Cas Turning Rate
+            sd = quantities.loc[0]["turning_rate_sd"]
+            if sd not in rho_turning_f :
+                rho_turning_f[sd] = []
+                rho_turning_c[sd] = []
+            rho_turning_f[sd].append(data.loc["turning_rate"]["front_idx"])
+            rho_turning_c[sd].append(data.loc["turning_rate"]["center_idx"])
+        if quantities.loc[0]["roo_sd"]!=0: #Cas roo
+            sd = quantities.loc[0]["roo_sd"]
+            if sd not in rho_roo_f :
+                rho_roo_f[sd] = []
+                rho_roo_c[sd] = []
+            rho_roo_f[sd].append(data.loc["roo"]["front_idx"])
+            rho_roo_c[sd].append(data.loc["roo"]["center_idx"])
+        if quantities.loc[0]["ror_sd"]!=0: #Cas ror
+            sd = quantities.loc[0]["ror_sd"]
+            if sd not in rho_ror_f :
+                rho_ror_f[sd] = []
+                rho_ror_c[sd] = []
+            rho_ror_f[sd].append(data.loc["ror"]["front_idx"])
+            rho_ror_c[sd].append(data.loc["ror"]["center_idx"])
 # Affichage
 if analysis == "sorting":
-    # pgroup
-    droo, droa = zip(*pgroup.keys()) 
-    # we have to unpack the dictionary values into two variables, b and c 
-    p = np.median(np.array(list(pgroup.values())), axis=0) 
-    # Now plotting 
-    fig = plt.figure() 
-    pr = fig.gca(projection='3d') 
-    pr.plot_trisurf(droo, droa, p)
-    # mgroup
+    # speed
+    sd = list(rho_speed_f.keys())
+    med_rho_speed_f = np.median(np.array(list(rho_speed_f.values())), axis=0) 
+    q_rho_speed_f = np.quantile(np.array(list(rho_speed_f.values())), [.25, .75], axis=0) 
+    e_rho_speed_f = np.array([med_rho_speed_f-q_rho_speed_f[0,:],q_rho_speed_f[1,:]-med_rho_speed_f])
+    med_rho_speed_c = np.median(np.array(list(rho_speed_c.values())), axis=0) 
+    q_rho_speed_c = np.quantile(np.array(list(rho_speed_c.values())), [.25, .75], axis=0) 
+    e_rho_speed_c = np.array([med_rho_speed_c-q_rho_speed_c[0,:],q_rho_speed_c[1,:]-med_rho_speed_c])
+    plt.errorbar(sd, med_rho_speed_f, yerr=e_rho_speed_f, label="front", markersize=8, capsize=20)
+    plt.errorbar(sd, med_rho_speed_c, yerr=e_rho_speed_c, label="center", markersize=8, capsize=20)
+    plt.legend(loc="lower right")
+    plt.figure()
+    # turning
+    sd = list(rho_turning_f.keys())
+    med_rho_turning_f = np.median(np.array(list(rho_turning_f.values())), axis=0) 
+    q_rho_turning_f = np.quantile(np.array(list(rho_turning_f.values())), [.25, .75], axis=0) 
+    e_rho_turning_f = np.array([med_rho_turning_f-q_rho_turning_f[0,:],q_rho_turning_f[1,:]-med_rho_turning_f])
+    med_rho_turning_c = np.median(np.array(list(rho_turning_c.values())), axis=0) 
+    q_rho_turning_c = np.quantile(np.array(list(rho_turning_c.values())), [.25, .75], axis=0) 
+    e_rho_turning_c = np.array([med_rho_turning_c-q_rho_turning_c[0,:],q_rho_turning_c[1,:]-med_rho_turning_c])
+    plt.errorbar(sd, med_rho_turning_f, yerr=e_rho_turning_f, label="front", markersize=8, capsize=20)
+    plt.errorbar(sd, med_rho_turning_c, yerr=e_rho_turning_c, label="center", markersize=8, capsize=20)
+    plt.legend(loc="lower right")
+    plt.figure()
+    # roo
+    sd = list(rho_roo_f.keys())
+    med_rho_roo_f = np.median(np.array(list(rho_roo_f.values())), axis=0) 
+    q_rho_roo_f = np.quantile(np.array(list(rho_roo_f.values())), [.25, .75], axis=0) 
+    e_rho_roo_f = np.array([med_rho_roo_f-q_rho_roo_f[0,:],q_rho_roo_f[1,:]-med_rho_roo_f])
+    med_rho_roo_c = np.median(np.array(list(rho_roo_c.values())), axis=0) 
+    q_rho_roo_c = np.quantile(np.array(list(rho_roo_c.values())), [.25, .75], axis=0) 
+    e_rho_roo_c = np.array([med_rho_roo_c-q_rho_roo_c[0,:],q_rho_roo_c[1,:]-med_rho_roo_c])
+    plt.errorbar(sd, med_rho_roo_f, yerr=e_rho_roo_f, label="front", markersize=8, capsize=20)
+    plt.errorbar(sd, med_rho_roo_c, yerr=e_rho_roo_c, label="center", markersize=8, capsize=20)
+    plt.legend(loc="lower right")
+    plt.figure()
+    # ror
+    sd = list(rho_ror_f.keys())
+    med_rho_ror_f = np.median(np.array(list(rho_ror_f.values())), axis=0) 
+    q_rho_ror_f = np.quantile(np.array(list(rho_ror_f.values())), [.25, .75], axis=0) 
+    e_rho_ror_f = np.array([med_rho_ror_f-q_rho_ror_f[0,:],q_rho_ror_f[1,:]-med_rho_ror_f])
+    med_rho_ror_c = np.median(np.array(list(rho_ror_c.values())), axis=0) 
+    q_rho_ror_c = np.quantile(np.array(list(rho_ror_c.values())), [.25, .75], axis=0) 
+    e_rho_ror_c = np.array([med_rho_ror_c-q_rho_ror_c[0,:],q_rho_ror_c[1,:]-med_rho_ror_c])
+    plt.errorbar(sd, med_rho_ror_f, yerr=e_rho_ror_f, label="front", markersize=8, capsize=20)
+    plt.errorbar(sd, med_rho_ror_c, yerr=e_rho_ror_c, label="center", markersize=8, capsize=20)
+    plt.legend(loc="lower right")
     plt.show()
-
 
 '''
 ### Traitement ###
@@ -194,7 +259,6 @@ def plot_behaviours(quantities_logs):
     # pgroup
     droo, droa = zip(*pgroup.keys()) 
     p = np.median(np.array(list(pgroup.values())), axis=0) 
-    # Now plotting 
     fig = plt.figure() 
     pr = fig.gca(projection='3d') 
     pr.plot_trisurf(droo, droa, p)
@@ -205,4 +269,97 @@ def plot_behaviours(quantities_logs):
     fig = plt.figure() 
     pr = fig.gca(projection='3d') 
     pr.plot_trisurf(droo, droa, m)
+    plt.show()
+
+def plot_sorting(state_logs, quantities_logs):
+    for ind, state_log, quantities_log in zip(range(len(state_logs)), state_logs, quantities_logs):
+        state = pd.read_csv(state_log)
+        quantities = pd.read_csv(quantities_log)
+        if ind == 0:
+            # Initialisation
+            rho_speed_f = {}
+            rho_speed_c = {}
+            rho_turning_f = {}
+            rho_turning_c = {}
+            rho_roo_f = {}
+            rho_roo_c = {}
+            rho_ror_f = {}
+            rho_ror_c = {}
+        data = state.corr(method='spearman')
+        if quantities.loc[0]["speed_sd"]!=0: #Cas Vitesse
+            sd = quantities.loc[0]["speed_sd"]
+            if sd not in rho_speed_f :
+                rho_speed_f[sd] = []
+                rho_speed_c[sd] = []
+            rho_speed_f[sd].append(data.loc["speed"]["front_idx"])
+            rho_speed_c[sd].append(data.loc["speed"]["center_idx"])
+        if quantities.loc[0]["turning_rate_sd"]!=0: #Cas Turning Rate
+            sd = quantities.loc[0]["turning_rate_sd"]
+            if sd not in rho_turning_f :
+                rho_turning_f[sd] = []
+                rho_turning_c[sd] = []
+            rho_turning_f[sd].append(data.loc["turning_rate"]["front_idx"])
+            rho_turning_c[sd].append(data.loc["turning_rate"]["center_idx"])
+        if quantities.loc[0]["roo_sd"]!=0: #Cas roo
+            sd = quantities.loc[0]["roo_sd"]
+            if sd not in rho_roo_f :
+                rho_roo_f[sd] = []
+                rho_roo_c[sd] = []
+            rho_roo_f[sd].append(data.loc["roo"]["front_idx"])
+            rho_roo_c[sd].append(data.loc["roo"]["center_idx"])
+        if quantities.loc[0]["ror_sd"]!=0: #Cas ror
+            sd = quantities.loc[0]["ror_sd"]
+            if sd not in rho_ror_f :
+                rho_ror_f[sd] = []
+                rho_ror_c[sd] = []
+            rho_ror_f[sd].append(data.loc["ror"]["front_idx"])
+            rho_ror_c[sd].append(data.loc["ror"]["center_idx"])
+    # Affichage
+    # speed
+    sd = list(rho_speed_f.keys())
+    med_rho_speed_f = np.median(np.array(list(rho_speed_f.values())), axis=0) 
+    q_rho_speed_f = np.quantile(np.array(list(rho_speed_f.values())), [.25, .75], axis=0) 
+    e_rho_speed_f = np.array([med_rho_speed_f-q_rho_speed_f[0,:],q_rho_speed_f[1,:]-med_rho_speed_f])
+    med_rho_speed_c = np.median(np.array(list(rho_speed_c.values())), axis=0) 
+    q_rho_speed_c = np.quantile(np.array(list(rho_speed_c.values())), [.25, .75], axis=0) 
+    e_rho_speed_c = np.array([med_rho_speed_c-q_rho_speed_c[0,:],q_rho_speed_c[1,:]-med_rho_speed_c])
+    plt.errorbar(sd, med_rho_speed_f, yerr=e_rho_speed_f, label="front", markersize=8, capsize=20)
+    plt.errorbar(sd, med_rho_speed_c, yerr=e_rho_speed_c, label="center", markersize=8, capsize=20)
+    plt.legend(loc="lower right")
+    plt.figure()
+    # turning
+    sd = list(rho_turning_f.keys())
+    med_rho_turning_f = np.median(np.array(list(rho_turning_f.values())), axis=0) 
+    q_rho_turning_f = np.quantile(np.array(list(rho_turning_f.values())), [.25, .75], axis=0) 
+    e_rho_turning_f = np.array([med_rho_turning_f-q_rho_turning_f[0,:],q_rho_turning_f[1,:]-med_rho_turning_f])
+    med_rho_turning_c = np.median(np.array(list(rho_turning_c.values())), axis=0) 
+    q_rho_turning_c = np.quantile(np.array(list(rho_turning_c.values())), [.25, .75], axis=0) 
+    e_rho_turning_c = np.array([med_rho_turning_c-q_rho_turning_c[0,:],q_rho_turning_c[1,:]-med_rho_turning_c])
+    plt.errorbar(sd, med_rho_turning_f, yerr=e_rho_turning_f, label="front", markersize=8, capsize=20)
+    plt.errorbar(sd, med_rho_turning_c, yerr=e_rho_turning_c, label="center", markersize=8, capsize=20)
+    plt.legend(loc="lower right")
+    plt.figure()
+    # roo
+    sd = list(rho_roo_f.keys())
+    med_rho_roo_f = np.median(np.array(list(rho_roo_f.values())), axis=0) 
+    q_rho_roo_f = np.quantile(np.array(list(rho_roo_f.values())), [.25, .75], axis=0) 
+    e_rho_roo_f = np.array([med_rho_roo_f-q_rho_roo_f[0,:],q_rho_roo_f[1,:]-med_rho_roo_f])
+    med_rho_roo_c = np.median(np.array(list(rho_roo_c.values())), axis=0) 
+    q_rho_roo_c = np.quantile(np.array(list(rho_roo_c.values())), [.25, .75], axis=0) 
+    e_rho_roo_c = np.array([med_rho_roo_c-q_rho_roo_c[0,:],q_rho_roo_c[1,:]-med_rho_roo_c])
+    plt.errorbar(sd, med_rho_roo_f, yerr=e_rho_roo_f, label="front", markersize=8, capsize=20)
+    plt.errorbar(sd, med_rho_roo_c, yerr=e_rho_roo_c, label="center", markersize=8, capsize=20)
+    plt.legend(loc="lower right")
+    plt.figure()
+    # ror
+    sd = list(rho_ror_f.keys())
+    med_rho_ror_f = np.median(np.array(list(rho_ror_f.values())), axis=0) 
+    q_rho_ror_f = np.quantile(np.array(list(rho_ror_f.values())), [.25, .75], axis=0) 
+    e_rho_ror_f = np.array([med_rho_ror_f-q_rho_ror_f[0,:],q_rho_ror_f[1,:]-med_rho_ror_f])
+    med_rho_ror_c = np.median(np.array(list(rho_ror_c.values())), axis=0) 
+    q_rho_ror_c = np.quantile(np.array(list(rho_ror_c.values())), [.25, .75], axis=0) 
+    e_rho_ror_c = np.array([med_rho_ror_c-q_rho_ror_c[0,:],q_rho_ror_c[1,:]-med_rho_ror_c])
+    plt.errorbar(sd, med_rho_ror_f, yerr=e_rho_ror_f, label="front", markersize=8, capsize=20)
+    plt.errorbar(sd, med_rho_ror_c, yerr=e_rho_ror_c, label="center", markersize=8, capsize=20)
+    plt.legend(loc="lower right")
     plt.show()
