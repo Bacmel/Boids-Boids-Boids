@@ -95,7 +95,6 @@ if __name__ == "__main__":
             u.spin_once()
             if incrementor:
                 if incrementor.will_change:
-                    print("saving in spin")
                     u.boids.store_quantities(dl, incrementor.is_rising)
                 incrementor.next(u)
         print('Simulation: Done')
