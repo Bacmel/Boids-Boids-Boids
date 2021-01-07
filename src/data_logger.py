@@ -9,7 +9,7 @@ class DataLogger:
         now = datetime.datetime.now()
         name = now.strftime("%d-%m-%Y_%H-%M-%S")
         self.destination = f"logs/{name}/"
-        self.poses = pandas.DataFrame()
+        self.state = pandas.DataFrame()
         self.quantities = pandas.DataFrame()
 
     def flush(self):

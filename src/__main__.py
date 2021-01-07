@@ -79,5 +79,6 @@ if __name__ == "__main__":
 
         u.populate(args.n, speed=args.boid_speed,
                    turning_rate=args.turning_rate / 180 * pi)
-        u.loop(args.step_nb, pretick=lambda uni: uni.boids.store_data(dl))
+        u.loop(args.step_nb, pretick=lambda uni: uni.boids.store_quantities(dl))
+        u.boids.store_state(dl)
     dl.flush()

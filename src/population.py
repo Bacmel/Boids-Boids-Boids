@@ -1,10 +1,11 @@
+from math import cos, pi, sin
 import random
+
 import numpy as np
 import numpy.random as np_rand
 
 from src import Boid, PALETTE
-from src.utils import normalize, angle
-from math import pi, cos, sin
+from src.utils import angle, normalize
 
 
 class Population:
@@ -35,10 +36,7 @@ class Population:
 
         """
         origin = np.zeros((2, 1))
-        mean = np.mean(
-            [self.perception.border.vector(origin, boid.pos)
-             for boid in self.pop],
-            axis=0)
+        mean = np.mean([self.perception.border.vector(origin, boid.pos) for boid in self.pop], axis=0)
         return mean
 
     @property
@@ -79,9 +77,7 @@ class Population:
         m_mean = np.mean(m_array)
         return np.linalg.norm(m_mean)
 
-    def add_boid(
-            self, color=None, pos=None, angle=None, speed=1,
-            turning_rate=0.2):
+    def add_boid(self, color=None, pos=None, angle=None, speed=1, turning_rate=0.2):
         """Add a boid to this population.
 
         Args:
@@ -98,9 +94,7 @@ class Population:
             for _ in range(100000):
                 pos = self._random_pos()
                 angle = 2 * pi * (random.random() - 0.5)
-                boid = Boid(
-                    color, pos, angle, speed=speed,
-                    turning_rate=turning_rate)
+                boid = Boid(color, pos, angle, speed=speed, turning_rate=turning_rate)
                 if (len(self.pop) == 0 or len(self.perception.detect(boid, self.pop)) >= 1):
                     break
             else:
@@ -109,9 +103,7 @@ class Population:
             # At least one pose element is specified, no warranty
             pos = pos or self._random_pos()
             angle = angle or (2 * pi * (random.random() - 0.5))
-            boid = Boid(
-                color, pos, angle, speed=speed,
-                turning_rate=turning_rate)
+            boid = Boid(color, pos, angle, speed=speed, turning_rate=turning_rate)
         self.pop.append(boid)
 
     def _random_pos(self):
@@ -213,7 +205,7 @@ class Population:
         new_angle += random.gauss(0.0, self.std)  # apply noise to the decision
         return new_angle
 
-    def store_data(self, data_logger):
+    def store_quantities(self, data_logger):
         """Store data.
 
         Store data at instant t.
@@ -222,20 +214,11 @@ class Population:
             data_logger (DataLogger): Data logger.
 
         """
-        row = {
-            "cgroup": self.cgroup.reshape(-1),
-            "dgroup": self.dgroup.reshape(-1),
-            "pgroup": self.pgroup,
-            "mgroup": self.mgroup,
-            "roa": self.roa,
-            "roo": self.roo,
-            "ror": self.ror,
-        }
-        data_logger.quantities = data_logger.quantities.append(
-            row, ignore_index=True)
+        quantities = {"cgroup": self.cgroup.reshape(-1), "dgroup": self.dgroup.reshape(-1), "pgroup": self.pgroup,
+                      "mgroup": self.mgroup, "roa": self.roa, "roo": self.roo, "ror": self.ror, }
+        data_logger.quantities = data_logger.quantities.append(quantities, ignore_index=True)
 
-        row2 = {}
-        for i in range(len(self.pop)):
-            pos = self.pop[i].pos
-            row2[f"boid{i}"] = pos.reshape(-1)
-        data_logger.poses = data_logger.poses.append(row2, ignore_index=True)
+    def store_state(self, data_logger):
+        final_state = {"pos": [ind.pos for ind in self.pop], "dir": [ind.dir for ind in self.pop],
+                       "speed": [ind.speed for ind in self.pop], "turning_rate": [ind.turning_rate for ind in self.pop]}
+        data_logger.final_state = data_logger.state.append(final_state, ignore_index=True)
