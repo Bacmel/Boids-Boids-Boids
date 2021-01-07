@@ -4,7 +4,7 @@ from math import ceil, pi
 
 import numpy as np
 
-from src import Canvas, Incrementor, PALETTE, Universe, arguments as argu
+from src import Canvas, Incrementor, PALETTE, Universe, Population, arguments as argu
 from src.data_logger import DataLogger
 from .borders import Infinite, Toric, Wall
 from .perceptions import BlindSpot, KNN, Outlier, Range
@@ -55,11 +55,6 @@ if __name__ == "__main__":
         if args.diff_threshold is not None:
             perception = Outlier(args.diff_threshold, border, perception)
 
-        argu.gaussCond(args.error_params)
-        mu, std = args.error_params.split(":")
-        mu = float(mu) / 180 * pi
-        std = float(std) / 180 * pi
-
         if argu.rooCond(args.orientation_var, args.roo_step_duration):
             inf_bound, increment, sup_bound = argu.getRooVar(args.orientation_var)
             incrementor = Incrementor(inf_bound, increment, sup_bound, args.roo_step_duration)
@@ -83,14 +78,17 @@ if __name__ == "__main__":
 
     # run simulation
     with Canvas(args.res.split("x"), border, args.time_step, args.render) as canvas:
-        u = Universe(canvas, perception=perception, border=border, dt=args.time_step, ror=args.repulsion_radius,
-                     roo=roo, roa=args.attraction_radius, std=std, verbose=args.verbose)
+        pop = Population(speed=args.boid_speed, turning_rate=args.turning_rate / 180 * pi, 
+                        roa=args.attraction_radius, roo=roo, ror=args.repulsion_radius, 
+                        per=perception, std=args.std, speed_sd=args.speed_sd, tr_sd=args.tr_sd,
+                        ror_sd=args.ror_sd, roo_sd=args.roo_sd, roa_sd=args.roa_sd)
+        u = Universe(canvas, perception=perception, border=border, population=pop, dt=args.time_step, verbose=args.verbose)
 
         if args.highlight:
             u.boids.add_boid(color=PALETTE["highlight"], pos=(0, 0))
             args.n -= 1
 
-        u.populate(args.n, speed=args.boid_speed, turning_rate=args.turning_rate / 180 * pi)
+        u.populate(args.n)#, speed=args.boid_speed, turning_rate=args.turning_rate / 180 * pi)
 
         # Simulation loop
         for i in range(steps):

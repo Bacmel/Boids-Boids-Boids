@@ -5,8 +5,7 @@ from .perceptions import Perception
 
 class Universe:
     def __init__(
-        self, canvas, perception, border, dt=1, ror=1, roo=1, roa=1,
-            bais=0, std=0, verbose=False):
+            self, canvas, perception, border, population, dt=1, verbose=False):
         """Build a universe.
 
         Args:
@@ -19,20 +18,19 @@ class Universe:
             roa (float): The radius of alignment.
         """
         self.dt = dt
-        self.boids = Population(roa, roo, ror, perception, std)
+        self.boids = population
         self.canvas = canvas
         self.border = border
         self.verbose = verbose
 
-    def populate(self, n, speed=1,
-                 turning_rate=0.17453292519943295):
+    def populate(self, n):
         """Populate with new individuals.
 
         Args:
             n (int): The number of individuals to add.
         """
         for _ in range(n):
-            self.boids.add_boid(speed=speed, turning_rate=turning_rate)
+            self.boids.add_boid()
 
     def draw(self):
         """Draw on the canvas."""
