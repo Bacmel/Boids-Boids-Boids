@@ -81,21 +81,20 @@ class Population:
         """Add a boid to this population.
 
         Args:
-            color (Color, optional): color for canvas visualisation.
-            pos (numpy.ndarray, optional): Initial position.
-            angle (float, optional): Initial orientation.
-            shape (numpy.ndarray, optional): Size of the world (if pose == None).
-
+            color (Color): color for canvas visualisation.
+            pos (numpy.ndarray): Initial position.
+            angle (float): The initial orientation.
+            speed (float): The speed (in length unit per seconds).
+            turning_rate (float): The maximal angular speed (in radians per seconds).
         """
         color = color or random.choice(PALETTE["accents"])
-        boid = None
-        if pos == None and angle == None:
+        if pos is None and angle is None:
             # No specified pose, ensure the new boid sees another one
             for _ in range(100000):
                 pos = self._random_pos()
                 angle = 2 * pi * (random.random() - 0.5)
                 boid = Boid(color, pos, angle, speed=speed, turning_rate=turning_rate)
-                if (len(self.pop) == 0 or len(self.perception.detect(boid, self.pop)) >= 1):
+                if len(self.pop) == 0 or len(self.perception.detect(boid, self.pop)) >= 1:
                     break
             else:
                 raise RuntimeError("Failed to find a valid configuration after 100 000 tries!")
@@ -205,31 +204,30 @@ class Population:
         new_angle += random.gauss(0.0, self.std)  # apply noise to the decision
         return new_angle
 
-    def store_quantities(self, data_logger):
+    def store_quantities(self, data_logger, is_roo_rising=False):
         """Store data.
 
         Store data at instant t.
 
         Args:
+            is_roo_rising (bool): Whether the radius of orientation is rising or not.
             data_logger (DataLogger): Data logger.
 
         """
         quantities = {"cgroup": self.cgroup.reshape(-1), "dgroup": self.dgroup.reshape(-1), "pgroup": self.pgroup,
-                      "mgroup": self.mgroup, "roa": self.roa, "roo": self.roo, "ror": self.ror, }
+                      "mgroup": self.mgroup, "roa": self.roa, "roo": self.roo, "ror": self.ror,
+                      "is_roo_rising": is_roo_rising}
         data_logger.quantities = data_logger.quantities.append(quantities, ignore_index=True)
 
     def store_state(self, data_logger):
-        final_state = {"pos": [ind.pos for ind in self.pop], "dir": [ind.dir for ind in self.pop],
-                       "speed": [ind.speed for ind in self.pop], "turning_rate": [ind.turning_rate for ind in self.pop]}
-        data_logger.final_state = data_logger.state.append(final_state, ignore_index=True)
+        for i in range(len(self.pop)):
+            ind = self.pop[i]
+            ind_state = {"id": i, "pos": ind.pos.reshape(-1), "angle": ind.angle[0], "speed": ind.speed,
+                         "turning_rate": ind.turning_rate}
+            data_logger.state = data_logger.state.append(ind_state, ignore_index=True)
 
     def get_properties(self):
-        properties = []
-        properties.append("cgroup = " + str(self.cgroup.reshape(-1)))
-        properties.append("dgroup = " + str(self.dgroup.reshape(-1)))
-        properties.append("pgroup = {:.5f}".format(self.pgroup))
-        properties.append("mgroup = {:.5f}".format(self.mgroup))
-        properties.append("roa = " + str(self.roa))
-        properties.append("roo = " + str(self.roo))
-        properties.append("ror = " + str(self.ror))
+        properties = ["cgroup = " + str(self.cgroup.reshape(-1)), "dgroup = " + str(self.dgroup.reshape(-1)),
+                      "pgroup = {:.5f}".format(self.pgroup), "mgroup = {:.5f}".format(self.mgroup),
+                      "roa = " + str(self.roa), "roo = " + str(self.roo), "ror = " + str(self.ror)]
         return properties

@@ -1,6 +1,6 @@
+from src import Canvas, PALETTE, Population
 from .borders import Border, Infinite
 from .perceptions import Perception
-from src import PALETTE, Population, Canvas
 
 
 class Universe:
@@ -51,7 +51,11 @@ class Universe:
         """
         self.boids.tick(self.dt)
 
-    def loop(self, step_nb, pretick=None, posttick=None):
+    def spin_once(self):
+        self.draw()
+        self.tick()
+
+    def spin(self, step_nb, pretick=None, posttick=None):
         """Loop the simulation.
 
         Draw then update the simulation until the canvas is closed.
@@ -60,8 +64,7 @@ class Universe:
             print(f'Simulation step {i} / {step_nb}')
             if pretick:
                 pretick(self)
-            self.draw()
-            self.tick()
+            self.spin_once()
             if posttick:
                 posttick(self)
         print('Simulation: Done')
