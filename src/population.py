@@ -10,8 +10,8 @@ from src.utils import angle, normalize
 
 
 class Population:
-    def __init__(self, speed=1, turning_rate=0.2, roa, roo, ror, per, std, speed_sd=None, tr_sd=None, ror_sd=None,
-                 roo_sd=None, roa_sd=None):
+    def __init__(self, speed=1, turning_rate=0.2, roa, roo, ror, per, std,
+                speed_sd=None, tr_sd=None, ror_sd=None, roo_sd=None, roa_sd=None):
         """Population Constructor.
 
         Args:
@@ -86,7 +86,7 @@ class Population:
         m_mean = np.mean(m_array)
         return np.linalg.norm(m_mean)
 
-    def add_boid(self, color=None, pos=None, angle=None, speed=1, turning_rate=0.2):
+    def add_boid(self, color=None, pos=None, angle=None):
         """Add a boid to this population.
 
         Args:
@@ -106,7 +106,7 @@ class Population:
             new_roa = self.roa
 
             if self.speed_sd is not None:
-                speed += random.gauss(0.0, self.speed_sd)
+                new_speed += random.gauss(0.0, self.speed_sd)
             if self.tr_sd is not None:
                 new_tr += random.gauss(0.0, self.tr_sd)
             if self.ror_sd is not None:
@@ -130,8 +130,8 @@ class Population:
             # At least one pose element is specified, no warranty
             pos = pos or self._random_pos(self.roa)
             angle = angle or (2 * pi * (random.random() - 0.5))
-            boid = Boid(color, pos, angle, speed=speed, turning_rate=turning_rate, ror=self.ror, roo=self.roo,
-                        roa=self.roa)
+            boid = Boid(color, pos, angle, speed=self.speed, turning_rate=self.turning_rate,
+                        ror=self.ror, roo=self.roo, roa=self.roa)
         self.pop.append(boid)
 
     def _random_pos(self, roa):

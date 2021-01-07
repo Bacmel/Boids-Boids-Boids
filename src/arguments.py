@@ -222,10 +222,10 @@ def getArgs():
                         type=float,
                         default=BOID_VEL,
                         help=f"the velocity of boids in the simulation (default to {BOID_VEL}")
-    parser.add_argument("--error",
-                        dest="error_params",
-                        type=str,
-                        default="0:1",
+    parser.add_argument("-d-sd", "--decision-sd",
+                        dest="std",
+                        type=float,
+                        default=0.,
                         help="Parameters of the gaussian distribution used for the noise around the decision making process of the boids")
 
     # standard deviation for sorting study
