@@ -1,4 +1,5 @@
 #!/usr/bin/python3.8
+from math import pi
 import os
 import subprocess
 
@@ -24,19 +25,19 @@ def run_memory_exp(nb_repeat, name, cmd):
 
 
 if __name__ == '__main__':
-    nb_repeat = 5
+    nb_repeat = 15
     name = "memory"
     cmd = "python3.8 -m src " \
           "--border none " \
-          "--turning-rate 50 " \
-          "--boid-velocity 5 " \
-          "-d-sd 10 " \
+          "-n 100 " \
           "-ror 1 " \
-          "-roa 31 " \
+          "-roo-var 1:0.25:2.25 " \
+          "--roo-step-duration 2000 " \
+          "-roa 14 " \
           "--blindspot-direction -180 " \
           "--blindspot-opening 90 " \
-          "--step-nb 1600 " \
-          "-roo-var 1:0.25:2.25 " \
-          "--roo-step-duration 20"
+          "--turning-rate 40 " \
+          "--boid-velocity 3 " \
+          f"-d-sd {0.05 / pi * 180} "
 
     run_memory_exp(nb_repeat, name, cmd)

@@ -1,9 +1,12 @@
 #!/usr/bin/python3.8
+from math import pi
 import os
 import subprocess
 
+import numpy as np
 
-def run_memory_exp(nb_repeat, name, cmd, ror, droo_range, droa_range):
+
+def run_behaviour_exp(nb_repeat, name, cmd, ror, droo_range, droa_range):
     # Create the required folders
     if not os.path.exists("logs"):
         os.mkdir("logs")
@@ -11,7 +14,7 @@ def run_memory_exp(nb_repeat, name, cmd, ror, droo_range, droa_range):
         os.mkdir(f"logs/{name}")
 
     # Log the configuration
-    with open("logs/memory/cmd_template.txt", "w") as cmd_log:
+    with open(f"logs/{name}/cmd_template.txt", "w") as cmd_log:
         cmd_log.write(cmd)
         cmd_log.write(f"ror: {ror}, droo_range: {droo_range}, droa_range: {droa_range}")
 
@@ -30,22 +33,23 @@ def run_memory_exp(nb_repeat, name, cmd, ror, droo_range, droa_range):
 
 
 if __name__ == '__main__':
-    nb_repeat = 5
+    nb_repeat = 30
     name = "behaviour"
     cmd = "python3.8 -m src " \
           "--border none " \
-          "--turning-rate 50 " \
-          "--boid-velocity 5 " \
-          "-d-sd 10 " \
+          "-n 100 " \
           "-ror {} " \
-          "-roa {} " \
           "-roo {} " \
+          "-roa {} " \
           "--blindspot-direction -180 " \
           "--blindspot-opening 90 " \
-          "--step-nb 1600"
+          "--turning-rate 40 " \
+          "--boid-velocity 3 " \
+          f"-d-sd {0.05 / pi * 180} " \
+          "--step-nb 5000 "
 
     ror = 1
-    droo_range = range(0, 15, 2)
-    droa_range = range(0, 15, 2)
+    droo_range = np.arange(0, 14.5, 0.5)
+    droa_range = np.arange(0, 14.5, 0.5)
 
-    run_memory_exp(nb_repeat, name, cmd, ror, droo_range, droa_range)
+    run_behaviour_exp(nb_repeat, name, cmd, ror, droo_range, droa_range)
