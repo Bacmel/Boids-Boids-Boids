@@ -84,7 +84,7 @@ if __name__ == "__main__":
                      verbose=args.verbose)
 
         if args.highlight:
-            u.boids.add_boid(color=PALETTE["highlight"], pos=(0, 0))
+            u.pop.add_individual(color=PALETTE["highlight"], pos=(0, 0))
             args.n -= 1
 
         u.populate(args.n)  # , speed=args.boid_speed, turning_rate=args.turning_rate / 180 * pi)
@@ -95,13 +95,13 @@ if __name__ == "__main__":
             u.spin_once()
             if incrementor:
                 if incrementor.will_change:
-                    u.boids.store_quantities(dl, incrementor.is_rising)
+                    u.pop.store_quantities(dl, incrementor.is_rising)
                 incrementor.next(u)
         print('Simulation: Done')
 
         # Store the final state
         if not incrementor:
             print("saving after")
-            u.boids.store_quantities(dl)
-        u.boids.store_state(dl)
+            u.pop.store_quantities(dl)
+        u.pop.store_state(dl)
     dl.flush()

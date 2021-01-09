@@ -26,4 +26,4 @@ class Incrementor:
             if self.stepper >= self.sup_bound - self.increment:
                 self.increment = -self.increment
             if self.stepper >= self.inf_bound:
-                universe.boids.roo = self.stepper
+                universe.pop.roo = self.stepper

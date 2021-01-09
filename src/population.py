@@ -179,7 +179,7 @@ class Population:
 
         return order
 
-    def add_boid(self, color=None, pos=None, angle=None):
+    def add_individual(self, color=None, pos=None, angle=None):
         """Add a individual to this population.
 
         Args:
