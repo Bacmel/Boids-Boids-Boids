@@ -58,20 +58,6 @@ def perceptionCond(view_dist, bs_direction, bs_opening, knn, outlier):
             "***ERROR: not enough arguments: use either argument --view-dist, -bsd & -bso, --count, --diff-threshold.")
 
 
-def gaussCond(params):
-    """
-    Conditions on the parameters of the gaussian law for errors.
-
-    Args:
-        params (str): define the mean and standard deviation.
-
-    Raise an argparse.ArgumentTypeError when the argument is not correctly defined.
-    """
-    if ":" not in params or len(params.split(":")) != 2:
-        raise ArgumentTypeError(
-            "***ERROR: wrong argument: --error must follow 'mu:std' format.")
-
-
 def rooCond(roo_var, roo_step_duration):
     if (roo_var and roo_step_duration) is None:
         return False
