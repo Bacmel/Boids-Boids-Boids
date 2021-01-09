@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from numpy.linalg import norm
 
 from .perception import Perception
@@ -13,6 +14,7 @@ class KNN(Perception):
             k (int): The maximum number of neighbors.
             border (Border): The borders of the environment.
             perception (Perception): The wrapped perception.
+
         """
         super().__init__(border, perception)
         self.k = k

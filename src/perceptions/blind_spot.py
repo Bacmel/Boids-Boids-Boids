@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from math import atan2, pi
 
 from src.utils import normalize_angle
@@ -15,6 +16,7 @@ class BlindSpot(Perception):
             opening (float): The opening of the cone (in radians). Must be positive and inferior to pi.
             border (Border): The border of the environment.
             perception (Perception): The wrapped perception.
+
         """
         super().__init__(border, perception)
         assert 0 < opening <= pi

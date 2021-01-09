@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .border import Border
 from .infinite import Infinite
 from .toric import Toric

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import numpy as np
 
 from .border import Border
@@ -7,6 +8,7 @@ class Toric(Border):
     """The class implements a toric world.
 
     The vector method perform its computation wrt. the toric propriety.
+
     """
 
     def wrap(self, point2d):

@@ -1,4 +1,4 @@
-from src import Boid
+# -*- coding: utf-8 -*-
 from src.utils import normalize_angle
 from .perception import Perception
 
@@ -7,10 +7,11 @@ def mean_orientation(pop):
     """Compute the mean orientation of the given population.
 
     Args:
-        pop (list[Boid]): The population to study.
+        pop (list<Individual>): The population to study.
 
     Returns:
         float: The mean orientation of the population (in radians).
+
     """
     angle_sum = 0.0
     for ind in pop:
@@ -23,6 +24,7 @@ class Outlier(Perception):
 
     If there is an outlier, only the individual maximizing the difference to the group is perceived, otherwise,
     the whole group is perceived.
+
     """
 
     def __init__(self, diff_threshold, border, perception):
@@ -32,6 +34,7 @@ class Outlier(Perception):
             diff_threshold (float): The threshold difference to the mean to tell that an individual is an outlier.
             border (Border): The borders of the environment.
             perception (Perception): The wrapped perception.
+
         """
         super().__init__(border, perception)
         self.diff_threshold = diff_threshold

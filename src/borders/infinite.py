@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .border import Border
 
 
@@ -6,6 +7,7 @@ class Infinite(Border):
 
     Wrapping a vector does not change it.
     The length and center of the area are not used.
+
     """
 
     def wrap(self, point2d):

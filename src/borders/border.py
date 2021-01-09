@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from abc import ABC, abstractmethod
 
 import numpy as np
@@ -10,6 +11,7 @@ class Border(ABC):
         Args:
             length (numpy.ndarray): The vector of length.
             origin (numpy.ndarray): The center position of the environment.
+
         """
         self.length = length
         self.origin = origin
@@ -17,12 +19,13 @@ class Border(ABC):
     @abstractmethod
     def wrap(self, point2d):
         """Wrap a vector to stay within the border.
-        
+
         Args:
-            point2d (numpy.ndarray): The point to wrap. 
+            point2d (numpy.ndarray): The point to wrap.
 
         Returns:
             numpy.ndarray: The wrapped point.
+
         """
         pass
 
@@ -36,5 +39,6 @@ class Border(ABC):
 
         Returns:
             numpy.ndarray: The vector between these point wrt. the border type.
+
         """
         pass
