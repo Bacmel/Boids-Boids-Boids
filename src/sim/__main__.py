@@ -6,8 +6,8 @@ from math import ceil, pi
 import numpy as np
 
 from . import Canvas, Incrementor, PALETTE, Population, Universe, arguments as argu
-from .data_logger import DataLogger
 from .borders import Infinite, Toric, Wall
+from .data_logger import DataLogger
 from .perceptions import BlindSpot, KNN, Outlier, Range
 
 if __name__ == "__main__":
@@ -79,13 +79,13 @@ if __name__ == "__main__":
         # selection of the right number of step
         if incrementor:
             steps = (
-                ceil(
-                    (incrementor.sup_bound - incrementor.inf_bound)
-                    / incrementor.increment
-                )
-                * 2
-                - 1
-            ) * args.roo_step_duration
+                            ceil(
+                                (incrementor.sup_bound - incrementor.inf_bound)
+                                / incrementor.increment
+                            )
+                            * 2
+                            - 1
+                    ) * args.roo_step_duration
         else:
             steps = args.step_nb
 
@@ -136,3 +136,4 @@ if __name__ == "__main__":
             u.pop.store_quantities(dl)
         u.pop.store_state(dl)
     dl.flush()
+    canvas.snapshot(dl.destination+"final_state.png")

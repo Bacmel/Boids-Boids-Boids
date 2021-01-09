@@ -161,7 +161,7 @@ class Canvas:
         """
         if self.render:
             self.video.write(self.current_frame)
-            self.current_frame = self.new_frame()
+        self.current_frame = self.new_frame()
 
     def fill(self, color):
         """Fill the current frame with the given color.
@@ -198,7 +198,7 @@ class Canvas:
         """
         font = cv2.FONT_HERSHEY_SIMPLEX
         color = (255, 255, 255)
-        fontScale = 0.5
+        font_scale = 0.5
         thickness = 1
 
         for i in range(len(properties)):
@@ -207,8 +207,17 @@ class Canvas:
                 properties[i],
                 (50, (i + 1) * 30),
                 font,
-                fontScale,
+                font_scale,
                 color,
                 thickness,
                 cv2.LINE_AA,
             )
+
+    def snapshot(self, filename):
+        """Save a the current frame as an image.
+
+        Args:
+            filename: The given file name (aka. the path to save to).
+
+        """
+        cv2.imwrite(filename, self.current_frame)
