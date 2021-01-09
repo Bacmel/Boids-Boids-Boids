@@ -129,7 +129,7 @@ if __name__ == "__main__":
                     u.pop.store_quantities(dl, incrementor.is_rising)
                     canvas.snapshot(
                         dl.destination
-                        + f"intermidiate_roo-{u.pop.roo}_rising-{incrementor.increment}.png"
+                        + f"intermidiate_roo-{u.pop.roo}_rising-{incrementor.is_rising}.png"
                     )
                 u.pop.roo = incrementor.next()
         print("Simulation: Done")
