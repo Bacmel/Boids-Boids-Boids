@@ -231,22 +231,27 @@ def getArgs():
     parser.add_argument('--speed-sd',
                         dest="speed_sd",
                         type=float,
+                        default=0.0,
                         help="The standard deviation of the gaussian distribution for the speed parameter.")
     parser.add_argument('--tr-sd',
                         dest="tr_sd",
                         type=float,
+                        default=0.0,
                         help="The standard deviation of the gaussian distribution for the turning rate parameter.")
     parser.add_argument('--ror-sd',
                         dest="ror_sd",
                         type=float,
+                        default=0.0,
                         help="The standard deviation of the gaussian distribution for the radius of repulsion parameter.")
     parser.add_argument('--roo-sd',
                         dest="roo_sd",
                         type=float,
+                        default=0.0,
                         help="The standard deviation of the gaussian distribution for the radius of orientation parameter.")
     parser.add_argument('--roa-sd',
                         dest="roa_sd",
                         type=float,
+                        default=0.0,
                         help="The standard deviation of the gaussian distribution for the radius of attraction parameter.")
 
     args = parser.parse_args()
