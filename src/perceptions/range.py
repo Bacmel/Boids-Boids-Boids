@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from numpy.linalg import norm
 
 from .perception import Perception
@@ -13,6 +14,7 @@ class Range(Perception):
             perception_range (float): The maximum distance to a detected neighbors (in units).
             border (Border): The border of the environment.
             perception (Perception): The wrapped perception.
+
         """
         super().__init__(border, perception)
         self.perception_range = perception_range

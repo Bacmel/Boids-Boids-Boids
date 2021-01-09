@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 from os.path import join
 
 DEFAULT_VIEW_DIST = 80.0
 DEFAULT_NUM_NEIGHBORS = 5
-BOID_NOSE_LEN = 1  # in units
+BOID_NOSE_LEN = 1  # in length units
 BOID_TURN_SPEED = 1  # in units per seconds
-BOID_VEL = 10  # in degrees per seconds
+VELOCITY = 10  # in degrees per seconds
 
 OUT_DIR = join(".", "out", "")
 PALETTE = {  # in bgr (expected by opencv)

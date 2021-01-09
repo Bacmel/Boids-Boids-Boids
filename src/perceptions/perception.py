@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from abc import ABC, abstractmethod
 
 from src import Individual
@@ -5,11 +6,12 @@ from src import Individual
 
 class Perception(ABC):
     def __init__(self, border, perception):
-        """
+        """Build a new Perception.
 
         Args:
             border (Border): The borders of the environment.
             perception (Perception): The wrapped perception.
+
         """
         self.border = border
         self.wrapped = perception
@@ -23,6 +25,7 @@ class Perception(ABC):
 
         Returns:
             list<Individual>: The detected neighbors.
+
         """
         pop_filtered = pop
         if self.wrapped:
@@ -39,5 +42,6 @@ class Perception(ABC):
 
         Returns:
             list<Individual>: The filtered population.
+
         """
         pass

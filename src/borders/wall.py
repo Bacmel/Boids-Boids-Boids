@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import numpy as np
 
 from .border import Border
@@ -7,6 +8,7 @@ class Wall(Border):
     """The class implements an wall border.
 
     Wrapping clips the point in the rectangular area.
+
     """
 
     def wrap(self, point2d):
