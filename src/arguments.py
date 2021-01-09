@@ -58,21 +58,14 @@ def perceptionCond(view_dist, bs_direction, bs_opening, knn, outlier):
             "***ERROR: not enough arguments: use either argument --view-dist, -bsd & -bso, --count, --diff-threshold.")
 
 
-def gaussCond(params):
+def rooCond(roo_var, roo_step_duration):
     """
-    Conditions on the parameters of the gaussian law for errors.
+    Condition on roo variation parameters.
 
     Args:
-        params (str): define the mean and standard deviation.
-
-    Raise an argparse.ArgumentTypeError when the argument is not correctly defined.
+        roo_var (string): variation parameters, inf bound : increment : sup bound.
+        roo_step_duration (int): number of step for each increment of roo value.
     """
-    if ":" not in params or len(params.split(":")) != 2:
-        raise ArgumentTypeError(
-            "***ERROR: wrong argument: --error must follow 'mu:std' format.")
-
-
-def rooCond(roo_var, roo_step_duration):
     if (roo_var and roo_step_duration) is None:
         return False
     elif (roo_var is not None) and (roo_step_duration is None):
@@ -83,6 +76,12 @@ def rooCond(roo_var, roo_step_duration):
 
 
 def getRooVar(roo_var):
+    """
+    Get the roo variation parameters casted in float.
+
+    Args:
+        roo_var (string): variation parameters, inf bound : increment : sup bound.
+    """
     l = roo_var.split(":")
     if len(l) != 3:
         raise ArgumentTypeError(

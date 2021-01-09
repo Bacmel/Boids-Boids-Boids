@@ -12,10 +12,9 @@ class Universe:
             canvas (Canvas): The canvas to draw on.
             perception (Perception): The perception used by the population.
             border (Border): The border policy.
+            population (Population): The population of partiules in the universe
             dt (float): The time step (in seconds).
-            ror (float): The radius of repulsion.
-            roo (float): The radius of orientation.
-            roa (float): The radius of alignment.
+            verbose (Bool): Flag to display population info in the canvas.
         """
         self.dt = dt
         self.boids = population
@@ -57,6 +56,11 @@ class Universe:
         """Loop the simulation.
 
         Draw then update the simulation until the canvas is closed.
+
+        Args:
+            step_nb: number of step in the simualtion.
+            pretick: function to call before update of the simulation.
+            posttick: function to call after the update of the simulation.
         """
         for i in range(step_nb):
             print(f'Simulation step {i} / {step_nb}')
