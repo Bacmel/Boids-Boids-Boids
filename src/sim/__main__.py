@@ -79,13 +79,13 @@ if __name__ == "__main__":
         # selection of the right number of step
         if incrementor:
             steps = (
-                            ceil(
-                                (incrementor.sup_bound - incrementor.inf_bound)
-                                / incrementor.increment
-                            )
-                            * 2
-                            - 1
-                    ) * args.roo_step_duration
+                ceil(
+                    (incrementor.sup_bound - incrementor.inf_bound)
+                    / incrementor.increment
+                )
+                * 2
+                - 1
+            ) * args.roo_step_duration
         else:
             steps = args.step_nb
 
@@ -119,7 +119,7 @@ if __name__ == "__main__":
             args.n -= 1
 
         u.populate(args.n)
-
+        dl.mkdir_dest()
         # Simulation loop
         for i in range(steps):
             print(f"Simulation step {i} / {steps} ({i * 100 // steps}%)")
@@ -127,6 +127,10 @@ if __name__ == "__main__":
             if incrementor:
                 if incrementor.will_change:
                     u.pop.store_quantities(dl, incrementor.is_rising)
+                    canvas.snapshot(
+                        dl.destination
+                        + f"intermidiate_roo-{u.pop.roo}_rising-{incrementor.increment}.png"
+                    )
                 u.pop.roo = incrementor.next()
         print("Simulation: Done")
 
@@ -136,4 +140,4 @@ if __name__ == "__main__":
             u.pop.store_quantities(dl)
         u.pop.store_state(dl)
     dl.flush()
-    canvas.snapshot(dl.destination+"final_state.png")
+    canvas.snapshot(dl.destination + "final_state.png")

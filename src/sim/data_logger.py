@@ -19,7 +19,7 @@ class DataLogger:
 
     def flush(self):
         """Flush all the data as CSV file."""
-        self._mkdir_dest()
+        self.mkdir_dest()
 
         # Store all data frame
         for name, value in self.__dict__.items():
@@ -27,7 +27,7 @@ class DataLogger:
                 path = f"{self.destination}{name}.csv"
                 value.to_csv(path)
 
-    def _mkdir_dest(self):
+    def mkdir_dest(self):
         """Make the required directories."""
         from_start = ""
         for folder in self.destination.split("/")[:-1]:
