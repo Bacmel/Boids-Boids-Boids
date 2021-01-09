@@ -34,7 +34,7 @@ class Universe:
         for _ in range(n):
             self.pop.add_individual()
 
-    def draw(self):
+    def draw(self, update=True):
         """Draw on the canvas."""
         self.canvas.fill(PALETTE["background"])
         if isinstance(self.border, Infinite):
@@ -42,7 +42,8 @@ class Universe:
         self.pop.draw(self.canvas)
         if self.verbose:
             self.canvas.show_properties(self.pop.get_properties())
-        self.canvas.update()
+        if (update):
+            self.canvas.update()
 
     def tick(self):
         """Perform on tick.

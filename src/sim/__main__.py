@@ -120,6 +120,8 @@ if __name__ == "__main__":
 
         u.populate(args.n)
         dl.mkdir_dest()
+        u.draw(False)
+        canvas.snapshot(dl.destination + "initial_state.png")
         # Simulation loop
         for i in range(steps):
             print(f"Simulation step {i} / {steps} ({i * 100 // steps}%)")
