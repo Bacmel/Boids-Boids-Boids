@@ -9,7 +9,6 @@ from src import BOID_NOSE_LEN, OUT_DIR
 
 
 class Canvas:
-
     def __init__(self, res, border, dt, render):
         """Canvas Constructor.
 
@@ -42,7 +41,9 @@ class Canvas:
             if not os.path.exists(OUT_DIR):
                 os.mkdir(OUT_DIR)
             self.filename = OUT_DIR + strftime("%Y%m%dT%H%M%S", localtime()) + ".mp4"
-            self.video = VideoWriter(self.filename, FourCC(*"mp4v"), int(self.fps), tuple(self.res))
+            self.video = VideoWriter(
+                self.filename, FourCC(*"mp4v"), int(self.fps), tuple(self.res)
+            )
 
     @property
     def render(self):
@@ -97,17 +98,27 @@ class Canvas:
                     ru_corner[i, 0] = pos[i, 0]
         self.box = ru_corner - ld_corner
         self.origin = 0.5 * (ru_corner + ld_corner)
+
         # Resize the box to match the resolution ration.
         res_ratio = self.res[0] / self.res[1]
         if self.box[0, 0] < res_ratio * self.box[1, 0]:
             self.box[0, 0] = res_ratio * self.box[1, 0]
         else:
             self.box[1, 0] = self.box[0, 0] / res_ratio
+
         # Compute the conversion factor from length unit to pixels.
         self._compute_ratios()
 
     def _compute_ratios(self):
-        self.ratios = np.multiply(self.res, 1 / (self.box.reshape(-1) + 2 * BOID_NOSE_LEN))
+        """Compute the conversion ratios from length units to pixel for each axis.
+
+        Returns:
+            The conversion ratios from length units to pixel for each axis.
+
+        """
+        self.ratios = np.multiply(
+            self.res, 1 / (self.box.reshape(-1) + 2 * BOID_NOSE_LEN)
+        )
         self.ratio = np.min(self.ratios)
 
     def to_px(self, pos):
@@ -120,10 +131,14 @@ class Canvas:
             numpy.ndarray: position in the image space (in pixels).
 
         """
-        x = (self.ratio * (pos[0] - self.origin[0] + self.box[0] / 2 + BOID_NOSE_LEN) + (self.ratios[0] - self.ratio) *
-             self.box[0] / 2)
-        y = (self.ratio * (-pos[1] + self.origin[1] + self.box[1] / 2 + BOID_NOSE_LEN) + (self.ratios[1] - self.ratio) *
-             self.box[1] / 2)
+        x = (
+            self.ratio * (pos[0] - self.origin[0] + self.box[0] / 2 + BOID_NOSE_LEN)
+            + (self.ratios[0] - self.ratio) * self.box[0] / 2
+        )
+        y = (
+            self.ratio * (-pos[1] + self.origin[1] + self.box[1] / 2 + BOID_NOSE_LEN)
+            + (self.ratios[1] - self.ratio) * self.box[1] / 2
+        )
         return np.array([[x], [y]], dtype=int)
 
     def new_frame(self):
@@ -169,17 +184,30 @@ class Canvas:
         cv2.fillPoly(
             self.current_frame,
             px,
-            # double list as fillPoly expects a list of polygons
             color,
             16,
-        )  # = antialiased
+        )
 
     def show_properties(self, properties):
+        """Get a list of string describing the properties.
+
+        Returns:
+            A list of string describing the properties.
+
+        """
         font = cv2.FONT_HERSHEY_SIMPLEX
         color = (255, 255, 255)
         fontScale = 0.5
         thickness = 1
 
         for i in range(len(properties)):
-            cv2.putText(self.current_frame, properties[i], (50,(i+1)*30), font,  
-                   fontScale, color, thickness, cv2.LINE_AA) 
+            cv2.putText(
+                self.current_frame,
+                properties[i],
+                (50, (i + 1) * 30),
+                font,
+                fontScale,
+                color,
+                thickness,
+                cv2.LINE_AA,
+            )
