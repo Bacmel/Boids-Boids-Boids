@@ -19,11 +19,11 @@ class Population:
         std,
         speed=1,
         turning_rate=0.2,
-        speed_sd=None,
-        tr_sd=None,
-        ror_sd=None,
-        roo_sd=None,
-        roa_sd=None,
+        speed_sd=0.0,
+        tr_sd=0.0,
+        ror_sd=0.0,
+        roo_sd=0.0,
+        roa_sd=0.0,
     ):
         """Population Constructor.
 
