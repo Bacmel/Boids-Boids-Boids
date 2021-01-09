@@ -31,9 +31,7 @@ def run_behaviour_exp(nb_repeat, name, cmd, ror, droo_range, droa_range):
                     itr_cmd = full_cmd + " --output {}/droo_{}_droa_{}_itr_{}".format(
                         name, droo, droa, i
                     )
-                    process = subprocess.Popen(
-                        itr_cmd, shell=True, stdout=subprocess.PIPE
-                    )
+                    process = subprocess.Popen(itr_cmd, shell=True)
                     process.wait()
     print("[Behaviour experience] Done !")
 

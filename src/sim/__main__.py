@@ -124,7 +124,7 @@ if __name__ == "__main__":
         canvas.snapshot(dl.destination + "initial_state.png")
         # Simulation loop
         for i in range(steps):
-            print(f"Simulation step {i} / {steps} ({i * 100 // steps}%)")
+            print(f"Simulation step {i} / {steps} ({i * 100 // steps}%)",end="\r")
             u.spin_once()
             if incrementor:
                 if incrementor.will_change:
@@ -134,7 +134,7 @@ if __name__ == "__main__":
                         + f"intermidiate_roo-{u.pop.roo}_rising-{incrementor.is_rising}.png"
                     )
                 u.pop.roo = incrementor.next()
-        print("Simulation: Done")
+        print("\nSimulation: Done")
 
         # Store the final state
         if not incrementor:

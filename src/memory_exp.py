@@ -19,7 +19,7 @@ def run_memory_exp(nb_repeat, name, cmd):
     for i in range(nb_repeat):
         print("[Memory experience] Progression: {}%".format(i * 100 // nb_repeat))
         itr_cmd = cmd + " --output {}/itr_{}".format(name, i)
-        process = subprocess.Popen(itr_cmd, shell=True, stdout=subprocess.PIPE)
+        process = subprocess.Popen(itr_cmd, shell=True)
         process.wait()
     print("[Memory experience] Done !")
 
@@ -32,7 +32,7 @@ if __name__ == "__main__":
         "--border none "
         "-n 100 "
         "-ror 1 "
-        "-roo-var 1:0.25:2.25 "
+        "-roo-var 1:0.25:4.25 "
         "--roo-step-duration 2000 "
         "-roa 14 "
         "--blindspot-direction -180 "
