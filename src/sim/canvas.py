@@ -6,7 +6,7 @@ import cv2
 from cv2 import VideoWriter, VideoWriter_fourcc as FourCC
 import numpy as np
 
-from src import BOID_NOSE_LEN, OUT_DIR
+from . import BOID_NOSE_LEN, OUT_DIR
 
 
 class Canvas:

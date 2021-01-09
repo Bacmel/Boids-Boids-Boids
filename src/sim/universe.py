@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from src import Canvas, PALETTE, Population
+from . import Canvas, PALETTE, Population
 from .borders import Border, Infinite
 
 

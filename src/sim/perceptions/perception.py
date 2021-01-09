@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from abc import ABC, abstractmethod
 
-from src import Individual
+from .. import Individual
 
 
 class Perception(ABC):

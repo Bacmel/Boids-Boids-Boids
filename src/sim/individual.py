@@ -2,8 +2,8 @@
 
 import numpy as np
 
-from src import BOID_NOSE_LEN
-from src.utils import normalize_angle, unit_vector
+from . import BOID_NOSE_LEN
+from .utils import normalize_angle, unit_vector
 
 
 class Individual:

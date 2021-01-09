@@ -6,8 +6,8 @@ import numpy as np
 import numpy.linalg as lin
 import numpy.random as np_rand
 
-from src import Individual, PALETTE
-from src.utils import angle, normalize
+from . import Individual, PALETTE
+from .utils import angle, normalize
 
 
 class Population:

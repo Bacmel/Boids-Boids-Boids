@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from math import atan2, pi
 
-from src.utils import normalize_angle
+from ..utils import normalize_angle
 from .perception import Perception
 
 

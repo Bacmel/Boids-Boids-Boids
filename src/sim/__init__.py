@@ -14,8 +14,8 @@ PALETTE = {  # in bgr (expected by opencv)
     "accents": [(0xC2, 0xC7, 0xEF), (0xD6, 0xD7, 0xCD), (0xD4, 0xE5, 0xFF)],
 }
 
-from .individual import Individual
 from .canvas import Canvas
+from .incrementor import Incrementor
+from .individual import Individual
 from .population import Population
 from .universe import Universe
-from .incrementor import Incrementor

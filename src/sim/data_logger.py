@@ -10,7 +10,7 @@ class DataLogger:
         """Build a DataLogger with a default destination name."""
         now = datetime.datetime.now()
         name = now.strftime("%d-%m-%Y_%H-%M-%S")
-        self.destination = f"logs/{name}/"
+        self.destination = f"../logs/{name}/"
         """str: The folder to save the CSV file in."""
         self.state = pandas.DataFrame()
         """pandas.DataFrame: The state information."""

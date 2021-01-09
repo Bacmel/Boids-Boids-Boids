@@ -8,13 +8,13 @@ import numpy as np
 
 def run_sorting_exp(nb_repeat, name, cmd, variable):
     # Create the required folders
-    if not os.path.exists("logs"):
-        os.mkdir("logs")
-    if not os.path.exists(f"logs/{name}"):
-        os.mkdir(f"logs/{name}")
+    if not os.path.exists("../logs"):
+        os.mkdir("../logs")
+    if not os.path.exists(f"../logs/{name}"):
+        os.mkdir(f"../logs/{name}")
 
     # Log the configuration
-    with open(f"logs/{name}/cmd_template.txt", "w") as cmd_log:
+    with open(f"../logs/{name}/cmd_template.txt", "w") as cmd_log:
         cmd_log.write(cmd)
 
     for var_name, var_pattern, var_range in variable:
@@ -32,9 +32,9 @@ def run_sorting_exp(nb_repeat, name, cmd, variable):
 
 
 if __name__ == '__main__':
-    nb_repeat = 30
+    nb_repeat = 3
     name = "sorting"
-    cmd = "python3.8 -m src " \
+    cmd = "python3.8 -m sim " \
           "--border none " \
           "-n 100 " \
           "-ror 1 " \
@@ -43,9 +43,9 @@ if __name__ == '__main__':
           "--blindspot-direction -180 " \
           "--blindspot-opening 90 " \
           "--turning-rate 40 " \
-          "--boid-velocity 3 " \
+          "--velocity 3 " \
           f"-d-sd {0.05 / pi * 180} " \
-          "--step-nb 5000 "
+          "--step-nb 5 "
 
     speed_sd_range = np.array([0.0125, 0.025, 0.05, 0.1, 0.15, 0.2])
     turning_rate_range = np.arange(1, 10, 2)

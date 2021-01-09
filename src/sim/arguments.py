@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from argparse import ArgumentParser, ArgumentTypeError
 
-from src import BOID_TURN_SPEED, VELOCITY, DEFAULT_NUM_NEIGHBORS
+from . import BOID_TURN_SPEED, VELOCITY, DEFAULT_NUM_NEIGHBORS
 
 
 def blindspotCond(directions, openings):

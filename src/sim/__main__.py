@@ -5,8 +5,8 @@ from math import ceil, pi
 
 import numpy as np
 
-from src import Canvas, Incrementor, PALETTE, Population, Universe, arguments as argu
-from src.data_logger import DataLogger
+from . import Canvas, Incrementor, PALETTE, Population, Universe, arguments as argu
+from .data_logger import DataLogger
 from .borders import Infinite, Toric, Wall
 from .perceptions import BlindSpot, KNN, Outlier, Range
 
@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
     dl = DataLogger()
     if args.output:
-        dl.destination = f"logs/{args.output}/"
+        dl.destination = f"../logs/{args.output}/"
     incrementor = None
     perception = None
     border = None
