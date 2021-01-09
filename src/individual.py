@@ -4,13 +4,12 @@ import numpy as np
 
 from src import BOID_NOSE_LEN
 from src.utils import normalize_angle, unit_vector
-from math import pi
 
 
-class Boid:
+class Individual:
     def __init__(self, color, pos, ror, roo, roa, angle=0, speed=1.0,
                  turning_rate=0.2):
-        """Constructor of Boid.
+        """Constructor of Individual.
 
         Args:
             color (Color): color for canvas visualisation.
@@ -19,47 +18,55 @@ class Boid:
 
         """
         self.pos = np.array(pos, dtype="float")
+        """numpy.ndarray: The position (in length units)."""
         self.angle = normalize_angle(angle)
+        """float: The orientation (in radians)."""
         self.color = color
+        """The color to display."""
         self.speed = speed
+        """float: The speed (in length units per seconds)."""
         self.turning_rate = turning_rate
+        """float: The angular speed (in radians per seconds)."""
         self.ror = ror
+        """float: The range of repulsion (in length units)."""
         self.roo = roo
+        """float: The range of orientation (in length units)."""
         self.roa = roa
+        """float: The range of attraction (in length units)."""
 
     @property
     def dir(self):
-        """Direction property of the Boid.
+        """Get the unitary vector of direction.
 
         Returns:
-            numpy.ndarray: unity vector of the boid's direction.
+            numpy.ndarray: The unitary vector of direction.
 
         """
         return unit_vector(normalize_angle(self.angle))
 
     @property
     def vel(self):
-        """Velocity property of the Boid.
+        """Get the velocity.
 
         Returns:
-            numpy.ndarray: velocity vector of the boid.
+            numpy.ndarray: The velocity vector (in length units per seconds).
 
         """
         return self.speed * self.dir
 
     def turn_by(self, dangle, dt):
-        """Movement by reference speed.
+        """Movement from the given angular speed.
 
         Args:
-            dangle (float): Reference speed (in radians).
-            dt (float): simulation time step (in seconds).
+            dangle (float): The angular variation (in radians).
+            dt (float): The simulation time step (in seconds).
 
         """
         # Don't turn too fast
         self.angle += np.clip(dangle, -dt * self.turning_rate,
                               dt * self.turning_rate)
 
-        # Keep angle in range [0, 2pi)
+        # Keep angle in range [-pi, pi)
         self.angle = normalize_angle(self.angle)
 
     def turn_to(self, angle, dt):
@@ -70,7 +77,6 @@ class Boid:
             dt (float): The simulation time step (in seconds).
 
         """
-
         a = normalize_angle(angle - self.angle)
         self.turn_by(a, dt)
 

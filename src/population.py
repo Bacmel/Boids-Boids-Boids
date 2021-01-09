@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from math import cos, pi, sin
 import random
 
@@ -5,7 +6,7 @@ import numpy as np
 import numpy.linalg as lin
 import numpy.random as np_rand
 
-from src import Boid, PALETTE
+from src import Individual, PALETTE
 from src.utils import angle, normalize
 
 
@@ -210,7 +211,7 @@ class Population:
             for _ in range(100000):
                 pos = self._generate_random_pos(new_roa)
                 ind_angle = 2 * pi * (random.random() - 0.5)
-                ind = Boid(
+                ind = Individual(
                     color, pos, new_ror, new_roo, new_roa, ind_angle, new_speed, new_tr
                 )
                 if (
@@ -226,7 +227,7 @@ class Population:
             # At least one pose element is specified, no warranty
             pos = pos or self._generate_random_pos(self.roa)
             ind_angle = angle or (2 * pi * (random.random() - 0.5))
-            ind = Boid(
+            ind = Individual(
                 color,
                 pos,
                 self.ror,
@@ -287,7 +288,7 @@ class Population:
         """
         for ind in self.pop:
             ind.draw(canvas)
-        bgroup = Boid(0xFFFFF, self.cgroup, 0.0, 0.0, 0.0, angle(self.dgroup))
+        bgroup = Individual(0xFFFFF, self.cgroup, 0.0, 0.0, 0.0, angle(self.dgroup))
         bgroup.draw(canvas)
 
     def reorient(self, ind):
@@ -299,7 +300,7 @@ class Population:
         - Attraction
 
         Args:
-            ind (Boid): The given individual.
+            ind (Individual): The given individual.
 
         Returns:
             float: The new orientation for the given individual (in radians).

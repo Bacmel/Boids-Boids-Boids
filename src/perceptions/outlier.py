@@ -1,4 +1,4 @@
-from src import Boid
+from src import Individual
 from src.utils import normalize_angle
 from .perception import Perception
 
@@ -7,7 +7,7 @@ def mean_orientation(pop):
     """Compute the mean orientation of the given population.
 
     Args:
-        pop (list[Boid]): The population to study.
+        pop (list<Individual>): The population to study.
 
     Returns:
         float: The mean orientation of the population (in radians).
