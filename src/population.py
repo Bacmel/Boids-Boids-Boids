@@ -188,42 +188,7 @@ class Population:
             angle (float): The initial orientation.
         """
         color = color or random.choice(PALETTE["accents"])
-        if pos is None and angle is None:
-            # Generate gaussian distribution for each parameter
-            new_speed = self.speed
-            new_tr = self.turning_rate
-            new_ror = self.ror
-            new_roo = self.roo
-            new_roa = self.roa
-
-            if self.speed_sd is not None:
-                new_speed += random.gauss(0.0, self.speed_sd)
-            if self.tr_sd is not None:
-                new_tr += random.gauss(0.0, self.tr_sd)
-            if self.ror_sd is not None:
-                new_ror += random.gauss(0.0, self.ror_sd)
-            if self.roo_sd is not None:
-                new_roo += random.gauss(0.0, self.roo_sd)
-            if self.roa_sd is not None:
-                new_roa += random.gauss(0.0, self.roa_sd)
-
-            # No specified pose, ensure the new individual sees another one
-            for _ in range(100000):
-                pos = self._generate_random_pos(new_roa)
-                ind_angle = 2 * pi * (random.random() - 0.5)
-                ind = Individual(
-                    color, pos, new_ror, new_roo, new_roa, ind_angle, new_speed, new_tr
-                )
-                if (
-                    len(self.pop) == 0
-                    or len(self.perception.detect(ind, self.pop)) >= 1
-                ):
-                    break
-            else:
-                raise RuntimeError(
-                    "Failed to find a valid configuration after 100 000 tries!"
-                )
-        else:
+        if pos or angle:
             # At least one pose element is specified, no warranty
             pos = pos or self._generate_random_pos(self.roa)
             ind_angle = angle or (2 * pi * (random.random() - 0.5))
@@ -237,6 +202,48 @@ class Population:
                 speed=self.speed,
                 turning_rate=self.turning_rate,
             )
+        else:
+            # Generate gaussian distribution for each parameter
+            new_speed = self.speed
+            new_tr = self.turning_rate
+            new_ror = self.ror
+            new_roo = self.roo
+            new_roa = self.roa
+
+            if self.speed_sd > 0.0:
+                new_speed += random.gauss(0.0, self.speed_sd)
+            if self.tr_sd > 0.0:
+                new_tr += random.gauss(0.0, self.tr_sd)
+            if self.ror_sd > 0.0:
+                new_ror += random.gauss(0.0, self.ror_sd)
+            if self.roo_sd > 0.0:
+                new_roo += random.gauss(0.0, self.roo_sd)
+            if self.roa_sd > 0.0:
+                new_roa += random.gauss(0.0, self.roa_sd)
+
+            ind = Individual(
+                color,
+                np.zeros((2, 1)),
+                new_ror,
+                new_roo,
+                new_roa,
+                0.0,
+                new_speed,
+                new_tr,
+            )
+            # No specified pose, ensure the new individual sees another one
+            for _ in range(100000):
+                ind.pos = self._generate_random_pos(new_roa)
+                ind.angle = 2 * pi * (random.random() - 0.5)
+                if (
+                    len(self.pop) == 0
+                    or len(self.perception.detect(ind, self.pop)) >= 1
+                ):
+                    break
+            else:
+                raise RuntimeError(
+                    "Failed to find a valid configuration after 100 000 tries!"
+                )
 
         self.pop.append(ind)
 
