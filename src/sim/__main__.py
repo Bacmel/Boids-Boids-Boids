@@ -129,11 +129,11 @@ if __name__ == "__main__":
                 u.draw()
                 u.tick()
                 if incrementor:
-                    if incrementor.will_change:
+                    if incrementor.will_change or i % 100 == 0:
                         u.pop.store_quantities(dl, incrementor.is_rising)
                         canvas.snapshot(
                             dl.destination
-                            + f"intermidiate_roo-{u.pop.roo}_rising-{incrementor.is_rising}.png"
+                            + f"intermidiate_roo-{u.pop.roo}_rising-{incrementor.is_rising}_step-{i}.png"
                         )
                     u.pop.roo = incrementor.next()
         else:
@@ -141,12 +141,12 @@ if __name__ == "__main__":
                 print(f"Simulation step {i} / {steps} ({i * 100 // steps}%)", end="\r")
                 u.tick()
                 if incrementor:
-                    if incrementor.will_change:
+                    if incrementor.will_change or i % 100 == 0:
                         u.pop.store_quantities(dl, incrementor.is_rising)
                         u.draw(False)
                         canvas.snapshot(
                             dl.destination
-                            + f"intermidiate_roo-{u.pop.roo}_rising-{incrementor.is_rising}.png"
+                            + f"intermidiate_roo-{u.pop.roo}_rising-{incrementor.is_rising}_step-{i}.png"
                         )
                     u.pop.roo = incrementor.next()
         print("\nSimulation: Done")
