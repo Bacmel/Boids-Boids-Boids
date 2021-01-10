@@ -42,7 +42,7 @@ if __name__ == "__main__":
     name = "sorting"
     cmd = (
         "--border none "
-        "-n 100 "
+        "-n 60 "
         "-ror 1 "
         "-roo 6 "
         "-roa 14 "
