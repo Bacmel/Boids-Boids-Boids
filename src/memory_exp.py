@@ -1,7 +1,8 @@
 #!/usr/bin/python3.8
 from math import pi
 import os
-import subprocess
+from sim.sim import Sim
+from sim.arguments import getArgs
 
 
 def run_memory_exp(nb_repeat, name, cmd):
@@ -19,8 +20,9 @@ def run_memory_exp(nb_repeat, name, cmd):
     for i in range(nb_repeat):
         print("[Memory experience] Progression: {}%".format(i * 100 // nb_repeat))
         itr_cmd = cmd + " --output {}/itr_{}".format(name, i)
-        process = subprocess.Popen(itr_cmd, shell=True)
-        process.wait()
+        args = getArgs(itr_cmd.split(" "))
+        sim = Sim()
+        sim.from_args(args)
     print("[Memory experience] Done !")
 
 
@@ -28,18 +30,17 @@ if __name__ == "__main__":
     nb_repeat = 10 #15
     name = "memory"
     cmd = (
-        "python3.8 -m sim "
         "--border none "
-        "-n 100 "
+        "-n 60 "
         "-ror 1 "
-        "-roo-var 1:0.5:4.5 " #1:0.25:4.25
-        "--roo-step-duration 2000 "
+        "-roo-var 1:0.25:4.25 " #1:0.25:4.25
+        "--roo-step-duration 500 "
         "-roa 14 "
         "--blindspot-direction -180 "
         "--blindspot-opening 90 "
         "--turning-rate 40 "
         "--velocity 3 "
-        f"-d-sd {0.05 / pi * 180} "
+        f"-d-sd {0.05 / pi * 180}"
     )
 
     run_memory_exp(nb_repeat, name, cmd)

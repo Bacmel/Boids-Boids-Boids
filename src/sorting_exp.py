@@ -1,7 +1,8 @@
 #!/usr/bin/python3.8
 from math import pi
 import os
-import subprocess
+from sim.sim import Sim
+from sim.arguments import getArgs
 
 import numpy as np
 
@@ -30,18 +31,18 @@ def run_sorting_exp(nb_repeat, name, cmd, variable):
                 itr_cmd = param_cmd + " --output {}/{}_{}_itr_{}".format(
                     name, var_name, val, i
                 )
-                process = subprocess.Popen(itr_cmd, shell=True)
-                process.wait()
-    print("[Memory experience] Done !")
+                args = getArgs(itr_cmd.split(" "))
+                sim = Sim()
+                sim.from_args(args)
+    print("[Sorting experience] Done !")
 
 
 if __name__ == "__main__":
     nb_repeat = 10 #15
     name = "sorting"
     cmd = (
-        "python3.8 -m sim "
         "--border none "
-        "-n 100 "
+        "-n 60 "
         "-ror 1 "
         "-roo 6 "
         "-roa 14 "
@@ -50,7 +51,7 @@ if __name__ == "__main__":
         "--turning-rate 40 "
         "--velocity 3 "
         f"-d-sd {0.05 / pi * 180} "
-        "--step-nb 2000 " #5000
+        "--step-nb 500" #5000
     )
 
     speed_sd_range = np.array([0.0125, 0.05, 0.1, 0.15, 0.2]) #[0.0125, 0.025, 0.05, 0.1, 0.15, 0.2]
