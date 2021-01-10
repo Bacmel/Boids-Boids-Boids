@@ -185,13 +185,6 @@ class Sim:
                     )
                     u.draw()
                     u.tick()
-                    if i % 100 == 0:
-                        u.pop.store_quantities(dl)
-                        u.draw(False)
-                        canvas.snapshot(
-                            dl.destination
-                            + f"intermidiate_roo-{u.pop.roo}_step-{i}.png"
-                        )
                     if self.incrementor:
                         if self.incrementor.will_change:
                             u.pop.store_quantities(dl, self.incrementor.is_rising)
@@ -207,13 +200,6 @@ class Sim:
                         end="\r",
                     )
                     u.tick()
-                    if i % 100 == 0:
-                        u.pop.store_quantities(dl)
-                        u.draw(False)
-                        canvas.snapshot(
-                            dl.destination
-                            + f"intermidiate_roo-{u.pop.roo}_step-{i}.png"
-                        )
                     if self.incrementor:
                         if self.incrementor.will_change:
                             u.pop.store_quantities(dl, self.incrementor.is_rising)

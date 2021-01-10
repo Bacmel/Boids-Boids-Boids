@@ -31,9 +31,9 @@ if __name__ == "__main__":
     name = "memory"
     cmd = (
         "--border none "
-        "-n 100 "
+        "-n 60 "
         "-ror 1 "
-        "-roo-var 1:0.5:4.5 " #1:0.25:4.25
+        "-roo-var 1:0.25:4.25 " #1:0.25:4.25
         "--roo-step-duration 500 "
         "-roa 14 "
         "--blindspot-direction -180 "
