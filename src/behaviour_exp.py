@@ -19,12 +19,12 @@ def run_behaviour_exp(nb_repeat, name, cmd, ror, droo_range, droa_range):
         cmd_log.write(f"ror: {ror}, droo_range: {droo_range}, droa_range: {droa_range}")
 
         # Repeat the simulation
-        for droo in droo_range:
-            roo = ror + droo
-            for droa in droa_range:
-                roa = roo + droa
-                full_cmd = cmd.format(ror, roa, roo)
-                for i in range(nb_repeat):
+        for i in range(nb_repeat):
+            for droo in droo_range:
+                roo = ror + droo
+                for droa in droa_range:
+                    roa = roo + droa
+                    full_cmd = cmd.format(ror, roa, roo)
                     print(
                         f"[Behaviour experience] droo: {droo} droa: {droa} - Progression: {i * 100 // nb_repeat}%"
                     )
@@ -37,7 +37,7 @@ def run_behaviour_exp(nb_repeat, name, cmd, ror, droo_range, droa_range):
 
 
 if __name__ == "__main__":
-    nb_repeat = 30
+    nb_repeat = 10 #30
     name = "behaviour"
     cmd = (
         "python3.8 -m sim "
@@ -51,11 +51,11 @@ if __name__ == "__main__":
         "--turning-rate 40 "
         "--velocity 3 "
         f"-d-sd {0.05 / pi * 180} "
-        "--step-nb 5000 "
+        "--step-nb 2000 " # 5000
     )
 
     ror = 1
-    droo_range = np.arange(0, 14.5, 0.5)
-    droa_range = np.arange(0, 14.5, 0.5)
+    droo_range = np.arange(0, 16, 2) #0, 14.5, 0.5
+    droa_range = np.arange(0, 16, 2) #0, 14.5, 0.5
 
     run_behaviour_exp(nb_repeat, name, cmd, ror, droo_range, droa_range)

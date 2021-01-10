@@ -36,7 +36,7 @@ def run_sorting_exp(nb_repeat, name, cmd, variable):
 
 
 if __name__ == "__main__":
-    nb_repeat = 15
+    nb_repeat = 10 #15
     name = "sorting"
     cmd = (
         "python3.8 -m sim "
@@ -50,14 +50,14 @@ if __name__ == "__main__":
         "--turning-rate 40 "
         "--velocity 3 "
         f"-d-sd {0.05 / pi * 180} "
-        "--step-nb 5000 "
+        "--step-nb 2000 " #5000
     )
 
-    speed_sd_range = np.array([0.0125, 0.025, 0.05, 0.1, 0.15, 0.2])
+    speed_sd_range = np.array([0.0125, 0.05, 0.1, 0.15, 0.2]) #[0.0125, 0.025, 0.05, 0.1, 0.15, 0.2]
     turning_rate_range = np.arange(1, 10, 2)
-    roa_range = np.arange(0.5, 2.75, 0.25)
-    roo_range = np.arange(0.05, 0.35, 0.05)
-    ror_range = np.arange(0.5, 2.75, 0.25)
+    roa_range = np.arange(0.05, 0.35, 0.05) # 0.05, 0.35, 0.05
+    roo_range = np.arange(0.5, 3, 0.5) # 0.5, 2.5, 0.25
+    ror_range = np.arange(0.05, 0.35, 0.05) # 0.05, 0.35, 0.05
 
     variable = [
         ("speed-sd", "--speed-sd {}", speed_sd_range),

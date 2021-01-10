@@ -25,14 +25,14 @@ def run_memory_exp(nb_repeat, name, cmd):
 
 
 if __name__ == "__main__":
-    nb_repeat = 15
+    nb_repeat = 10 #15
     name = "memory"
     cmd = (
         "python3.8 -m sim "
         "--border none "
         "-n 100 "
         "-ror 1 "
-        "-roo-var 1:0.25:4.25 "
+        "-roo-var 1:0.5:4.5 " #1:0.25:4.25
         "--roo-step-duration 2000 "
         "-roa 14 "
         "--blindspot-direction -180 "
