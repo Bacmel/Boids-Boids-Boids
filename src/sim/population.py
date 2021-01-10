@@ -283,20 +283,26 @@ class Population:
             ind.tick(dt)
             ind.pos = self.perception.border.wrap(ind.pos)
 
-    def draw(self, canvas):
-        """Draw the population on the canvas.
-
-        Ask each individual to draw itself then draw a fake individual at the mean
-        position with the mean orientation.
-
-        Args:
-            canvas (Canvas): Graphical object.
-
-        """
-        for ind in self.pop:
-            ind.draw(canvas)
-        bgroup = Individual(0xFFFFF, self.cgroup, 0.0, 0.0, 0.0, angle(self.dgroup))
-        bgroup.draw(canvas)
+    def draw(self):
+        x = []
+        y = []
+        u = []
+        v = []
+        color = []
+        for i in self.pop:
+            x.append(i.pos[0])
+            y.append(i.pos[1])
+            u.append(i.dir[0])
+            v.append(i.dir[1])
+            color.append(i.color)
+        c = self.cgroup
+        d = self.dgroup
+        x.append(c[0])
+        y.append(c[1])
+        u.append(d[0])
+        v.append(d[1])
+        color.append(PALETTE["highlight"])
+        return x, y, u, v, color
 
     def reorient(self, ind):
         """Compute a new orientation for the individual.

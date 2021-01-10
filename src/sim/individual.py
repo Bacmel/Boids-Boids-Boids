@@ -7,8 +7,7 @@ from .utils import normalize_angle, unit_vector
 
 
 class Individual:
-    def __init__(self, color, pos, ror, roo, roa, angle=0, speed=1.0,
-                 turning_rate=0.2):
+    def __init__(self, color, pos, ror, roo, roa, angle=0, speed=1.0, turning_rate=0.2):
         """Constructor of Individual.
 
         Args:
@@ -63,8 +62,7 @@ class Individual:
 
         """
         # Don't turn too fast
-        self.angle += np.clip(dangle, -dt * self.turning_rate,
-                              dt * self.turning_rate)
+        self.angle += np.clip(dangle, -dt * self.turning_rate, dt * self.turning_rate)
 
         # Keep angle in range [-pi, pi)
         self.angle = normalize_angle(self.angle)
@@ -79,22 +77,6 @@ class Individual:
         """
         a = normalize_angle(angle - self.angle)
         self.turn_by(a, dt)
-
-    def draw(self, canvas):
-        """Draw on the canvas.
-
-        Draw this particle as an arrow.
-
-        Args:
-            canvas (Canvas): Graphical object.
-
-        """
-        tip = self.pos + BOID_NOSE_LEN * self.dir
-        left = (self.pos + BOID_NOSE_LEN / 2 *
-                unit_vector(self.angle + 2 * np.pi / 3))
-        right = (self.pos + BOID_NOSE_LEN / 2 *
-                 unit_vector(self.angle - 2 * np.pi / 3))
-        canvas.draw_poly([tip, left, self.pos, right], self.color)
 
     def tick(self, dt):
         """Update function.

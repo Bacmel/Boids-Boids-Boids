@@ -93,7 +93,7 @@ if __name__ == "__main__":
         exit(err)
 
     # run simulation
-    with Canvas(args.res.split("x"), border, args.time_step, args.render) as canvas:
+    with Canvas(args.time_step, args.render) as canvas:
         pop = Population(
             args.attraction_radius,
             roo,
@@ -114,26 +114,22 @@ if __name__ == "__main__":
             verbose=args.verbose,
         )
 
-        if args.highlight:
-            u.pop.add_individual(color=PALETTE["highlight"], pos=np.zeros((2, 1)))
-            args.n -= 1
-
         u.populate(args.n)
         dl.mkdir_dest()
-        u.draw(False)
-        canvas.snapshot(dl.destination + "initial_state.png")
+        u.draw(first=True)
+        canvas.snapshot(dl.destination + "initial_state")
         # Simulation loop
         if canvas.render:
             for i in range(steps):
                 print(f"Simulation step {i} / {steps} ({i * 100 // steps}%)", end="\r")
-                u.draw()
+                u.draw(ind=i)
                 u.tick()
                 if incrementor:
                     if incrementor.will_change:
                         u.pop.store_quantities(dl, incrementor.is_rising)
                         canvas.snapshot(
                             dl.destination
-                            + f"intermidiate_roo-{u.pop.roo}_rising-{incrementor.is_rising}.png"
+                            + f"intermidiate_roo-{u.pop.roo}_rising-{incrementor.is_rising}"
                         )
                     u.pop.roo = incrementor.next()
         else:
@@ -146,7 +142,7 @@ if __name__ == "__main__":
                         u.draw(False)
                         canvas.snapshot(
                             dl.destination
-                            + f"intermidiate_roo-{u.pop.roo}_rising-{incrementor.is_rising}.png"
+                            + f"intermidiate_roo-{u.pop.roo}_rising-{incrementor.is_rising}"
                         )
                     u.pop.roo = incrementor.next()
         print("\nSimulation: Done")
@@ -157,4 +153,4 @@ if __name__ == "__main__":
             u.pop.store_quantities(dl)
         u.pop.store_state(dl)
     dl.flush()
-    canvas.snapshot(dl.destination + "final_state.png")
+    canvas.snapshot(dl.destination + "final_state")

@@ -8,10 +8,10 @@ BOID_TURN_SPEED = 1  # in units per seconds
 VELOCITY = 10  # in degrees per seconds
 
 OUT_DIR = join(".", "out", "")
-PALETTE = {  # in bgr (expected by opencv)
-    "background": (0x2A, 0x18, 0x0B),
-    "highlight": (0x60, 0x70, 0xF8),
-    "accents": [(0xC2, 0xC7, 0xEF), (0xD6, 0xD7, 0xCD), (0xD4, 0xE5, 0xFF)],
+PALETTE = {
+    "background": "#0B182A",
+    "highlight": "#F87060",
+    "accents": ["#EFC7C2", "#CDD7D6", "#FFE5D4"],
 }
 
 from .canvas import Canvas

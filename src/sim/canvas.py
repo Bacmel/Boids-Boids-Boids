@@ -1,49 +1,40 @@
 # -*- coding: utf-8 -*-
 import os
 from time import localtime, strftime
+import subprocess
 
-import cv2
-from cv2 import VideoWriter, VideoWriter_fourcc as FourCC
+import matplotlib.pyplot as plt
 import numpy as np
 
-from . import BOID_NOSE_LEN, OUT_DIR
+from .borders import Border, Infinite
+from . import BOID_NOSE_LEN, OUT_DIR, PALETTE
 
 
 class Canvas:
-    def __init__(self, res, border, dt, render):
+    def __init__(self, dt, render):
         """Canvas Constructor.
 
         Args:
-            res (numpy.ndarray): resolution of the video window.
-            border (Border): border of the simulation.
             dt (int): simulation time step.
             render (bool): predicate for video generation.
 
         """
-        self.res = np.array(res, dtype="int")
-        """numpy.ndarray: The video resolution (in pixels)."""
+        self.cond_border = True
         self.fps = float(1 / dt)
         """float: The frame rate (in Hertz)."""
-        self.origin = border.origin
-        """numpy.ndarray: The render box center (in length units)."""
-        self.box = border.length
-        """numpy.ndarray: The render box dimensions (in length units)."""
         self.__render = render
         """bool: Whether the video is rendered or not."""
-        self.ratios = None
-        """numpy.ndarray: The conversion ratio from world to image for both axes (in pixels per length units)."""
-        self.ratio = 0.0
-        """float: The conversion ratio from world to image (in pixels per length units)."""
-
-        self._compute_ratios()
-        self.current_frame = self.new_frame()
+        self.first = True
         if self.render:
             # Prepare for rendering
             if not os.path.exists(OUT_DIR):
                 os.mkdir(OUT_DIR)
             self.filename = OUT_DIR + strftime("%Y%m%dT%H%M%S", localtime()) + ".mp4"
-            self.video = VideoWriter(
-                self.filename, FourCC(*"mp4v"), int(self.fps), tuple(self.res)
+            self.video = (
+                f"ffmpeg -r {self.fps} -i {OUT_DIR}"
+                + r"%d.svg -vf scale=1980:1080 -crf 0 -c:v libx264 "
+                + self.filename
+                + f"; rm {OUT_DIR}*.svg"
             )
 
     @property
@@ -75,83 +66,46 @@ class Canvas:
 
         """
         if self.render:
-            self.video.release()
+            subprocess.Popen(self.video, shell=True)
 
-    def fit(self, pop):
-        """Compute the shape and the origin which fits to the given population.
-
-        Compute the smallest box around the population.
-        Resize the box to match the resolution ration.
-        Compute the conversion factor from length unit to pixels.
-
-        Args:
-            pop (Population): The population to fit to.
-        """
-        # Compute the smallest box around the population.
-        ld_corner = np.copy(pop.pop[0].pos)
-        ru_corner = np.copy(pop.pop[0].pos)
-        for ind in pop.pop[1:]:
-            pos = ind.pos
-            for i in range(2):
-                if pos[i, 0] < ld_corner[i, 0]:
-                    ld_corner[i, 0] = pos[i, 0]
-                if pos[i, 0] > ru_corner[i, 0]:
-                    ru_corner[i, 0] = pos[i, 0]
-        self.box = ru_corner - ld_corner
-        self.origin = 0.5 * (ru_corner + ld_corner)
-
-        # Resize the box to match the resolution ration.
-        res_ratio = self.res[0] / self.res[1]
-        if self.box[0, 0] < res_ratio * self.box[1, 0]:
-            self.box[0, 0] = res_ratio * self.box[1, 0]
-        else:
-            self.box[1, 0] = self.box[0, 0] / res_ratio
-
-        # Compute the conversion factor from length unit to pixels.
-        self._compute_ratios()
-
-    def _compute_ratios(self):
-        """Compute the conversion ratios from length units to pixel for each axis.
-
-        Returns:
-            The conversion ratios from length units to pixel for each axis.
-
-        """
-        self.ratios = np.multiply(
-            self.res, 1 / (self.box.reshape(-1) + 2 * BOID_NOSE_LEN)
-        )
-        self.ratio = np.min(self.ratios)
-
-    def to_px(self, pos):
-        """Convert a position from length units to pixels.
-
-        Args:
-            pos (numpy.ndarray): The position in the simulation (in length units).
-
-        Returns:
-            numpy.ndarray: position in the image space (in pixels).
-
-        """
-        x = (
-            self.ratio * (pos[0] - self.origin[0] + self.box[0] / 2 + BOID_NOSE_LEN)
-            + (self.ratios[0] - self.ratio) * self.box[0] / 2
-        )
-        y = (
-            self.ratio * (-pos[1] + self.origin[1] + self.box[1] / 2 + BOID_NOSE_LEN)
-            + (self.ratios[1] - self.ratio) * self.box[1] / 2
-        )
-        return np.array([[x], [y]], dtype=int)
-
-    def new_frame(self):
+    def draw(self, border, pop, verbose):
         """Generation a new frame.
 
         Returns:
-            numpy.ndarray: The new frame.
+            pyplot.figure: The frame.
 
         """
-        return np.ndarray(shape=(*self.res[::-1], 3), dtype="uint8")
+        valc = plt.figure(
+            figsize=(8, 4.5), tight_layout=True, facecolor=PALETTE["background"]
+        ).add_subplot(111, facecolor=PALETTE["background"])
+        valc.set_aspect("equal")
+        valc.axis("off")
 
-    def update(self):
+        if not isinstance(border, Infinite):  # fix border
+            self.cond_border = False
+            begin = border.origin - border.length
+            end = border.origin + border.length
+            valc.set_xlim(begin[0], end[0])
+            valc.set_ylim(begin[1], end[1])
+
+        x, y, u, v, color = pop.draw()
+
+        self.quiver = valc.quiver(x, y, u, v, color=color, pivot="middle")
+        if verbose:
+            s = "\n".join(pop.get_properties())
+            self.text = valc.text(
+                -0.5,
+                0.9,
+                s,
+                bbox=dict(facecolor=PALETTE["highlight"], alpha=0.5),
+                ha="left",
+                va="center",
+                transform=valc.transAxes,
+            )
+
+        self.current_frame = valc
+
+    def update(self, ind, pop, verbose):
         """Update the video file and the frame.
 
         Check whether the rendering is enabled.
@@ -160,34 +114,15 @@ class Canvas:
 
         """
         if self.render:
-            self.video.write(self.current_frame)
-        self.current_frame = self.new_frame()
+            self.show_pop(pop)
 
-    def fill(self, color):
-        """Fill the current frame with the given color.
+            if self.cond_border:
+                self.current_frame.relim()
+                self.current_frame.autoscale_view()
 
-        Args:
-            color (Color): The color to fill the frame with.
-
-        """
-        self.current_frame[:, :] = np.array(color, dtype="uint8")
-
-    def draw_poly(self, points, color):
-        """Draw a polygon on the frame.
-
-        Args:
-            points (numpy.ndarray): The list of points for polygon (in length units).
-            color (Color): The color of the polygon.
-
-        """
-        # double list as fillPoly expects a list of polygons
-        px = [np.array([self.to_px(p).reshape(1, 2) for p in points], dtype=np.int32)]
-        cv2.fillPoly(
-            self.current_frame,
-            px,
-            color,
-            16,
-        )
+            if verbose:
+                self.show_properties(pop.get_properties())
+            self.current_frame.get_figure().savefig(f"{OUT_DIR}{ind}.svg")
 
     def show_properties(self, properties):
         """Get a list of string describing the properties.
@@ -196,22 +131,20 @@ class Canvas:
             A list of string describing the properties.
 
         """
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        color = (255, 255, 255)
-        font_scale = 0.5
-        thickness = 1
 
-        for i in range(len(properties)):
-            cv2.putText(
-                self.current_frame,
-                properties[i],
-                (50, (i + 1) * 30),
-                font,
-                font_scale,
-                color,
-                thickness,
-                cv2.LINE_AA,
-            )
+        s = "\n".join(properties)
+        self.text.set_text(s)
+
+    def show_pop(self, pop):
+        """Get a list of string describing the properties.
+
+        Returns:
+            A list of string describing the properties.
+
+        """
+        x, y, u, v, color = pop.draw()
+        self.quiver.remove()
+        self.quiver = self.current_frame.quiver(x, y, u, v, color=color, pivot="middle")
 
     def snapshot(self, filename):
         """Save a the current frame as an image.
@@ -220,4 +153,4 @@ class Canvas:
             filename: The given file name (aka. the path to save to).
 
         """
-        cv2.imwrite(filename, self.current_frame)
+        self.current_frame.get_figure().savefig(f"{filename}.pdf", bbox_inches=0)
