@@ -103,7 +103,7 @@ def getRooVar(roo_var):
     return float(l[0]), float(l[1]), float(l[2])
 
 
-def getArgs():
+def getArgs(arg_list=None):
     """
     Standard function to specify the default value of the hyper-parameters of experimental setups
 
@@ -329,5 +329,5 @@ def getArgs():
         "parameter.",
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(arg_list)
     return args

@@ -7,7 +7,7 @@ BOID_NOSE_LEN = 1  # in length units
 BOID_TURN_SPEED = 1  # in units per seconds
 VELOCITY = 10  # in degrees per seconds
 
-OUT_DIR = join(".", "out", "")
+OUT_DIR = join("..", "out", "")
 PALETTE = {  # in bgr (expected by opencv)
     "background": (0x2A, 0x18, 0x0B),
     "highlight": (0x60, 0x70, 0xF8),

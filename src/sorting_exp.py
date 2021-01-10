@@ -1,7 +1,8 @@
 #!/usr/bin/python3.8
 from math import pi
 import os
-import subprocess
+from sim.sim import Sim
+from sim.arguments import getArgs
 
 import numpy as np
 
@@ -30,9 +31,10 @@ def run_sorting_exp(nb_repeat, name, cmd, variable):
                 itr_cmd = param_cmd + " --output {}/{}_{}_itr_{}".format(
                     name, var_name, val, i
                 )
-                process = subprocess.Popen(itr_cmd, shell=True)
-                process.wait()
-    print("[Memory experience] Done !")
+                args = getArgs(itr_cmd.split(" "))
+                sim = Sim()
+                sim.from_args(args)
+    print("[Sorting experience] Done !")
 
 
 if __name__ == "__main__":
