@@ -91,7 +91,6 @@ class Canvas:
         x, y, u, v, color = pop.draw()
         y = np.array(y)-y[-1]
         x = np.array(x)-x[-1]
-        print(y*y+ x*x)
         self.quiver = valc.quiver(x, y, u, v, color=color, pivot="middle",units='xy')
         if verbose:
             s = "\n".join(pop.get_properties())
