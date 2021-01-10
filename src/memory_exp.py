@@ -40,7 +40,7 @@ if __name__ == "__main__":
         "--blindspot-opening 90 "
         "--turning-rate 40 "
         "--velocity 3 "
-        f"-d-sd {0.05 / pi * 180}"
+        "-d-sd 0.05"
     )
 
     run_memory_exp(nb_repeat, name, cmd)
