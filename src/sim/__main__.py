@@ -123,17 +123,32 @@ if __name__ == "__main__":
         u.draw(False)
         canvas.snapshot(dl.destination + "initial_state.png")
         # Simulation loop
-        for i in range(steps):
-            print(f"Simulation step {i} / {steps} ({i * 100 // steps}%)",end="\r")
-            u.spin_once()
-            if incrementor:
-                if incrementor.will_change:
-                    u.pop.store_quantities(dl, incrementor.is_rising)
-                    canvas.snapshot(
-                        dl.destination
-                        + f"intermidiate_roo-{u.pop.roo}_rising-{incrementor.is_rising}.png"
-                    )
-                u.pop.roo = incrementor.next()
+        if canvas.render:
+            for i in range(steps):
+                print(f"Simulation step {i} / {steps} ({i * 100 // steps}%)", end="\r")
+                u.draw()
+                u.tick()
+                if incrementor:
+                    if incrementor.will_change:
+                        u.pop.store_quantities(dl, incrementor.is_rising)
+                        canvas.snapshot(
+                            dl.destination
+                            + f"intermidiate_roo-{u.pop.roo}_rising-{incrementor.is_rising}.png"
+                        )
+                    u.pop.roo = incrementor.next()
+        else:
+            for i in range(steps):
+                print(f"Simulation step {i} / {steps} ({i * 100 // steps}%)", end="\r")
+                u.tick()
+                if incrementor:
+                    if incrementor.will_change:
+                        u.pop.store_quantities(dl, incrementor.is_rising)
+                        u.draw(False)
+                        canvas.snapshot(
+                            dl.destination
+                            + f"intermidiate_roo-{u.pop.roo}_rising-{incrementor.is_rising}.png"
+                        )
+                    u.pop.roo = incrementor.next()
         print("\nSimulation: Done")
 
         # Store the final state
