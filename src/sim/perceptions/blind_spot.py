@@ -22,19 +22,17 @@ class BlindSpot(Perception):
         assert 0 < opening <= pi
         assert -pi <= bisector < pi
         self.bisector = bisector
-        self.opening = opening
+        self.half_opening = opening / 2
 
     def _filter(self, ind, pop):
-        filtered_pop = list()
-        orientation = ind.dir
-        for ind_pop in pop:
+        filtered_pop = []
+        for other in pop:
+            if other is ind:
+                continue
             # Compute the relative orientation to the current individual
-            relative_dir = self.border.vector(ind.pos, ind_pop.pos)
-            diff_orientation = relative_dir - orientation
-            angle = atan2(diff_orientation[1], diff_orientation[0])
-            if (
-                ind_pop is not ind
-                and abs(normalize_angle(angle - self.bisector)) > self.opening
-            ):
-                filtered_pop.append(ind_pop)  # The individual is not in the blind spot
+            relative_pos = self.border.vector(ind.pos, other.pos)
+            abs_angle = atan2(relative_pos[1], relative_pos[0])
+            relative_angle = normalize_angle(abs_angle - ind.angle)
+            if abs(normalize_angle(relative_angle - self.bisector)) > self.half_opening:
+                filtered_pop.append(other)  # The individual is not in the blind spot
         return filtered_pop
