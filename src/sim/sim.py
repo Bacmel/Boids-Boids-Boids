@@ -163,7 +163,7 @@ class Sim:
             ror_sd,
         )
         start = time.perf_counter()
-        with Canvas(res, self.border, timestep, render) as canvas:
+        with Canvas(timestep, render) as canvas:
             u = Universe(
                 canvas,
                 border=self.border,
@@ -174,7 +174,7 @@ class Sim:
 
             u.populate(pop_size)
             dl.mkdir_dest()
-            u.draw(False)
+            u.draw(first=True)
             canvas.snapshot(dl.destination + "initial_state.png")
             # Simulation loop
             if canvas.render:
@@ -183,7 +183,7 @@ class Sim:
                         f"Simulation step {i} / {self.steps_nb} ({i * 100 // self.steps_nb}%)",
                         end="\r",
                     )
-                    u.draw()
+                    u.draw(ind=i)
                     u.tick()
                     if self.incrementor:
                         if self.incrementor.will_change:
@@ -203,7 +203,7 @@ class Sim:
                     if self.incrementor:
                         if self.incrementor.will_change:
                             u.pop.store_quantities(dl, self.incrementor.is_rising)
-                            u.draw(False)
+                            u.draw(ind=i)
                             canvas.snapshot(
                                 dl.destination
                                 + f"intermidiate_roo-{u.pop.roo}_rising-{self.incrementor.is_rising}.png"
@@ -217,5 +217,5 @@ class Sim:
                 u.pop.store_quantities(dl)
             u.pop.store_state(dl)
         dl.flush()
-        u.draw(False)
+        u.draw()
         canvas.snapshot(dl.destination + "final_state.png")

@@ -114,11 +114,11 @@ class Canvas:
 
         """
         if self.render:
-            self.show_pop(pop)
-
             if self.cond_border:
                 self.current_frame.relim()
                 self.current_frame.autoscale_view()
+
+            self.show_pop(pop)
 
             if verbose:
                 self.show_properties(pop.get_properties())
