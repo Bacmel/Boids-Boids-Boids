@@ -32,9 +32,9 @@ class Canvas:
             self.filename = OUT_DIR + strftime("%Y%m%dT%H%M%S", localtime()) + ".mp4"
             self.video = (
                 f"ffmpeg -r {self.fps} -i {OUT_DIR}"
-                + r"%d.svg -vf scale=1980:1080 -crf 0 -c:v libx264 "
+                + r"%d.svg -qscale:v 0 -c:v libvpx-vp9 -vf scale=1920:1080 -crf 20 -hide_banner " #-loglevel quiet
                 + self.filename
-                + f"; rm {OUT_DIR}*.svg"
+                + f"; rm {OUT_DIR}*.svg" 
             )
 
     @property
@@ -66,7 +66,7 @@ class Canvas:
 
         """
         if self.render:
-            subprocess.Popen(self.video, shell=True)
+            subprocess.call(self.video, shell=True)
 
     def draw(self, border, pop, verbose):
         """Generation a new frame.
@@ -89,18 +89,19 @@ class Canvas:
             valc.set_ylim(begin[1], end[1])
 
         x, y, u, v, color = pop.draw()
-
-        self.quiver = valc.quiver(x, y, u, v, color=color, pivot="middle")
+        y = np.array(y)-y[-1]
+        x = np.array(x)-x[-1]
+        print(y*y+ x*x)
+        self.quiver = valc.quiver(x, y, u, v, color=color, pivot="middle",units='xy')
         if verbose:
             s = "\n".join(pop.get_properties())
-            self.text = valc.text(
-                -0.5,
-                0.9,
+            self.text = valc.get_figure().text(
+                0.015,
+                0.975,
                 s,
                 bbox=dict(facecolor=PALETTE["highlight"], alpha=0.5),
                 ha="left",
-                va="center",
-                transform=valc.transAxes,
+                va="top",
             )
 
         self.current_frame = valc
@@ -144,7 +145,7 @@ class Canvas:
         """
         x, y, u, v, color = pop.draw()
         self.quiver.remove()
-        self.quiver = self.current_frame.quiver(x, y, u, v, color=color, pivot="middle")
+        self.quiver = self.current_frame.quiver(x, y, u, v, color=color, pivot="middle",units='xy')
 
     def snapshot(self, filename):
         """Save a the current frame as an image.

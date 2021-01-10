@@ -116,7 +116,7 @@ class Population:
         m = []
 
         for ind in self.pop:
-            r_ic = self.perception.border.vector(cg, ind.pos) #normalize(self.perception.border.vector(cg, ind.pos))
+            r_ic = normalize(self.perception.border.vector(cg, ind.pos))
             m_ic = np.cross(r_ic, ind.dir, axis=0)
             m.append(m_ic)
         m_array = np.array(m)
