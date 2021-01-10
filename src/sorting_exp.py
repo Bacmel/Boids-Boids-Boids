@@ -41,7 +41,6 @@ if __name__ == "__main__":
     nb_repeat = 10 #15
     name = "sorting"
     cmd = (
-        "python3.8 -m sim "
         "--border none "
         "-n 100 "
         "-ror 1 "
@@ -52,7 +51,7 @@ if __name__ == "__main__":
         "--turning-rate 40 "
         "--velocity 3 "
         f"-d-sd {0.05 / pi * 180} "
-        "--step-nb 2000 " #5000
+        "--step-nb 500" #5000
     )
 
     speed_sd_range = np.array([0.0125, 0.05, 0.1, 0.15, 0.2]) #[0.0125, 0.025, 0.05, 0.1, 0.15, 0.2]
