@@ -181,7 +181,7 @@ class Sim:
             u.populate(pop_size)
             dl.mkdir_dest()
             u.draw(first=True)
-            canvas.snapshot(dl.destination + "initial_state.png")
+            canvas.snapshot(dl.destination + "initial_state")
             # Simulation loop
             if canvas.render:
                 for i in range(self.steps_nb):
@@ -223,5 +223,5 @@ class Sim:
                 u.pop.store_quantities(dl)
             u.pop.store_state(dl)
         dl.flush()
-        u.draw()
-        canvas.snapshot(dl.destination + "final_state.png")
+        u.draw(first=True)
+        canvas.snapshot(dl.destination + "final_state")
