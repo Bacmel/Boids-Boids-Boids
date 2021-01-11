@@ -24,7 +24,7 @@ def run_behaviour_exp(nb_repeat, name, args, ror, droo_range, droa_range):
                 roo = ror + droo
                 for droa in droa_range:
                     roa = roo + droa
-                    full_cmd = args.format(ror, roa, roo)
+                    full_cmd = args.format(ror, roo, roa)
                     print(
                         f"[Behaviour experience] droo: {droo} droa: {droa} - Progression: {i * 100 // nb_repeat}%"
                     )
@@ -38,11 +38,11 @@ def run_behaviour_exp(nb_repeat, name, args, ror, droo_range, droa_range):
 
 
 if __name__ == "__main__":
-    nb_repeat = 10
+    nb_repeat = 5
     name = "behaviour"
     cmd = (
         "--border none "
-        "-n 100 "
+        "-n 60 "
         "-ror {} "
         "-roo {} "
         "-roa {} "
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         "--blindspot-opening 90 "
         "--turning-rate 40 "
         "--velocity 3 "
-        f"-d-sd {0.05 / pi * 180} "
+        f"-d-sd {0.05} "
         "--step-nb 500"
     )
 
