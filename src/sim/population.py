@@ -143,7 +143,7 @@ class Population:
             relative_pos = (ind.pos - cgroup).reshape(-1)
             front = np.dot(relative_pos, dgroup)
             pop_sorted.append((front, i))
-        pop_sorted.sort(key=lambda elem: elem[0])
+        pop_sorted.sort(key=lambda elem: elem[0], reverse=True)
 
         # Create the list of individual rank
         for i in range(len(pop_sorted)):
