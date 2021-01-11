@@ -5,9 +5,9 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 
 ### Get Logs ###
-path = "../logs/memory/"
+path = "../logs/sorting/"
 dirs = os.listdir(path)
-analysis = "memory"
+analysis = "sorting"
 
 
 def get_logs(dirs):
@@ -156,9 +156,11 @@ def store(f, c, sd, data, title):
 
 
 def plot_f_c(f, c):
+
     sd = list(f.keys())
-    med_f, e_f = get_med_e(np.array(list(f.values())))
-    med_c, e_c = get_med_e(np.array(list(c.values())))
+    med_f, e_f = get_med_e(np.transpose(np.array(list(f.values()))))
+    med_c, e_c = get_med_e(np.transpose(np.array(list(c.values()))))
+
     plt.errorbar(sd, med_f, yerr=e_f, label="front", markersize=8, capsize=20)
     plt.errorbar(sd, med_c, yerr=e_c, label="center", markersize=8, capsize=20)
     plt.legend(loc="lower right")
@@ -178,38 +180,56 @@ def plot_sorting(state_logs, quantities_logs):
         quantities = pd.read_csv(quantities_log)
         if ind == 0:
             # Initialisation
-            rho_speed_f = rho_speed_c = rho_turning_f = rho_turning_c = {}
-            rho_roo_f = rho_roo_c = rho_ror_f = rho_ror_c = {}
+            rho_speed_f = {}
+            rho_speed_c = {}
+            rho_turning_f = {}
+            rho_turning_c = {}
+            rho_roo_f = {}
+            rho_roo_c = {}
+            rho_ror_f = {}
+            rho_ror_c = {}
         data = state.corr(method="spearman")
-        if quantities.loc[0]["speed_sd"] != 0:  # Cas Vitesse
+        if quantities.loc[0]["speed_sd"] > 0:  # Cas Vitesse
             sd = quantities.loc[0]["speed_sd"]
             rho_speed_f, rho_speed_c = store(
                 rho_speed_f, rho_speed_c, sd, data, "speed"
             )
-        if quantities.loc[0]["turning_rate_sd"] != 0:  # Cas Turning Rate
+        if quantities.loc[0]["turning_rate_sd"] > 0:  # Cas Turning Rate
             sd = quantities.loc[0]["turning_rate_sd"]
             rho_turning_f, rho_turning_c = store(
                 rho_turning_f, rho_turning_c, sd, data, "turning_rate"
             )
-        if quantities.loc[0]["roo_sd"] != 0:  # Cas roo
+        if quantities.loc[0]["roo_sd"] > 0:  # Cas roo
             sd = quantities.loc[0]["roo_sd"]
             rho_roo_f, rho_roo_c = store(rho_roo_f, rho_roo_c, sd, data, "roo")
-        if quantities.loc[0]["ror_sd"] != 0:  # Cas ror
+        if quantities.loc[0]["ror_sd"] > 0:  # Cas ror
             sd = quantities.loc[0]["ror_sd"]
             rho_ror_f, rho_ror_c = store(rho_ror_f, rho_ror_c, sd, data, "ror")
     # Affichage
     # speed
-    plot_f_c(rho_speed_f, rho_speed_c)
-    plt.figure()
+    if len(rho_speed_c) != 0:
+        plot_f_c(rho_speed_f, rho_speed_c)
+        plt.xlabel("Speed sd")
+        plt.ylabel("Sorting (rho)")
+        plt.figure()
     # turning
-    plot_f_c(rho_turning_f, rho_turning_c)
-    plt.figure()
+    if len(rho_turning_c) != 0:
+        plot_f_c(rho_turning_f, rho_turning_c)
+        plt.xlabel("turning rate sd")
+        plt.ylabel("Sorting (rho)")
+        plt.figure()
     # roo
-    plot_f_c(rho_roo_f, rho_roo_c)
-    plt.figure()
+    if len(rho_roo_c) != 0:
+        plot_f_c(rho_roo_f, rho_roo_c)
+        plt.xlabel("ro sd")
+        plt.ylabel("Sorting (rho)")
+        plt.figure()
     # ror
-    plot_f_c(rho_ror_f, rho_ror_c)
-    plt.show()
+    if len(rho_ror_c) != 0:
+        plot_f_c(rho_ror_f, rho_ror_c)
+        plt.xlabel("rr sd")
+        plt.ylabel("Sorting (rho)")
+        plt.show()
 
 
 if __name__ == "__main__":

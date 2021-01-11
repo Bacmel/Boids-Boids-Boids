@@ -44,13 +44,13 @@ if __name__ == "__main__":
         "--border none "
         "-n 60 "
         "-ror 1 "
-        "-roo 6 "
-        "-roa 14 "
+        "-roo 10 "
+        "-roa 20 "
         "--blindspot-direction -180 "
         "--blindspot-opening 90 "
         "--turning-rate 40 "
         "--velocity 3 "
-        f"-d-sd {0.05 / pi * 180} "
+        f"-d-sd {0.05} "
         "--step-nb 500" #5000
     )
 
