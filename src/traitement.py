@@ -1,3 +1,4 @@
+#!/usr/bin/python3.8
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,9 +6,9 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 
 ### Get Logs ###
-path = "../logs/sorting/"
+path = "../logs/memory_try/"
 dirs = os.listdir(path)
-analysis = "sorting"
+analysis = "memory"
 
 
 def get_logs(dirs):

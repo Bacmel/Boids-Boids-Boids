@@ -27,20 +27,20 @@ def run_memory_exp(nb_repeat, name, cmd):
 
 
 if __name__ == "__main__":
-    nb_repeat = 10 #15
-    name = "memory"
+    nb_repeat = 1 #15
+    name = "memory_try2"
     cmd = (
         "--border none "
         "-n 60 "
         "-ror 1 "
-        "-roo-var 1:0.25:4.25 " #1:0.25:4.25
+        "-roo-var 5:0.5:11.5 "
         "--roo-step-duration 500 "
         "-roa 14 "
         "--blindspot-direction -180 "
         "--blindspot-opening 90 "
         "--turning-rate 40 "
         "--velocity 3 "
-        f"-d-sd {0.05 / pi * 180}"
+        "-d-sd 0.05"
     )
 
     run_memory_exp(nb_repeat, name, cmd)
