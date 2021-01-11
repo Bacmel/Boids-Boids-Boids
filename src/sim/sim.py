@@ -128,6 +128,8 @@ class Sim:
             args.speed_sd,
             args.tr_sd,
             args.ror_sd,
+            args.roo_sd,
+            args.roa_sd
         )
 
     def run(
@@ -146,6 +148,8 @@ class Sim:
         speed_sd=0.0,
         tr_sd=0.0,
         ror_sd=0.0,
+        roo_sd=0.0,
+        roa_sd=0.0
     ):
         dl = DataLogger()
         if output:
@@ -161,6 +165,8 @@ class Sim:
             speed_sd,
             tr_sd,
             ror_sd,
+            roo_sd,
+            roa_sd
         )
         start = time.perf_counter()
         with Canvas(timestep, render) as canvas:
