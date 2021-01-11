@@ -191,7 +191,7 @@ class Sim:
                     )
                     u.draw(ind=i)
                     u.tick()
-                    if self.incrementor:
+                    if self.incrementor is not None:
                         if self.incrementor.will_change:
                             u.pop.store_quantities(dl, self.incrementor.is_rising)
                             canvas.snapshot(
@@ -206,10 +206,10 @@ class Sim:
                         end="\r",
                     )
                     u.tick()
-                    if self.incrementor:
+                    if self.incrementor is not None:
                         if self.incrementor.will_change:
                             u.pop.store_quantities(dl, self.incrementor.is_rising)
-                            u.draw(ind=i)
+                            u.draw(first=True)
                             canvas.snapshot(
                                 dl.destination
                                 + f"intermidiate_roo-{u.pop.roo}_rising-{self.incrementor.is_rising}.png"
