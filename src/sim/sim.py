@@ -126,7 +126,7 @@ class Sim:
             args.output,
             np.array(args.res.split("x"), dtype="int"),
             args.speed_sd,
-            args.tr_sd,
+            args.tr_sd / 180 * pi,
             args.ror_sd,
             args.roo_sd,
             args.roa_sd
