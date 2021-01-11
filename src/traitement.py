@@ -161,9 +161,23 @@ def store(f, c, sd, data, title):
 
 def plot_f_c(f, c):
 
-    sd = list(f.keys())
-    med_f, e_f = get_med_e(np.transpose(np.array(list(f.values()))))
-    med_c, e_c = get_med_e(np.transpose(np.array(list(c.values()))))
+    values = [(sd,f[sd],c[sd]) for sd in f.keys()]
+    values.sort(key=lambda v : v[0])
+    print("---")
+
+    sd = np.array([sd for sd,_,_ in values])
+    new_f = np.array([f for _,f,_ in values])
+    new_c = np.array([c for _,_,c in values])
+
+    print(sd.shape)
+    print(new_f.shape)
+    print(new_c.shape)
+
+    med_f, e_f = get_med_e(np.transpose(new_f))
+    med_c, e_c = get_med_e(np.transpose(new_c))
+
+    print("med_f: ", med_f.shape)
+    print("med_c: ", med_c.shape)
 
     plt.errorbar(sd, med_f, yerr=e_f, label="front", markersize=8, capsize=5)
     plt.errorbar(sd, med_c, yerr=e_c, label="center", markersize=8, capsize=5)
