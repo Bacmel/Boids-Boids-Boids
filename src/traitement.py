@@ -5,7 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 
 ### Get Logs ###
-path = "../logs/memory/"
+path = "../logs/memory_paper_range/"
 dirs = os.listdir(path)
 analysis = "memory"
 
@@ -59,8 +59,8 @@ def plot_c_d(c, d, x_c, x_d):
     """
     med_c, e_c = get_med_e(c)
     med_d, e_d = get_med_e(d)
-    plt.errorbar(x_c, med_c, yerr=e_c, label="Croissant", markersize=8, capsize=20)
-    plt.errorbar(x_d, med_d, yerr=e_d, label="Décroissant", markersize=8, capsize=20)
+    plt.errorbar(x_c, med_c, yerr=e_c, label="Croissant", markersize=8, capsize=5)
+    plt.errorbar(x_d, med_d, yerr=e_d, label="Décroissant", markersize=8, capsize=5)
     plt.legend(loc="lower right")
 
 
@@ -97,9 +97,13 @@ def plot_memory(quantities_logs):
     # Affichage
     # pgroup
     plot_c_d(p_c, p_d, r_c, r_d)
+    plt.xlabel("Rayon de répulsion (en unité de longueur)")
+    plt.ylabel("Polarisation du groupe")
     plt.figure()
     # mgroup
-    plot_c_d(p_c, p_d, r_c, r_d)
+    plot_c_d(m_c, m_d, r_c, r_d)
+    plt.xlabel("Rayon de répulsion (en unité de longueur)")
+    plt.ylabel("Moment angulaire du groupe")
     plt.show()
 
 
@@ -159,8 +163,8 @@ def plot_f_c(f, c):
     sd = list(f.keys())
     med_f, e_f = get_med_e(np.array(list(f.values())))
     med_c, e_c = get_med_e(np.array(list(c.values())))
-    plt.errorbar(sd, med_f, yerr=e_f, label="front", markersize=8, capsize=20)
-    plt.errorbar(sd, med_c, yerr=e_c, label="center", markersize=8, capsize=20)
+    plt.errorbar(sd, med_f, yerr=e_f, label="front", markersize=8, capsize=5)
+    plt.errorbar(sd, med_c, yerr=e_c, label="center", markersize=8, capsize=5)
     plt.legend(loc="lower right")
 
 
