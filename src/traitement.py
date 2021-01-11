@@ -5,9 +5,9 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 
 ### Get Logs ###
-path = "logs/"
+path = "../logs/memory/"
 dirs = os.listdir(path)
-analysis = "sorting"
+analysis = "memory"
 
 
 def get_logs(dirs):
@@ -21,6 +21,8 @@ def get_logs(dirs):
         list<string>: "states" log files.
     """
     for dire in dirs:
+        if not os.path.isdir(dire):
+            continue
         files = os.listdir(path + dire + "/")
         for file in files:
             if "state" in file:
