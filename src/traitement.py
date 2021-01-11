@@ -21,13 +21,13 @@ def get_logs(dirs):
         list<string>: "states" log files.
     """
     for dire in dirs:
-        if not os.path.isdir(dire):
+        if not os.path.isdir(path + dire):
             continue
         files = os.listdir(path + dire + "/")
         for file in files:
-            if "state" in file:
+            if "state" in file and file.endswith(".csv"):
                 state_logs.append(path + dire + "/" + file)
-            elif "quantities" in file:
+            elif "quantities" in file and file.endswith(".csv"):
                 quantities_logs.append(path + dire + "/" + file)
     return quantities_logs, state_logs
 
@@ -52,15 +52,15 @@ def plot_c_d(c, d, x_c, x_d):
     """Plot croissant and décroissant graph.
 
     Args:
-        c (numpy.ndarray): data of croissant case.
-        d (numpy.ndarray): data of décroissant case.
-        x_c (numpy.ndarray): absciss of croissant case.
-        x_d (numpy.ndarray): absciss of décroissant case.
+        c (numpy.ndarray): data of increasing case.
+        d (numpy.ndarray): data of decreasing case.
+        x_c (numpy.ndarray): absciss of increasing case.
+        x_d (numpy.ndarray): absciss of decreasing case.
     """
     med_c, e_c = get_med_e(c)
     med_d, e_d = get_med_e(d)
-    plt.errorbar(r_c, med_c, yerr=e_c, label="Croissant", markersize=8, capsize=20)
-    plt.errorbar(r_d, med_d, yerr=e_d, label="Décroissant", markersize=8, capsize=20)
+    plt.errorbar(x_c, med_c, yerr=e_c, label="Croissant", markersize=8, capsize=20)
+    plt.errorbar(x_d, med_d, yerr=e_d, label="Décroissant", markersize=8, capsize=20)
     plt.legend(loc="lower right")
 
 
@@ -87,7 +87,7 @@ def plot_memory(quantities_logs):
             p_d = np.vstack((p_d, np.zeros((1, nb_d))))
             m_c = np.vstack((m_c, np.zeros((1, nb_c))))
             m_d = np.vstack((m_d, np.zeros((1, nb_d))))
-        for i in range(len(quantities["roo"])):  # Le bonheur commence ici.
+        for i in range(len(quantities["roo"])):
             if i < nb_c:  # Cas croissant
                 p_c[ind, i] = quantities.loc[i]["pgroup"]
                 m_c[ind, i] = quantities.loc[i]["mgroup"]
