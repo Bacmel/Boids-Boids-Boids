@@ -6,9 +6,9 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 
 ### Get Logs ###
-path = "../logs/memory_try/"
+path = "../logs/sorting/"
 dirs = os.listdir(path)
-analysis = "memory"
+analysis = "sorting"
 
 
 def get_logs(dirs):
@@ -62,7 +62,7 @@ def plot_c_d(c, d, x_c, x_d):
     med_d, e_d = get_med_e(d)
     plt.errorbar(x_c, med_c, yerr=e_c, label="Croissant", markersize=8, capsize=5)
     plt.errorbar(x_d, med_d, yerr=e_d, label="Décroissant", markersize=8, capsize=5)
-    plt.legend(loc="lower right")
+    plt.legend(bbox_to_anchor=(1, 1), loc="lower right")
 
 
 def plot_memory(quantities_logs):
@@ -157,32 +157,23 @@ def store(f, c, sd, data, title):
         c[sd] = []
     f[sd].append(data.loc[title]["front_idx"])
     c[sd].append(data.loc[title]["center_idx"])
-    return f, c
 
 
 def plot_f_c(f, c):
+    values = [(sd, f[sd], c[sd]) for sd in f.keys()]
+    values.sort(key=lambda v: v[0])
 
-    values = [(sd,f[sd],c[sd]) for sd in f.keys()]
-    values.sort(key=lambda v : v[0])
-    print("---")
+    sd = np.array([sd for sd, _, _ in values])
+    # Take the opposite as the index is decreasing with the position
+    f_array = -np.array([f for _, f, _ in values])
+    c_array = -np.array([c for _, _, c in values])
 
-    sd = np.array([sd for sd,_,_ in values])
-    new_f = np.array([f for _,f,_ in values])
-    new_c = np.array([c for _,_,c in values])
+    med_f, e_f = get_med_e(np.transpose(f_array))
+    med_c, e_c = get_med_e(np.transpose(c_array))
 
-    print(sd.shape)
-    print(new_f.shape)
-    print(new_c.shape)
-
-    med_f, e_f = get_med_e(np.transpose(new_f))
-    med_c, e_c = get_med_e(np.transpose(new_c))
-
-    print("med_f: ", med_f.shape)
-    print("med_c: ", med_c.shape)
-
-    plt.errorbar(sd, med_f, yerr=e_f, label="front", markersize=8, capsize=5)
-    plt.errorbar(sd, med_c, yerr=e_c, label="center", markersize=8, capsize=5)
-    plt.legend(loc="lower right")
+    plt.errorbar(sd, med_f, yerr=e_f, label="Front", markersize=8, capsize=5)
+    plt.errorbar(sd, med_c, yerr=e_c, label="Centre", markersize=8, capsize=5)
+    plt.legend(bbox_to_anchor=(1, 1), loc="lower right")
 
 
 def plot_sorting(state_logs, quantities_logs):
@@ -210,45 +201,42 @@ def plot_sorting(state_logs, quantities_logs):
         data = state.corr(method="spearman")
         if quantities.loc[0]["speed_sd"] > 0:  # Cas Vitesse
             sd = quantities.loc[0]["speed_sd"]
-            rho_speed_f, rho_speed_c = store(
-                rho_speed_f, rho_speed_c, sd, data, "speed"
-            )
+            store(rho_speed_f, rho_speed_c, sd, data, "speed")
         if quantities.loc[0]["turning_rate_sd"] > 0:  # Cas Turning Rate
             sd = quantities.loc[0]["turning_rate_sd"]
-            rho_turning_f, rho_turning_c = store(
-                rho_turning_f, rho_turning_c, sd, data, "turning_rate"
-            )
+            store(rho_turning_f, rho_turning_c, sd, data, "turning_rate")
         if quantities.loc[0]["roo_sd"] > 0:  # Cas roo
             sd = quantities.loc[0]["roo_sd"]
-            rho_roo_f, rho_roo_c = store(rho_roo_f, rho_roo_c, sd, data, "roo")
+            store(rho_roo_f, rho_roo_c, sd, data, "roo")
         if quantities.loc[0]["ror_sd"] > 0:  # Cas ror
             sd = quantities.loc[0]["ror_sd"]
-            rho_ror_f, rho_ror_c = store(rho_ror_f, rho_ror_c, sd, data, "ror")
+            store(rho_ror_f, rho_ror_c, sd, data, "ror")
     # Affichage
     # speed
     if len(rho_speed_c) != 0:
-        plot_f_c(rho_speed_f, rho_speed_c)
-        plt.xlabel("Speed sd")
-        plt.ylabel("Sorting (rho)")
         plt.figure()
+        plot_f_c(rho_speed_f, rho_speed_c)
+        plt.xlabel("Écart type sur la vitesse (en unité de longueur par secondes)")
+        plt.ylabel("Coefficient de corrélation de Spearman")
     # turning
     if len(rho_turning_c) != 0:
-        plot_f_c(rho_turning_f, rho_turning_c)
-        plt.xlabel("turning rate sd")
-        plt.ylabel("Sorting (rho)")
         plt.figure()
+        plot_f_c(rho_turning_f, rho_turning_c)
+        plt.xlabel("Écart type sur la vitesse angulaire (en radians par secondes)")
+        plt.ylabel("Coefficient de corrélation de Spearman")
     # roo
     if len(rho_roo_c) != 0:
-        plot_f_c(rho_roo_f, rho_roo_c)
-        plt.xlabel("ro sd")
-        plt.ylabel("Sorting (rho)")
         plt.figure()
+        plot_f_c(rho_roo_f, rho_roo_c)
+        plt.xlabel("Écart type sur le rayon d'orientation (en unité de longueur)")
+        plt.ylabel("Coefficient de corrélation de Spearman")
     # ror
     if len(rho_ror_c) != 0:
+        plt.figure()
         plot_f_c(rho_ror_f, rho_ror_c)
-        plt.xlabel("rr sd")
-        plt.ylabel("Sorting (rho)")
-        plt.show()
+        plt.xlabel("Écart type sur le rayon de répulsion (en unité de longueur)")
+        plt.ylabel("Coefficient de corrélation de Spearman")
+    plt.show()
 
 
 if __name__ == "__main__":
