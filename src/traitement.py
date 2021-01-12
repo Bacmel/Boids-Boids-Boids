@@ -6,9 +6,9 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 
 ### Get Logs ###
-path = "../logs/sorting/"
+path = "../logs/memory_try3/"
 dirs = os.listdir(path)
-analysis = "sorting"
+analysis = "memory"
 
 
 def get_logs(dirs):
@@ -98,12 +98,12 @@ def plot_memory(quantities_logs):
     # Affichage
     # pgroup
     plot_c_d(p_c, p_d, r_c, r_d)
-    plt.xlabel("Rayon de répulsion (en unité de longueur)")
+    plt.xlabel("Rayon d'orientation (en unité de longueur)")
     plt.ylabel("Polarisation du groupe")
     plt.figure()
     # mgroup
     plot_c_d(m_c, m_d, r_c, r_d)
-    plt.xlabel("Rayon de répulsion (en unité de longueur)")
+    plt.xlabel("Rayon d'orientation (en unité de longueur)")
     plt.ylabel("Moment angulaire du groupe")
     plt.show()
 
