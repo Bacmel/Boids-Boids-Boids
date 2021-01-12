@@ -6,9 +6,9 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 
 ### Get Logs ###
-path = "../logs/behaviour/behaviour/"
+path = "../logs/sorting/"
 dirs = os.listdir(path)
-analysis = "behaviours"
+analysis = "sorting"
 
 
 def get_logs(dirs):
