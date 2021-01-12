@@ -6,9 +6,9 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 
 ### Get Logs ###
-path = "../logs/memory_try3/"
+path = "../logs/behaviour/behaviour/"
 dirs = os.listdir(path)
-analysis = "memory"
+analysis = "behaviours"
 
 
 def get_logs(dirs):
@@ -128,11 +128,10 @@ def plot_behaviours(quantities_logs):
         mgroup[droo, droa].append(quantities.loc[0]["mgroup"])
     # Affichage
     # pgroup
-    droo, droa = zip(*pgroup.keys())
-    p = np.median(np.array(list(pgroup.values())), axis=0)
+    p_values = [(droo, droa, np.median(pgroup[droo, droa])) for droo, droa in pgroup.keys()]
     fig = plt.figure()
     pr = fig.gca(projection="3d")
-    pr.plot_trisurf(droo, droa, p)
+    pr.plot_trisurf(p_values[:][0], p_values[:][1], p_values[:][2])
     # mgroup
     droo, droa = zip(*mgroup.keys())
     m = np.median(np.array(list(mgroup.values())), axis=0)
