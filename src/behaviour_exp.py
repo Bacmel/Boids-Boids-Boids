@@ -6,7 +6,7 @@ from sim.arguments import getArgs
 import numpy as np
 
 
-def run_behaviour_exp(nb_repeat, name, args, ror, droo_range, droa_range):
+def run_behaviour_exp(nb_repeat, name, a, ror, droo_range, droa_range):
     # Create the required folders
     if not os.path.exists("../logs"):
         os.mkdir("../logs")
@@ -15,7 +15,7 @@ def run_behaviour_exp(nb_repeat, name, args, ror, droo_range, droa_range):
 
     # Log the configuration
     with open(f"../logs/{name}/cmd_template.txt", "w") as cmd_log:
-        cmd_log.write(args)
+        cmd_log.write(a)
         cmd_log.write(f"ror: {ror}, droo_range: {droo_range}, droa_range: {droa_range}")
 
         # Repeat the simulation
@@ -24,16 +24,16 @@ def run_behaviour_exp(nb_repeat, name, args, ror, droo_range, droa_range):
                 roo = ror + droo
                 for droa in droa_range:
                     roa = roo + droa
-                    full_cmd = args.format(ror, roo, roa)
+                    full_cmd = a.format(ror, roo, roa)
                     print(
                         f"[Behaviour experience] droo: {droo} droa: {droa} - Progression: {i * 100 // nb_repeat}%"
                     )
                     itr_cmd = full_cmd + " --output {}/droo_{}_droa_{}_itr_{}".format(
                         name, droo, droa, i
                     )
-                    args = getArgs(itr_cmd.split(" "))
+                    a = getArgs(itr_cmd.split(" "))
                     sim = Sim()
-                    sim.from_args(args)
+                    sim.from_args(a)
     print("[Behaviour experience] Done !")
 
 
