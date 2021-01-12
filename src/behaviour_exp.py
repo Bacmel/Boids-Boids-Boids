@@ -31,9 +31,9 @@ def run_behaviour_exp(nb_repeat, name, a, ror, droo_range, droa_range):
                     itr_cmd = full_cmd + " --output {}/droo_{}_droa_{}_itr_{}".format(
                         name, droo, droa, i
                     )
-                    a = getArgs(itr_cmd.split(" "))
+                    ar = getArgs(itr_cmd.split(" "))
                     sim = Sim()
-                    sim.from_args(a)
+                    sim.from_args(ar)
     print("[Behaviour experience] Done !")
 
 
