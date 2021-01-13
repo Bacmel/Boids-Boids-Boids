@@ -7,7 +7,7 @@ Journal of Theoretical Biology(218).
 
 Auteurs: [F. Beroujon](https://github.com/Flosilver),
 [F. Cormée](https://github.com/Florian-Cormee),
-[H. Duarté](https://github.com/Bacmel)
+[H. Duarte](https://github.com/Bacmel)
 
 Tuteur: N. Bredèche
 
