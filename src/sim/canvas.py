@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from .borders import Border, Infinite
-from . import BOID_NOSE_LEN, OUT_DIR, PALETTE
+from . import OUT_DIR, PALETTE
 
 
 class Canvas:
@@ -20,11 +20,11 @@ class Canvas:
 
         """
         self.cond_border = True
+        """bool: indicate if there is walls on the edge of the simulation"""
         self.fps = float(1 / dt)
         """float: The frame rate (in Hertz)."""
         self.__render = render
         """bool: Whether the video is rendered or not."""
-        self.first = True
         if self.render:
             # Prepare for rendering
             if not os.path.exists(OUT_DIR):

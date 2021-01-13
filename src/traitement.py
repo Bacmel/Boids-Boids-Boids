@@ -68,7 +68,7 @@ def plot_c_d(c, d, x_c, x_d):
     med_d, e_d = get_med_e(d)
     plt.errorbar(x_c, med_c, yerr=e_c, label="Croissant", markersize=8, capsize=5)
     plt.errorbar(x_d, med_d, yerr=e_d, label="Décroissant", markersize=8, capsize=5)
-    plt.legend(bbox_to_anchor=(1, 1), loc="lower right")
+    plt.legend(loc="upper left", framealpha=0.5)
 
 
 def plot_memory(quantities_logs):
@@ -106,11 +106,13 @@ def plot_memory(quantities_logs):
     plot_c_d(p_c, p_d, r_c, r_d)
     plt.xlabel(r"Rayon d'orientation $r_o$(en unité de longueur)")
     plt.ylabel("Polarisation du groupe")
+    plt.title("Polarisation du groupe en fonction du rayon d'orientation")
     plt.figure()
     # mgroup
     plot_c_d(m_c, m_d, r_c, r_d)
     plt.xlabel(r"Rayon d'orientation $r_o$(en unité de longueur)")
     plt.ylabel("Moment angulaire du groupe")
+    plt.title("Moment angulaire du groupe en fonction du rayon d'orientation")
     plt.show()
 
 def plot_3D(group, X, Y, title):
@@ -225,6 +227,8 @@ def plot_sorting(state_logs, quantities_logs):
             rho_roo_c = {}
             rho_ror_f = {}
             rho_ror_c = {}
+            rho_roa_f = {}
+            rho_roa_c = {}
         data = state.corr(method="spearman")
         if quantities.loc[0]["speed_sd"] > 0:  # Cas Vitesse
             sd = quantities.loc[0]["speed_sd"]
@@ -238,6 +242,9 @@ def plot_sorting(state_logs, quantities_logs):
         if quantities.loc[0]["ror_sd"] > 0:  # Cas ror
             sd = quantities.loc[0]["ror_sd"]
             store(rho_ror_f, rho_ror_c, sd, data, r"$\Delta r_r$")
+        if quantities.loc[0]["roa_sd"] > 0:  # Cas roa
+            sd = quantities.loc[0]["roa_sd"]
+            store(rho_roa_f, rho_roa_c, sd, data, r"$\Delta r_a$")
     # Affichage
     # speed
     if len(rho_speed_c) != 0:
@@ -262,6 +269,12 @@ def plot_sorting(state_logs, quantities_logs):
         plt.figure()
         plot_f_c(rho_ror_f, rho_ror_c)
         plt.xlabel("Écart type sur le rayon de répulsion (en unité de longueur)")
+        plt.ylabel("Coefficient de corrélation de Spearman")
+    # roa
+    if len(rho_roa_c) != 0:
+        plt.figure()
+        plot_f_c(rho_roa_f, rho_roa_c)
+        plt.xlabel("Écart type sur le rayon d'attraction (en unité de longueur)")
         plt.ylabel("Coefficient de corrélation de Spearman")
     plt.show()
 

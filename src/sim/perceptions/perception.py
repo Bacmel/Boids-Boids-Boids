@@ -14,7 +14,9 @@ class Perception(ABC):
 
         """
         self.border = border
+        """Border: The borders of the environment."""
         self.wrapped = perception
+        """Perception: The wrapped perception."""
 
     def detect(self, ind, pop):
         """Detect individuals from the given population around the given individual.

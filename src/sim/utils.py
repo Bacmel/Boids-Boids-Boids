@@ -83,8 +83,8 @@ def circular_mean(X, I):
     """Compute the circular mean of the given set of values X in I.
 
     Args:
-        X (list[float]): The set of values.
-        I (tuple[float,float]): The range these values are in.
+        X (list<float>): The set of values.
+        I (tuple<float,float>): The range these values are in.
 
     Returns:
         float: The circular mean.

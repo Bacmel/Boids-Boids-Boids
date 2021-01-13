@@ -19,3 +19,4 @@ from .incrementor import Incrementor
 from .individual import Individual
 from .population import Population
 from .universe import Universe
+from .data_logger import DataLogger

@@ -1,12 +1,23 @@
 #!/usr/bin/python3.8
+
 from math import pi
 import os
 from sim.sim import Sim
-from sim.arguments import getArgs
+from sim.arguments import get_args
 import numpy as np
 
 
-def run_behaviour_exp(nb_repeat, name, a, ror, droo_range, droa_range):
+def run_behaviour_exp(nb_repeat, name, cmd, ror, droo_range, droa_range):
+    """Run the behaviour experience.
+
+    Args:
+        nb_repeat (int): The number of repetitions.
+        name (str): The name of this experience.
+        cmd (str): The command template to use.
+        ror (float): The range of repulsion (in length units).
+        droo_range (float): The range of values to explore with delta r_o (in length units).
+        droa_range (float): The range of values to explore with delta r_a (in length units).
+    """
     # Create the required folders
     if not os.path.exists("../logs"):
         os.mkdir("../logs")
@@ -15,7 +26,7 @@ def run_behaviour_exp(nb_repeat, name, a, ror, droo_range, droa_range):
 
     # Log the configuration
     with open(f"../logs/{name}/cmd_template.txt", "w") as cmd_log:
-        cmd_log.write(a)
+        cmd_log.write(cmd)
         cmd_log.write(f"ror: {ror}, droo_range: {droo_range}, droa_range: {droa_range}")
 
         # Repeat the simulation
@@ -24,21 +35,21 @@ def run_behaviour_exp(nb_repeat, name, a, ror, droo_range, droa_range):
                 roo = ror + droo
                 for droa in droa_range:
                     roa = roo + droa
-                    full_cmd = a.format(ror, roo, roa)
+                    full_cmd = cmd.format(ror, roo, roa)
                     print(
                         f"[Behaviour experience] droo: {droo} droa: {droa} - Progression: {i * 100 // nb_repeat}%"
                     )
                     itr_cmd = full_cmd + " --output {}/droo_{}_droa_{}_itr_{}".format(
                         name, droo, droa, i
                     )
-                    ar = getArgs(itr_cmd.split(" "))
+                    ar = get_args(itr_cmd.split(" "))
                     sim = Sim()
                     sim.from_args(ar)
     print("[Behaviour experience] Done !")
 
 
 if __name__ == "__main__":
-    nb_repeat = 5
+    nb_repeat = 10
     name = "behaviour"
     cmd = (
         "--border none "
@@ -55,7 +66,7 @@ if __name__ == "__main__":
     )
 
     ror = 1
-    droo_range = np.arange(0, 16, 2) #0, 14.5, 0.5
-    droa_range = np.arange(0, 16, 2) #0, 14.5, 0.5
+    droo_range = np.arange(0, 16, 2)
+    droa_range = np.arange(0, 16, 2)
 
     run_behaviour_exp(nb_repeat, name, cmd, ror, droo_range, droa_range)
