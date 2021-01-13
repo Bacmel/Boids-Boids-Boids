@@ -6,9 +6,9 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 
 ### Get Logs ###
-path = "../logs/sorting_front_bs2/"
+path = "../logs/memory_lateral/"
 dirs = os.listdir(path)
-analysis = "sorting"
+analysis = "memory"
 
 
 def get_logs(dirs):
@@ -62,7 +62,7 @@ def plot_c_d(c, d, x_c, x_d):
     med_d, e_d = get_med_e(d)
     plt.errorbar(x_c, med_c, yerr=e_c, label="Croissant", markersize=8, capsize=5)
     plt.errorbar(x_d, med_d, yerr=e_d, label="Décroissant", markersize=8, capsize=5)
-    plt.legend(bbox_to_anchor=(1, 1), loc="lower right")
+    plt.legend(loc="upper left", framealpha=0.5)
 
 
 def plot_memory(quantities_logs):
@@ -100,11 +100,13 @@ def plot_memory(quantities_logs):
     plot_c_d(p_c, p_d, r_c, r_d)
     plt.xlabel("Rayon d'orientation (en unité de longueur)")
     plt.ylabel("Polarisation du groupe")
+    plt.title("Polarisation du groupe en fonction du rayon d'orientation")
     plt.figure()
     # mgroup
     plot_c_d(m_c, m_d, r_c, r_d)
     plt.xlabel("Rayon d'orientation (en unité de longueur)")
     plt.ylabel("Moment angulaire du groupe")
+    plt.title("Moment angulaire du groupe en fonction du rayon d'orientation")
     plt.show()
 
 

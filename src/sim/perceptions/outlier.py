@@ -31,21 +31,24 @@ class Outlier(Perception):
         """Build a new outlier filter.
 
         Args:
-            diff_threshold (float): The threshold difference to the mean to tell that an individual is an outlier.
+            diff_threshold (float): The threshold difference to the mean to tell that an individual is an outlier (in radians).
             border (Border): The borders of the environment.
             perception (Perception): The wrapped perception.
 
         """
         super().__init__(border, perception)
         self.diff_threshold = diff_threshold
+        """float: The threshold difference to the mean to tell that an individual is an outlier (in radians)."""
 
     def _filter(self, ind, pop):
         mean_ori = mean_orientation(pop)
         max_diff = 0.0
         outlier = None
+        # Identify an outlier
         for ind_pop in pop:
             angular_diff = abs(normalize_angle(ind_pop.angle - mean_ori))
             if angular_diff > max_diff and ind_pop is not ind:
                 max_diff = angular_diff
                 outlier = ind_pop
+        # List the outlier if it exists otherwise the whole population
         return [outlier] if outlier else pop

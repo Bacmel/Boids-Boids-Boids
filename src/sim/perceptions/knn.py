@@ -18,13 +18,16 @@ class KNN(Perception):
         """
         super().__init__(border, perception)
         self.k = k
+        """int: The maximum number of neighbors."""
 
     def _filter(self, ind, pop):
         dpop = list()
+        # Sort the neighbors by their distance to the individual
         for ind_pop in pop:
             relative_pos = self.border.vector(ind.pos, ind_pop.pos)
             if ind_pop is not ind:
                 dpop.append((norm(relative_pos), ind_pop))
         dpop.sort(key=lambda elem: elem[0])
         knn = dpop[: min(self.k, len(dpop))]
+        # List the k nearest neighbors
         return [ind for d, ind in knn]
