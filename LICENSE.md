@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2021 Forentin Beroujon, Florian Cormée, Hugo Duarte
+Copyright (c) 2021 Florentin Beroujon, Florian Cormée, Hugo Duarte
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
