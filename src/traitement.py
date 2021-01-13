@@ -199,6 +199,8 @@ def plot_sorting(state_logs, quantities_logs):
             rho_roo_c = {}
             rho_ror_f = {}
             rho_ror_c = {}
+            rho_roa_f = {}
+            rho_roa_c = {}
         data = state.corr(method="spearman")
         if quantities.loc[0]["speed_sd"] > 0:  # Cas Vitesse
             sd = quantities.loc[0]["speed_sd"]
@@ -212,6 +214,9 @@ def plot_sorting(state_logs, quantities_logs):
         if quantities.loc[0]["ror_sd"] > 0:  # Cas ror
             sd = quantities.loc[0]["ror_sd"]
             store(rho_ror_f, rho_ror_c, sd, data, "ror")
+        if quantities.loc[0]["roa_sd"] > 0:  # Cas roa
+            sd = quantities.loc[0]["roa_sd"]
+            store(rho_roa_f, rho_roa_c, sd, data, "roa")
     # Affichage
     # speed
     if len(rho_speed_c) != 0:
@@ -236,6 +241,12 @@ def plot_sorting(state_logs, quantities_logs):
         plt.figure()
         plot_f_c(rho_ror_f, rho_ror_c)
         plt.xlabel("Écart type sur le rayon de répulsion (en unité de longueur)")
+        plt.ylabel("Coefficient de corrélation de Spearman")
+    # roa
+    if len(rho_ror_c) != 0:
+        plt.figure()
+        plot_f_c(rho_roa_f, rho_roa_c)
+        plt.xlabel("Écart type sur le rayon d'attraction (en unité de longueur)")
         plt.ylabel("Coefficient de corrélation de Spearman")
     plt.show()
 

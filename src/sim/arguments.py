@@ -248,7 +248,7 @@ def getArgs(arg_list=None):
     blindspot_group.add_argument(
         "--blindspot-direction",
         "-bsd",
-        type=int,
+        type=float,
         nargs="+",
         dest="blindspot_direction",
         help="list of directions of the bisector of each blindspot angle",
@@ -256,7 +256,7 @@ def getArgs(arg_list=None):
     blindspot_group.add_argument(
         "--blindspot-opening",
         "-bso",
-        type=int,
+        type=float,
         nargs="+",
         dest="blindspot_opening",
         help="list of the openings of each blindspot",
