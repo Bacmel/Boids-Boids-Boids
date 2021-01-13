@@ -49,11 +49,7 @@ class Universe:
         self.pop.tick(self.dt)
 
     def spin_once(self):
-        self.draw()
-        self.tick()
-
-    def spin(self, step_nb, pretick=None, posttick=None):
-        """Loop the simulation.
+        """Perform one spin of the simulation.
 
         Draw then update the simulation until the canvas is closed.
 
@@ -62,11 +58,20 @@ class Universe:
             pretick: function to call before update of the simulation.
             posttick: function to call after the update of the simulation.
         """
+        self.draw()
+        self.tick()
+
+    def spin(self, step_nb):
+        """Loop the simulation.
+
+        Draw then update the simulation for the given number of steps.
+
+        Args:
+            step_nb: number of step in the simualtion.
+            pretick: function to call before update of the simulation.
+            posttick: function to call after the update of the simulation.
+        """
         for i in range(step_nb):
             print(f"Simulation step {i} / {step_nb}")
-            if pretick:
-                pretick(self)
             self.spin_once()
-            if posttick:
-                posttick(self)
         print("Simulation: Done")

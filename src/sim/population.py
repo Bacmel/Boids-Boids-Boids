@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from math import cos, pi, sin
 import random
 
@@ -44,7 +45,7 @@ class Population:
 
         """
         self.pop = []
-        """list<Boid>: The list of individuals."""
+        """list<Individual>: The list of individuals."""
         self.speed = speed
         """float: The mean speed (in length units per seconds)."""
         self.turning_rate = turning_rate
@@ -203,7 +204,7 @@ class Population:
                 turning_rate=self.turning_rate,
             )
         else:
-            # Generate gaussian distribution for each parameter
+            # Generate each parameter using a gaussian distribution
             new_speed = self.speed
             new_tr = self.turning_rate
             new_ror = self.ror
@@ -284,6 +285,11 @@ class Population:
             ind.pos = self.perception.border.wrap(ind.pos)
 
     def draw(self):
+        """Draw the population as a set of vectors.
+
+        Returns:
+            tuple(list<float>,list<float>,list<float>,list<float>,list<int> >: The lists of X and Y positions then of U and V direction vector and the vector colour.
+        """
         x = []
         y = []
         u = []
