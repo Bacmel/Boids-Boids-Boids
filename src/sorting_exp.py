@@ -8,6 +8,14 @@ import numpy as np
 
 
 def run_sorting_exp(nb_repeat, name, cmd, variable):
+    """Run the memory experience.
+
+    Args:
+        nb_repeat (int): The number of repetitions.
+        name (str): The name of this experience.
+        cmd (str): The command template to use.
+        variable (list<tuple<str,str,str> >): The list of arguments to add one at a time (their name, their command template, their range).
+    """
     # Create the required folders
     if not os.path.exists("../logs"):
         os.mkdir("../logs")
@@ -38,8 +46,8 @@ def run_sorting_exp(nb_repeat, name, cmd, variable):
 
 
 if __name__ == "__main__":
-    nb_repeat = 9 #15
-    name = "sorting_front_bs2"
+    nb_repeat = 10
+    name = "sorting"
     cmd = (
         "--border none "
         "-n 60 "
@@ -51,21 +59,21 @@ if __name__ == "__main__":
         "--turning-rate 40 "
         "--velocity 3 "
         f"-d-sd {0.05} "
-        "--step-nb 1000" #5000
+        "--step-nb 1000"
     )
 
-    speed_sd_range = np.array([0.0125, 0.05, 0.1, 0.15, 0.2]) #[0.0125, 0.025, 0.05, 0.1, 0.15, 0.2]
+    speed_sd_range = np.array([0.0125, 0.05, 0.1, 0.15, 0.2])
     turning_rate_range = np.arange(1, 10, 2)
-    roa_range = np.arange(0.05, 0.35, 0.05) # 0.05, 0.35, 0.05
-    roo_range = np.arange(0.5, 3, 0.5) # 0.5, 2.5, 0.25
-    ror_range = np.arange(0.05, 0.35, 0.05) # 0.05, 0.35, 0.05
+    roa_range = np.arange(0.05, 0.35, 0.05)
+    roo_range = np.arange(0.5, 3, 0.5)
+    ror_range = np.arange(0.05, 0.35, 0.05)
 
     variable = [
-        #("speed-sd", "--speed-sd {}", speed_sd_range),
-        #("tr-sd", "--tr-sd {}", turning_rate_range),
+        ("speed-sd", "--speed-sd {}", speed_sd_range),
+        ("tr-sd", "--tr-sd {}", turning_rate_range),
         ("ror-sd", "--ror-sd {}", ror_range),
         ("roo-sd", "--roo-sd {}", roo_range),
-        #("roa-sd", "--roa-sd {}", roa_range),
+        ("roa-sd", "--roa-sd {}", roa_range),
     ]
 
     run_sorting_exp(nb_repeat, name, cmd, variable)

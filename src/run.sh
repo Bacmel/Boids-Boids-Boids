@@ -10,5 +10,3 @@ python3.8 -m sim \
 --step-nb 1000 \
 -d-sd 0.05 \
 --render
-# --view-dist 31 \
-# -roo 16 \

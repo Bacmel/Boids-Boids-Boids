@@ -1,4 +1,5 @@
 #!/usr/bin/python3.8
+
 from math import pi
 import os
 from sim.sim import Sim
@@ -6,6 +7,13 @@ from sim.arguments import get_args
 
 
 def run_memory_exp(nb_repeat, name, cmd):
+    """Run the memory experience.
+
+    Args:
+        nb_repeat (int): The number of repetitions.
+        name (str): The name of this experience.
+        cmd (str): The command template to use.
+    """
     # Create the required folders
     if not os.path.exists("../logs"):
         os.mkdir("../logs")
