@@ -6,15 +6,17 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 
 ### For Latex Render ###
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "sans-serif",
-    "font.sans-serif": ["Helvetica"]})
-
+plt.rcParams.update(
+    {
+        "text.usetex": False,  # Set to True to enable LaTeX parsing
+        "font.family": "sans-serif",
+        "font.sans-serif": ["Helvetica"],
+    }
+)
 ### Get Logs ###
-path =
+path = "../logs/"  # The path to the experience logs
 dirs = os.listdir(path)
-analysis = ""
+analysis = ""  # Specify the type of experience: memory, sorting, behaviour
 
 
 def get_logs(dirs):
@@ -104,7 +106,7 @@ def plot_memory(quantities_logs):
     # Affichage
     # pgroup
     plot_c_d(p_c, p_d, r_c, r_d)
-    plt.xlabel(r"Rayon d'orientation $r_o$(en unité de longueur)")
+    plt.xlabel(r"Rayon d'orientation $\Delta r_o$(en unité de longueur)")
     plt.ylabel("Polarisation du groupe")
     plt.title("Polarisation du groupe en fonction du rayon d'orientation")
     plt.figure()
@@ -115,6 +117,7 @@ def plot_memory(quantities_logs):
     plt.title("Moment angulaire du groupe en fonction du rayon d'orientation")
     plt.show()
 
+
 def plot_3D(group, X, Y, title):
     """Plot behaviour graph.
 
@@ -124,7 +127,9 @@ def plot_3D(group, X, Y, title):
         Y (numpy.ndarray): Y meshgrid.
         title (string): title.
     """
-    values = np.array([[np.median(group[a, b]) for a, b in zip(x, y)] for x, y in zip(X, Y)])
+    values = np.array(
+        [[np.median(group[a, b]) for a, b in zip(x, y)] for x, y in zip(X, Y)]
+    )
     fig = plt.figure()
     pr = fig.gca(projection="3d")
     pr.plot_surface(X, Y, values)
@@ -132,6 +137,7 @@ def plot_3D(group, X, Y, title):
     pr.set_ylabel(r"\bf $\Delta r_a$")
     pr.set_zlabel(title)
     pr.invert_xaxis()
+
 
 def plot_behaviours(quantities_logs):
     """Plot behaviours graph.
@@ -158,10 +164,10 @@ def plot_behaviours(quantities_logs):
     X, Y = np.meshgrid(b, c)
     # pgroup
     plot_3D(pgroup, X, Y, r"\bf $p_{group}$")
-    plt.title(r'Polarisation du groupe')
+    plt.title(r"Polarisation du groupe")
     # mgroup
     plot_3D(mgroup, X, Y, r"\bf $m_{group}$")
-    plt.title(r'Moment angulaire du groupe')
+    plt.title(r"Moment angulaire du groupe")
     plt.show()
 
 
