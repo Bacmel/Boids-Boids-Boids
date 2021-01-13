@@ -22,7 +22,9 @@ class BlindSpot(Perception):
         assert 0 < opening <= pi
         assert -pi <= bisector < pi
         self.bisector = bisector
+        """float: The direction (in radians)."""
         self.half_opening = opening / 2
+        """float: The opening (in radians)."""
 
     def _filter(self, ind, pop):
         filtered_pop = []
