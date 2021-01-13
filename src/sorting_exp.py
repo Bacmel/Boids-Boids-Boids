@@ -38,16 +38,16 @@ def run_sorting_exp(nb_repeat, name, cmd, variable):
 
 
 if __name__ == "__main__":
-    nb_repeat = 10 #15
-    name = "sorting"
+    nb_repeat = 9 #15
+    name = "sorting_front_bs2"
     cmd = (
         "--border none "
         "-n 60 "
         "-ror 1 "
-        "-roo 10 "
-        "-roa 20 "
-        "--blindspot-direction -180 "
-        "--blindspot-opening 90 "
+        "-roo 15 "
+        "-roa 17 "
+        "--blindspot-direction -180 0 "
+        "--blindspot-opening 90 90 "
         "--turning-rate 40 "
         "--velocity 3 "
         f"-d-sd {0.05} "
@@ -61,11 +61,11 @@ if __name__ == "__main__":
     ror_range = np.arange(0.05, 0.35, 0.05) # 0.05, 0.35, 0.05
 
     variable = [
-        ("speed-sd", "--speed-sd {}", speed_sd_range),
-        ("tr-sd", "--tr-sd {}", turning_rate_range),
+        #("speed-sd", "--speed-sd {}", speed_sd_range),
+        #("tr-sd", "--tr-sd {}", turning_rate_range),
         ("ror-sd", "--ror-sd {}", ror_range),
         ("roo-sd", "--roo-sd {}", roo_range),
-        ("roa-sd", "--roa-sd {}", roa_range),
+        #("roa-sd", "--roa-sd {}", roa_range),
     ]
 
     run_sorting_exp(nb_repeat, name, cmd, variable)
