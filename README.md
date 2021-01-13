@@ -13,12 +13,12 @@ Tuteur: N. Bredèche
 
 ---
 
-## Context
+## Contexte
 
 Pour un devoir de master en informatique, notre groupe à repris l'étude sur le
 comportement de particules en essaim. Contrairement à l'étude d'origine, nous
 travaillons dans un environnement 2D. L'objectif principal était de retrouver un
-comportement de mémoire  dans le groupe représenté par un cycle d'hystérésis
+comportement de mémoire dans le groupe représenté par un cycle d'hystérésis
 lorsque le rayon d'orientation des particules évoluent au cours d'une même
 simulation.
 
@@ -46,6 +46,6 @@ avec la commande :
 **Attention**, vous devrez au moins définir au moins un type de perception. Si vous
 ne le faite pas, un message d'erreur vous indiquera de le faire.
 
-Un script bash (`run.sh`) est également disponible et pré-rempli. Lancez le comme ci-dessous :
+Un script bash (`run.sh`) est également disponible et pré-rempli. Lancez-le comme ci-dessous :
 
 > `source src/run.sh`
