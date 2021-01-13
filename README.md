@@ -1,5 +1,6 @@
 # Collective memory and spatial sorting in animal groups - Boids behaviour
-Auteurs: [F. Beroujon]{https://github.com/Flosilver}, [F. Cormée]{https://github.com/Florian-Cormee}, [H. Duarté]{https://github.com/Bacmel}
+Auteurs: [F. Beroujon](https://github.com/Flosilver), [F. Cormée](https://github.com/Florian-Cormee), [H. Duarté](https://github.com/Bacmel)
+
 Tuteur: N. Bredèche
 
 ---
@@ -8,8 +9,9 @@ Tuteur: N. Bredèche
 
 Pour un devoir de master en informatique, notre groupe à repris l'étude sur le comportement de particules en essaim. Contrairement à l'étude d'origine, nous travaillons dans un environnement 2D. L'objectif principal était de retrouver un comportement de mémoire  dans le groupe représenté par un cycle d'hystérésis lorsque le rayon d'orientation des particules évoluent au cours d'une même simulation.
 
-La simulation que nous utilisons est tiré du travil de [chrismit3s]{https://gitlab.com/chrismit3s/boids} que nous avons grandement modifié pour correspondre au travail demandé.
+La simulation que nous utilisons est tiré du travil de [Christoph Smithmyer](https://gitlab.com/chrismit3s/boids) que nous avons grandement modifié pour correspondre au travail demandé.
 
+---
 ## Comment ça marche?
 
 ### Prérequis
@@ -28,4 +30,4 @@ Attention, vous devrez au moins définir au moins un type de perception. Si vous
 
 Un script bash (`run.sh`) est également disponible et pré-rempli. Lancez le avec:
 
-> `source run.sh`
+> `source src/run.sh`
