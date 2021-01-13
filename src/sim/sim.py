@@ -80,14 +80,14 @@ class Sim:
         ) * incrementor.step_duration
 
     def from_args(self, args):
-        argu.globalCond(args.speed, args.time_step, args.repulsion_radius)
+        argu.global_cond(args.speed, args.time_step, args.repulsion_radius)
 
         # Creation of border
         self.build_border(args.border)
 
         # Creation of perception
-        argu.blindspotCond(args.blindspot_direction, args.blindspot_opening)
-        argu.perceptionCond(
+        argu.blindspot_cond(args.blindspot_direction, args.blindspot_opening)
+        argu.perception_cond(
             args.view_dist,
             args.blindspot_direction,
             args.blindspot_opening,
@@ -106,8 +106,8 @@ class Sim:
         self.steps_nb = args.step_nb
 
         # Create an incrementor
-        if argu.rooCond(args.orientation_var, args.roo_step_duration):
-            inf_bound, increment, sup_bound = argu.getRooVar(args.orientation_var)
+        if argu.roo_cond(args.orientation_var, args.roo_step_duration):
+            inf_bound, increment, sup_bound = argu.get_roo_var(args.orientation_var)
             incrementor = Incrementor(
                 inf_bound, increment, sup_bound, args.roo_step_duration
             )

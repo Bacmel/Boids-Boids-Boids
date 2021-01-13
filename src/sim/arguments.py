@@ -4,7 +4,7 @@ from argparse import ArgumentParser, ArgumentTypeError
 from . import BOID_TURN_SPEED, VELOCITY, DEFAULT_NUM_NEIGHBORS
 
 
-def blindspotCond(directions, openings):
+def blindspot_cond(directions, openings):
     """
     Verify if the directions argument and openings argument make sense.
 
@@ -26,7 +26,7 @@ def blindspotCond(directions, openings):
         )
 
 
-def globalCond(velocity, time_step, repulsion_radius):
+def global_cond(velocity, time_step, repulsion_radius):
     """
     Global condition on the simulation.
 
@@ -43,7 +43,7 @@ def globalCond(velocity, time_step, repulsion_radius):
         )
 
 
-def perceptionCond(view_dist, bs_direction, bs_opening, knn, outlier):
+def perception_cond(view_dist, bs_direction, bs_opening, knn, outlier):
     """
     Conditions on the creation of perception.
 
@@ -62,7 +62,7 @@ def perceptionCond(view_dist, bs_direction, bs_opening, knn, outlier):
         )
 
 
-def rooCond(roo_var, roo_step_duration):
+def roo_cond(roo_var, roo_step_duration):
     """
     Condition on roo variation parameters.
 
@@ -81,7 +81,7 @@ def rooCond(roo_var, roo_step_duration):
         return True
 
 
-def getRooVar(roo_var):
+def get_roo_var(roo_var):
     """
     Get the roo variation parameters casted in float.
 
@@ -103,7 +103,7 @@ def getRooVar(roo_var):
     return float(l[0]), float(l[1]), float(l[2])
 
 
-def getArgs(arg_list=None):
+def get_args(arg_list=None):
     """
     Standard function to specify the default value of the hyper-parameters of experimental setups
 
@@ -131,11 +131,20 @@ def getArgs(arg_list=None):
         help="the number of boids in the simulation",
     )
     parser.add_argument(
-        "--fps", type=float, default=30.0, help="the (maximum) framerate"
+        "--fps", 
+        type=float, 
+        default=30.0, 
+        help="the (maximum) framerate"
     )
-    parser.add_argument("--res", type=str, default="1920x1080", help="the resolution")
     parser.add_argument(
-        "--highlight", action="store_true", help="highlight a single individual"
+        "--res", 
+        type=str, 
+        default="1920x1080",
+        help="the resolution")
+    parser.add_argument(
+        "--highlight", 
+        action="store_true", 
+        help="highlight a single individual"
     )
     parser.add_argument(
         "--preview-only",

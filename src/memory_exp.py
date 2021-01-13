@@ -2,7 +2,7 @@
 from math import pi
 import os
 from sim.sim import Sim
-from sim.arguments import getArgs
+from sim.arguments import get_args
 
 
 def run_memory_exp(nb_repeat, name, cmd):
@@ -20,7 +20,7 @@ def run_memory_exp(nb_repeat, name, cmd):
     for i in range(nb_repeat):
         print("[Memory experience] Progression: {}%".format(i * 100 // nb_repeat))
         itr_cmd = cmd + " --output {}/itr_{}".format(name, i)
-        args = getArgs(itr_cmd.split(" "))
+        args = get_args(itr_cmd.split(" "))
         sim = Sim()
         sim.from_args(args)
     print("[Memory experience] Done !")

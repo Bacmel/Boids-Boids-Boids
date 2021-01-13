@@ -4,6 +4,6 @@ from .sim import Sim
 from . import arguments as argu
 
 if __name__ == "__main__":
-    args = argu.getArgs()
+    args = argu.get_args()
     sim = Sim()
     sim.from_args(args)

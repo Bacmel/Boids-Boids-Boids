@@ -2,7 +2,7 @@
 from math import pi
 import os
 from sim.sim import Sim
-from sim.arguments import getArgs
+from sim.arguments import get_args
 
 import numpy as np
 
@@ -31,7 +31,7 @@ def run_sorting_exp(nb_repeat, name, cmd, variable):
                 itr_cmd = param_cmd + " --output {}/{}_{}_itr_{}".format(
                     name, var_name, val, i
                 )
-                args = getArgs(itr_cmd.split(" "))
+                args = get_args(itr_cmd.split(" "))
                 sim = Sim()
                 sim.from_args(args)
     print("[Sorting experience] Done !")
