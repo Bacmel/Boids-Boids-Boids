@@ -5,10 +5,16 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import os
 
+### For Latex Render ###
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "sans-serif",
+    "font.sans-serif": ["Helvetica"]})
+
 ### Get Logs ###
-path = "../logs/sorting/"
+path =
 dirs = os.listdir(path)
-analysis = "sorting"
+analysis = ""
 
 
 def get_logs(dirs):
@@ -98,15 +104,32 @@ def plot_memory(quantities_logs):
     # Affichage
     # pgroup
     plot_c_d(p_c, p_d, r_c, r_d)
-    plt.xlabel("Rayon d'orientation (en unité de longueur)")
+    plt.xlabel(r"Rayon d'orientation $r_o$(en unité de longueur)")
     plt.ylabel("Polarisation du groupe")
     plt.figure()
     # mgroup
     plot_c_d(m_c, m_d, r_c, r_d)
-    plt.xlabel("Rayon d'orientation (en unité de longueur)")
+    plt.xlabel(r"Rayon d'orientation $r_o$(en unité de longueur)")
     plt.ylabel("Moment angulaire du groupe")
     plt.show()
 
+def plot_3D(group, X, Y, title):
+    """Plot behaviour graph.
+
+    Args:
+        group (dict<(float,float)><list<float> >): "group" data.
+        X (numpy.ndarray): X meshgrid.
+        Y (numpy.ndarray): Y meshgrid.
+        title (string): title.
+    """
+    values = np.array([[np.median(group[a, b]) for a, b in zip(x, y)] for x, y in zip(X, Y)])
+    fig = plt.figure()
+    pr = fig.gca(projection="3d")
+    pr.plot_surface(X, Y, values)
+    pr.set_xlabel(r"\bf $\Delta r_o$")
+    pr.set_ylabel(r"\bf $\Delta r_a$")
+    pr.set_zlabel(title)
+    pr.invert_xaxis()
 
 def plot_behaviours(quantities_logs):
     """Plot behaviours graph.
@@ -127,17 +150,16 @@ def plot_behaviours(quantities_logs):
         pgroup[droo, droa].append(quantities.loc[0]["pgroup"])
         mgroup[droo, droa].append(quantities.loc[0]["mgroup"])
     # Affichage
+    droo, droa = zip(*pgroup.keys())
+    b = [element for element in set(droo)]
+    c = [element for element in set(droa)]
+    X, Y = np.meshgrid(b, c)
     # pgroup
-    p_values = [(droo, droa, np.median(pgroup[droo, droa])) for droo, droa in pgroup.keys()]
-    fig = plt.figure()
-    pr = fig.gca(projection="3d")
-    pr.plot_trisurf(p_values[:][0], p_values[:][1], p_values[:][2])
+    plot_3D(pgroup, X, Y, r"\bf $p_{group}$")
+    plt.title(r'Polarisation du groupe')
     # mgroup
-    droo, droa = zip(*mgroup.keys())
-    m = np.median(np.array(list(mgroup.values())), axis=0)
-    fig = plt.figure()
-    pr = fig.gca(projection="3d")
-    pr.plot_trisurf(droo, droa, m)
+    plot_3D(mgroup, X, Y, r"\bf $m_{group}$")
+    plt.title(r'Moment angulaire du groupe')
     plt.show()
 
 
@@ -159,6 +181,12 @@ def store(f, c, sd, data, title):
 
 
 def plot_f_c(f, c):
+    """Plot sorting graph.
+
+    Args:
+        f (dict<float><list<float> >): dictionnary for front data.
+        c (dict<float><list<float> >): dictionnary for center data.
+    """
     values = [(sd, f[sd], c[sd]) for sd in f.keys()]
     values.sort(key=lambda v: v[0])
 
@@ -200,16 +228,16 @@ def plot_sorting(state_logs, quantities_logs):
         data = state.corr(method="spearman")
         if quantities.loc[0]["speed_sd"] > 0:  # Cas Vitesse
             sd = quantities.loc[0]["speed_sd"]
-            store(rho_speed_f, rho_speed_c, sd, data, "speed")
+            store(rho_speed_f, rho_speed_c, sd, data, r"$s$")
         if quantities.loc[0]["turning_rate_sd"] > 0:  # Cas Turning Rate
             sd = quantities.loc[0]["turning_rate_sd"]
-            store(rho_turning_f, rho_turning_c, sd, data, "turning_rate")
+            store(rho_turning_f, rho_turning_c, sd, data, r"$\theta$")
         if quantities.loc[0]["roo_sd"] > 0:  # Cas roo
             sd = quantities.loc[0]["roo_sd"]
-            store(rho_roo_f, rho_roo_c, sd, data, "roo")
+            store(rho_roo_f, rho_roo_c, sd, data, r"$\Delta r_o$")
         if quantities.loc[0]["ror_sd"] > 0:  # Cas ror
             sd = quantities.loc[0]["ror_sd"]
-            store(rho_ror_f, rho_ror_c, sd, data, "ror")
+            store(rho_ror_f, rho_ror_c, sd, data, r"$\Delta r_r$")
     # Affichage
     # speed
     if len(rho_speed_c) != 0:
