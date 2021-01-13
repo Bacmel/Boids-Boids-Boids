@@ -6,9 +6,9 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 
 ### Get Logs ###
-path = "../logs/memory_lateral/"
+path = "../logs/sorting/"
 dirs = os.listdir(path)
-analysis = "memory"
+analysis = "sorting"
 
 
 def get_logs(dirs):
@@ -243,7 +243,7 @@ def plot_sorting(state_logs, quantities_logs):
         plt.xlabel("Écart type sur le rayon de répulsion (en unité de longueur)")
         plt.ylabel("Coefficient de corrélation de Spearman")
     # roa
-    if len(rho_ror_c) != 0:
+    if len(rho_roa_c) != 0:
         plt.figure()
         plot_f_c(rho_roa_f, rho_roa_c)
         plt.xlabel("Écart type sur le rayon d'attraction (en unité de longueur)")
